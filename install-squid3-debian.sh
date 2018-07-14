@@ -97,11 +97,14 @@ cd /tmp/${SQUID_VERSION}
 
 # standard configure from here
 # https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
+
+PREFIX="/usr"
+
 ./configure \
-	--prefix=/usr \
+	--prefix=${PREFIX} \
 	--localstatedir=/var \
-	--libexecdir=${prefix}/lib/squid \
-	--datadir=${prefix}/share/squid \
+	--libexecdir=${PREFIX}/lib/squid \
+	--datadir=${PREFIX}/share/squid \
 	--sysconfdir=/etc/squid \
 	--with-default-user=proxy \
 	--with-logdir=/var/log/squid \
@@ -109,7 +112,7 @@ cd /tmp/${SQUID_VERSION}
 	--enable-linux-netfilter
 
 NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-make -j$((NB_CORES + 2)) -l${NB_CORES}
+make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 
 make install
 
