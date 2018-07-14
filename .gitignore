@@ -89,3 +89,7 @@ coverage.xml
 
 # ansible
 **/*.retry
+
+
+# Vagrantfile
+**/*vm_name.info
