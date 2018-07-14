@@ -9,7 +9,7 @@ set -e
 # minimal 3.5 config
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
 
-SQUID_CONF="./squid.conf"
+SQUID_CONF="/home/vagrant/squid.conf"
 
 cat <<EOF >"${SQUID_CONF}"
 http_port 3128
