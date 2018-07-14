@@ -23,6 +23,7 @@
         "openssl",
         "pidfile",
         "sbin",
+        "squidclient",
         "sysconfdir",
         "wais"
     ]

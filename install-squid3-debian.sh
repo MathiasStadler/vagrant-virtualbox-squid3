@@ -132,6 +132,9 @@ sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 # start
 sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
+# wait for squid
+sleep 10
+
 # check squid is working (weak test)
 let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i ${SQUID_VERSION_STRING})
 echo $count_match
