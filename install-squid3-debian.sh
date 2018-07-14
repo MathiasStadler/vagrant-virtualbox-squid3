@@ -53,13 +53,13 @@ cd /tmp/${SQUID_VERSION}
 	--enable-delay-pools \
 	--enable-cache-digests \
 	--enable-icap-client \
-	--enable-follow-x-forwarded-for \
-	--enable-auth-basic=DB,fake,getpwnam,LDAP,NCSA,NIS,PAM,POP3,RADIUS,SASL,SMB \
-	--enable-auth-digest=file,LDAP \
-	--enable-auth-negotiate=kerberos,wrapper \
-	--enable-auth-ntlm=fake,smb_lm \
-	--enable-external-acl-helpers=file_userip,kerberos_ldap_group,LDAP_group,session,SQL_session,unix_group,wbinfo_group \
-	--enable-url-rewrite-helpers=fake \
+	--enable-follow-x-forwarded-for
+# --enable-auth-basic=DB,fake,getpwnam,LDAP,NCSA,NIS,PAM,POP3,RADIUS,SASL,SMB \
+# --enable-auth-digest=file,LDAP \
+# --enable-auth-negotiate=kerberos,wrapper \
+#	--enable-auth-ntlm=fake,smb_lm \
+#	--enable-external-acl-helpers=file_userip,kerberos_ldap_group,LDAP_group,session,SQL_session,unix_group,wbinfo_group \
+--enable-url-rewrite-helpers=fake \
 	--enable-eui \
 	--enable-esi \
 	--enable-icmp \
