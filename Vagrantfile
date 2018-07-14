@@ -87,7 +87,7 @@ end
 else
   # not up
    _VM_NAME = File.open('vm_name.info', &:readline)
-logger.info ("We used #{_VM_NAME}")
+  logger.info ("We used #{_VM_NAME}")
 end
 return _VM_NAME
 end
@@ -258,7 +258,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "create-vminfo", type: "local_shell", command: "VBoxManage showvminfo #{VM_NAME} --machinereadable > /tmp/#{VM_NAME}.vminfo"
 
     # set VirtualBox version to file
-    config.vm.provision "file", source: "/tmp/#{VM_NAME}.vminfo", destination: "/home/vagrant/vm.info"
+    # not working because source not avaible at vagrant validate
+    # config.vm.provision "file", source: "/tmp/#{VM_NAME}.vminfo", destination: "/home/vagrant/vm.info"
+    config.vm.provision "copy_vminfog", type: "local_shell", command: "vagrant scp /tmp/#{VM_NAME}.vminfo #{VM_NAME}:/home/vagrant/vm.info"
 
     # shell scripts
     shell_scripts = ["found-bridge-adapter.sh",
