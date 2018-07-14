@@ -74,6 +74,9 @@ if COMMAND == "up" then
 
     _VM_NAME = ENV['VM_NAME']
 
+    File.open('vm_name.info', 'w') { |file| file.write("#{_VM_NAME}") }
+
+
 else
   logger.error("VM_NAME not set")
   logger.info("Please set env VM_NAME")
@@ -81,8 +84,12 @@ else
   exit
 
 end
+else
+  # not up
+   _VM_NAME = File.open('vm_name.info', &:readline)
+logger.info ("We used #{_VM_NAME}")
 end
-return VM_NAME
+return _VM_NAME
 end
 
 VM_NAME=ensure_VM_NAME(VM_NAME)
