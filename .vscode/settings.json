@@ -2,13 +2,18 @@
     "cSpell.words": [
         "autoremove",
         "datadir",
+        "filemaker",
         "libexecdir",
+        "localnet",
         "localstatedir",
         "logdir",
+        "multiling",
         "netfilter",
         "noninteractive",
         "openssl",
         "pidfile",
-        "sysconfdir"
+        "sbin",
+        "sysconfdir",
+        "wais"
     ]
 }
