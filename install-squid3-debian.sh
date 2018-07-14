@@ -4,7 +4,7 @@
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
 
 SQUID_TAR="squid-3.5.27.tar.gz"
-SQUID_VERSION=$(${SQUID_TAR} | sed 's/.tar.gz/g')
+SQUID_VERSION=$(${SQUID_TAR} | sed 's/.tar.gz//g')
 
 export DEBIAN_FRONTEND=noninteractive TERM=linux &&
 	apt-get update && apt-get upgrade -y && apt-get autoremove -y &&
