@@ -3,6 +3,12 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+# squid configuration
+# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid
+
+# minimal 3.5 config
+# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
+
 SQUID_CONF="./squid.conf"
 
 cat <<EOF >"${SQUID_CONF}"
@@ -106,12 +112,6 @@ NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 make -j$((NB_CORES + 2)) -l${NB_CORES}
 
 make install
-
-# squid configuration
-# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid
-
-# minimal 3.5 config
-# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
 
 # set rights to /var/log/squid
 sudo chown -R proxy:proxy /var/log/squid
