@@ -264,7 +264,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # shell scripts
     shell_scripts = ["found-bridge-adapter.sh",
-    "install_VBoxGuestAdditions_debian_based_linux.sh"
+    "install_VBoxGuestAdditions_debian_based_linux.sh",
+    "install-squid3-debian.sh"
     ]
 
     puts shell_scripts.length

@@ -144,4 +144,4 @@ else
 fi
 
 # stop
-sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
+# sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
