@@ -73,7 +73,7 @@ cd /tmp/${SQUID_VERSION}
 	--with-large-files \
 	--with-default-user=proxy \
 	--enable-ssl \
-	–with-openssl \
+	–-with-openssl \
 	--enable-ssl-crtd \
 	--enable-linux-netfilter \
 	'CFLAGS=-g -O2 -fPIE -fstack-protector-strong -Wformat -Werror=format-security -Wall' \
