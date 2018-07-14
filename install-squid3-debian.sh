@@ -3,7 +3,9 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-cat <<EOF >"./squid.conf"
+SQUID_CONF="./squid.conf"
+
+cat <<EOF >"${SQUID_CONF}"
 http_port 3128
 
 acl localnet src 10.0.0.0/8     # RFC1918 possible internal network
@@ -48,13 +50,13 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
-if [ -e ./squid.conf ]; then
+if [ -e "${SQUID_CONF}" ]; then
 
-	echo "ok file there"
+	echo "ok file ${SQUID_CONF} there"
 
 else
 
-	echo " file NOT there"
+	echo " file NOT ‚${SQUID_CONF} there"
 	exit 1
 fi
 
@@ -119,13 +121,13 @@ sudo chown -R proxy:proxy /var/log/squid
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
 # print version
-sudo /usr/sbin/squid -v -f ./squid.conf || exit 1
+sudo /usr/sbin/squid -v -f "${SQUID_CONF}" || exit 1
 
 # check/parse  config
-sudo /usr/sbin/squid -k parse -f./squid.conf
+sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 
 # start
-sudo /usr/sbin/squid -f ./squid.conf
+sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 # check squid is working (weak test)
 let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i ${SQUID_VERSION_STRING})
@@ -139,4 +141,4 @@ else
 fi
 
 # stop
-sudo /usr/sbin/squid -k shutdown ./squid.conf
+sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
