@@ -8,7 +8,9 @@ set -e
 
 SQUID_TAR="squid-3.5.27.tar.gz"
 SQUID_VERSION=${SQUID_TAR//.tar.gz/}
+SQUID_VERSION_STRING=${SQUID_VERSION//-//}
 echo ${SQUID_VERSION}
+echo ${SQUID_VERSION_STRING}
 
 export DEBIAN_FRONTEND=noninteractive TERM=linux &&
 	apt-get update && apt-get upgrade -y && apt-get autoremove -y &&
@@ -100,8 +102,32 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
+# set rights to /var/log/squid
+sudo chown -R proxy:proxy /var/log/squid
+
 # start squid as daemon
 # from here
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
-/usr/local/squid/sbin/squid -sD -f ./squid.conf
+# print version
+sudo /usr/sbin/squid -v -f ./squid.conf || exit 1
+
+# check/parse  config
+sudo /usr/sbin/squid -k parse -f./squid.conf
+
+# start
+sudo /usr/sbin/squid -f ./squid.conf
+
+# check squid is working (weak test)
+let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i ${SQUID_VERSION_STRING})
+echo $count_match
+if [ "$count_match" -gt "0" ]; then
+
+	echo "squid works"
+else
+
+	echo "squid NOT works"
+fi
+
+# stop
+sudo /usr/sbin/squid -k shutdown ./squid.conf
