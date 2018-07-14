@@ -44,8 +44,18 @@ VAGRANTFILE_API_VERSION = "2"
 # Overwrite host locale in ssh session
 ENV["LC_ALL"] = "en_US.UTF-8"
 
+
+def exit_VM_NAME_not_setlocal
+  logger = Vagrant::UI::Colored.new
+  logger.warn("env VM_NAME NOT set")
+  logger.info(" Please ser env VM_NAME")
+  logger.info("e.g. VM_NAME=\"vagrant-virtualbox-squid3\" vagrant upÍ")
+  exit
+
+end
+
 # from here https://github.com/popstas/ansible-server/blob/master/Vagrantfile
-VM_NAME = ENV.has_key?('VM_NAME') ? ENV['VM_NAME'] : exit
+VM_NAME = ENV.has_key?('VM_NAME') ? ENV['VM_NAME'] : exit_VM_NAME_not_setlocal
 
 # provide the Virtualbox host version to file
 system("
@@ -287,10 +297,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # shell scripts
     shell_scripts = ["found-bridge-adapter.sh",
-    "install_VBoxGuestAdditions_debian_based_linux.sh",
-    "ansible_install_from_source.sh",
-    "install_ansible_jenkins_docker_role.sh",
-    "jenkins_provide_api_token.sh"
+    "install_VBoxGuestAdditions_debian_based_linux.sh"
     ]
 
     puts shell_scripts.length
