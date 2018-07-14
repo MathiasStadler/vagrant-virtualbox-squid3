@@ -40,6 +40,13 @@ cd /tmp/${SQUID_VERSION}
 	--sysconfdir=/etc/squid \
 	--with-default-user=proxy \
 	--with-logdir=/var/log/squid \
-	--with-pidfile=/var/run/squid.pid
+	--with-pidfile=/var/run/squid.pid \
+	--enable-linux-netfilter
 
 make && make install
+
+# squid configuration
+# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid
+
+# minimal 3.5 config
+# https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config

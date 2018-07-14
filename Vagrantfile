@@ -5,6 +5,16 @@
 # from here
 # https://superuser.com/questions/701735/run-script-on-host-machine-during-vagrant-up
 
+# provide the Virtualbox host version to file
+system("
+    if [ #{ARGV[0]} = 'up' ]; then
+        echo 'Provide the VirtualBox Host version to file'
+        VBoxManage --version | sed -E 's/r[^r]\*$//' >/tmp/VirtualBoxHostVersion.txt
+    fi
+")
+
+
+
 module LocalCommand
   class Config < Vagrant.plugin("2", :config)
       attr_accessor :command
@@ -32,7 +42,11 @@ end
 # end module
 
 
-VM_NAME = "vagrant-stretch64-docker-jenkins"
+
+
+COMMAND=ARGV[0]
+
+# VM_NAME = "vagrant-stretch64-docker-jenkins"
 VAGRANT_BOX_NAME = "debian/contrib-stretch64"
 VAGRANT_HOME_PATH = ENV["VAGRANT_HOME"] ||= "~/.vagrant.d"
 VIRTUALBOX_MEMORY = "4096"
@@ -45,32 +59,47 @@ VAGRANTFILE_API_VERSION = "2"
 ENV["LC_ALL"] = "en_US.UTF-8"
 
 
-def exit_VM_NAME_not_setlocal
-  logger = Vagrant::UI::Colored.new
-  logger.warn("env VM_NAME NOT set")
-  logger.info(" Please ser env VM_NAME")
-  logger.info("e.g. VM_NAME=\"vagrant-virtualbox-squid3\" vagrant upÍ")
+
+
+# from here https://github.com/popstas/ansible-server/blob/master/Vagrantfile
+# VM_NAME = ENV.has_key?('VM_NAME') ? ENV['VM_NAME'] : "exit-VM-NAME-not-setlocal"
+
+
+VM_NAME="default-not-set"
+
+def ensure_VM_NAME(_VM_NAME)
+logger = Vagrant::UI::Colored.new
+if COMMAND == "up" then
+  if ENV.has_key?('VM_NAME') then
+
+    _VM_NAME = ENV['VM_NAME']
+
+else
+  logger.error("VM_NAME not set")
+  logger.info("Please set env VM_NAME")
+  logger.info("e.g. VM_NAME=\"vagrant-virtualbox-squid3\" vagrant up")
   exit
 
 end
+end
+return VM_NAME
+end
 
-# from here https://github.com/popstas/ansible-server/blob/master/Vagrantfile
-VM_NAME = ENV.has_key?('VM_NAME') ? ENV['VM_NAME'] : exit_VM_NAME_not_setlocal
-
-# provide the Virtualbox host version to file
-system("
-    if [ #{ARGV[0]} = 'up' ]; then
-        echo 'Provide the VirtualBox Host version to file'
-        VBoxManage --version | sed -E 's/r[^r]\*$//' >/tmp/VirtualBoxHostVersion.txt
-    fi
-")
+VM_NAME=ensure_VM_NAME(VM_NAME)
 
 # ensure tmp files
 system("
+  echo 'touch /tmp/VM_NAME.vminfo'
   if ! [ -e /tmp/#{VM_NAME}.vminfo ]; then
     touch /tmp/#{VM_NAME}.vminfo
   fi
 ")
+
+
+
+
+
+
 
 # from here https://github.com/fdemmer/vagrant-stretch64-docker/blob/master/Vagrantfile
 
@@ -130,77 +159,6 @@ def local_cache(basebox_name)
   partial_dir.mkdir unless partial_dir.exist?
   cache_dir
 end
-
-# show all advaible version
-# apt-cache policy docker-ce
-DOCKER_VERSION = "18.03.1~ce-0~debian"
-COMPOSE_VERSION = "1.21.2"
-
-$script = <<SCRIPT
-
-export DEBIAN_FRONTEND=noninteractive
-
-apt-get update && apt-get install -y --no-install-recommends \
-    apt-transport-https \
-    ca-certificates \
-    curl \
-    gnupg2 \
-    software-properties-common \
-    vim
-
-echo "Installing docker via apt repo..."
-curl -fsSL https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg | sudo apt-key add -
-apt-key fingerprint 0EBFCD88
-
-add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") \
-    $(lsb_release -cs) \
-    stable"
-
-apt-get update && apt-get install -y --no-install-recommends \
-    docker-ce=#{DOCKER_VERSION}
-
-echo "Installing docker-compose from source..."
-curl -fsSL https://github.com/docker/compose/releases/download/#{COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-
-echo "Adding vagrant user to docker and adm groups..."
-groupadd docker &> /dev/null
-usermod -aG docker vagrant
-usermod -aG adm vagrant
-
-echo "Writing docker aliases..."
-cat > /etc/profile.d/00-aliases.sh <<EOF
-alias d="docker"
-alias dc="docker-compose"
-EOF
-
-echo "Install kernel check-config script"
-wget https://github.com/docker/docker/raw/master/contrib/check-config.sh
-chmod +x check-config.sh
-
-echo "Enojy! :)"
-
-SCRIPT
-
-$script_ansible = <<SCRIPT1
-# from here https://linuxconfig.org/ansible-installation-on-debian-9-stretch-linux-from-source
-export DEBIAN_FRONTEND=noninteractive
-apt update && apt install -y  make \
-git \
-make \
-python-setuptools \
-gcc \
-python-dev \
-libffi-dev \
-libssl-dev \
-python-packaging  && \
-git clone git://github.com/ansible/ansible.git  && \
-cd ansible && \
-git checkout $(git branch -a | grep stable |tail -1| cut -d "/" -f 3) && \
-make && \
-make install
-SCRIPT1
 
 require "open3"
 #set internet device name to the world

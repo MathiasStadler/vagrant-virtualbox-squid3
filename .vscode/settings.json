@@ -1,0 +1,14 @@
+{
+    "cSpell.words": [
+        "autoremove",
+        "datadir",
+        "libexecdir",
+        "localstatedir",
+        "logdir",
+        "netfilter",
+        "noninteractive",
+        "openssl",
+        "pidfile",
+        "sysconfdir"
+    ]
+}
