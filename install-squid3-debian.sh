@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command returns a non-zero status
+set -e
+
 # from here
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
 
