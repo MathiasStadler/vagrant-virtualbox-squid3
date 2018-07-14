@@ -44,7 +44,8 @@ cd /tmp/${SQUID_VERSION}
 	--enable-linux-netfilter
 
 NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-make -j$((NB_CORES + 2)) -l${NB_CORES}
+make -j$((NB_CORES + 2)) \
+	-l${NB_CORES}
 
 make install
 
@@ -54,7 +55,7 @@ make install
 # minimal 3.5 config
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
 
-cat <<EOF >"squid.conf"
+cat <<EOF >"./squid.conf"
 http_port 3128
 
 acl localnet src 10.0.0.0/8     # RFC1918 possible internal network
