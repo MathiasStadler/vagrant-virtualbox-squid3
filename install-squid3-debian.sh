@@ -124,7 +124,7 @@ sudo chown -R proxy:proxy /var/log/squid
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
 # print version
-sudo /usr/sbin/squid -v -f "${SQUID_CONF}" || exit 1
+sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
 
 # check/parse  config
 sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
