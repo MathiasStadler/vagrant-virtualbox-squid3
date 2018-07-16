@@ -14,19 +14,19 @@ define chdir
 endef
 
 create_work_dir:
-	$(info $(shell mkdir -p $(WORK_DIR)))
+	$(info $(shell mkdir -p $(PWD)/$(WORK_DIR)))
 
 up:
 	$(info VM_NAME = $(VM_NAME))
-	$(call chdir,work) VM_NAME=$(VM_NAME) vagrant up
+	$(call chdir,$(PWD)/$(WORK_DIR)) VM_NAME=$(VM_NAME) vagrant up
 	cd $(PWD)
 
 halt:
-	$(call chdir,work) vagrant halt
+	$(call chdir,$(PWD)/$(WORK_DIR)) vagrant halt
 	cd $(PWD)
 
 copy_files:
-	$(call chdir,work)
+	$(call chdir,$(PWD)/$(WORK_DIR))
 	cp ../../vagrant/Vagrantfile ../work
 	cp ../../vagrant/found-bridge-adapter.sh ../work
 	cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../work
@@ -36,17 +36,27 @@ copy_files:
 init: create_work_dir init_vagrant copy_files
 
 init_vagrant:
-	$(call chdir,work) vagrant init
+	$(call chdir,$(PWD)/$(WORK_DIR)) vagrant init
 	cd $(PWD)
 
 destroy: clean_vagrant
 
 clean_vagrant:
-	$(call chdir,work) vagrant destroy -f
+	if [ -d "$(PWD)/$(WORK_DIR)/.vagrant)" ]; then \
+        cd $(PWD)/$(WORK_DIR) && vagrant destroy -f ; \
+	else \
+		echo "vagrant was not running"; \
+		echo "run => make init"; \
+    fi
 	cd $(PWD)
 
 clean_work_dir:
-	cd $(PWD) && rm -rf ./work
+	if [ -d "$(PWD)/$(WORK_DIR)" ]; then \
+        echo "clean_work_dir: WORK_DIR exists => delete"; \
+		cd $(PWD) && rm -rf ./work; \
+	else \
+		echo "Directory not avaible => $(PWD)/$(WORK_DIR)"; \
+    fi
 
 clean: clean_vagrant clean_work_dir
 	cd $(PWD)
