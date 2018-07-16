@@ -75,17 +75,16 @@ if COMMAND == "up" then
     _VM_NAME = ENV['VM_NAME']
 
     File.open('vm_name.info', 'w') { |file| file.write("#{_VM_NAME}") }
-
-
-else
+  else
   logger.error("VM_NAME not set")
   logger.info("Please set env VM_NAME")
   logger.info("e.g. VM_NAME=\"vagrant-virtualbox-squid3\" vagrant up")
   exit
-
-end
+  end
+elsif COMMAND == "init" then
+  logger.info("init was call")
 else
-  # not up
+  # not up and init
    _VM_NAME = File.open('vm_name.info', &:readline)
   logger.info ("We used #{_VM_NAME}")
 end
