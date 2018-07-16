@@ -30,6 +30,7 @@
         "sbin",
         "shellcheck",
         "squidclient",
+        "swapoff",
         "sysconfdir",
         "vbox",
         "wais"
