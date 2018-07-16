@@ -13,7 +13,11 @@ FORCE:
         echo "ok Makefile found => ";\
 		ls -l $(PWD)/install-squid3-debian* ;\
 	else \
-		echo "Ups: install-squid3-debian* NOT found "; \
+		echo "Hoppla: install-squid3-debian* NOT found "; \
+		echo "change first to configuration directory, please "; \
+		echo "usage: e.g. "; \
+		echo "cd minimal-configuration "; \
+		echo "make -f ../Makefile init "; \
     fi
 
 create_work_dir:
