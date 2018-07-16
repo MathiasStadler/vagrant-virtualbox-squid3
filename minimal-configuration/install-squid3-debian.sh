@@ -84,7 +84,7 @@ EOF
 INSTALL_PACKAGE_ADD_ON="install_package_add_on.list"
 
 cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
-build-essential &&
+build-essential
 curl
 g++
 EOF
