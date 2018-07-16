@@ -36,7 +36,7 @@ copy_files:
 init: create_work_dir init_vagrant copy_files
 
 init_vagrant:
-	$(call chdir,$(PWD)/$(WORK_DIR)) vagrant init
+	cd $(PWD)/$(WORK_DIR) && vagrant init
 	cd $(PWD)
 
 destroy: clean_vagrant
