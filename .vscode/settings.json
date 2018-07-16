@@ -1,6 +1,8 @@
 {
     "cSpell.words": [
         "Fcntl",
+        "Hoppla",
+        "Vagrantfile",
         "autoremove",
         "avaible",
         "chown",
@@ -26,6 +28,7 @@
         "openssl",
         "pidfile",
         "sbin",
+        "shellcheck",
         "squidclient",
         "sysconfdir",
         "vbox",

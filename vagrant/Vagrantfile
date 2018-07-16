@@ -262,8 +262,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision "copy_vminfog", type: "local_shell", command: "vagrant scp /tmp/#{VM_NAME}.vminfo #{VM_NAME}:/home/vagrant/vm.info"
 
     # shell scripts
-    shell_scripts = ["found-bridge-adapter.sh",
+    _disable_vg_guest_shell_scripts = ["found-bridge-adapter.sh",
     "install_VBoxGuestAdditions_debian_based_linux.sh",
+    "install-squid3-debian.sh"
+    ]
+
+    # disable vguest in this project
+    shell_scripts = ["found-bridge-adapter.sh",
     "install-squid3-debian.sh"
     ]
 

@@ -3,6 +3,32 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+# import project variables
+DIR="${BASH_SOURCE%/*}"
+if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
+	echo "dir found $PWD"
+fi
+
+SETTINGS_DIR="${DIR}/../settings"
+if [[ ! -d "$SETTINGS_DIR" ]]; then
+	echo "SETTINGS directory NOT found"
+	exit 1
+else
+	echo " settings dir found $SETTINGS_DIR "
+fi
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS_DIR/squid_version.sh"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS_DIR/squid_download.sh"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS_DIR/compare_package_list"
+
+# import from ../seetings/squid_download
+squid_download_and_extract
+
 # squid configuration
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid
 
@@ -56,12 +82,10 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
+# check squid.conf is wrote
 if [ -e "${SQUID_CONF}" ]; then
-
 	echo "ok file ${SQUID_CONF} there"
-
 else
-
 	echo " file NOT ‚${SQUID_CONF} there"
 	exit 1
 fi
@@ -69,26 +93,20 @@ fi
 # from here
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
 
-SQUID_TAR="squid-3.5.27.tar.gz"
-SQUID_VERSION=${SQUID_TAR//.tar.gz/}
-SQUID_VERSION_STRING=${SQUID_VERSION//-//}
 echo ${SQUID_VERSION}
 echo ${SQUID_VERSION_STRING}
 
-export DEBIAN_FRONTEND=noninteractive TERM=linux &&
-	apt-get update && apt-get upgrade -y && apt-get autoremove -y &&
-	apt-get install -y openssl \
-		build-essential \
-		libssl-dev \
-		curl \
-		build-essential \
-		libfile-fcntllock-perl
-# libfile-fcntllock-perl required for
-#dpkg-gencontrol: warning: File::FcntlLock not available; using flock which is not NFS-safe
+save_package_list_for_compare "package_list_before_install"
 
-curl http://www.squid-cache.org/Versions/v3/3.5/${SQUID_TAR} -o /tmp/${SQUID_TAR}
+export DEBIAN_FRONTEND=noninteractive &&
+	TERM=linux &&
+	apt-get update &&
+	apt-get upgrade -y &&
+	apt-get autoremove -y &&
+	apt-get install -y -no-install-recommends &&
+	build-essential
 
-tar xzf /tmp/${SQUID_TAR} -C /tmp
+save_package_list_for_compare "package_list_after_install"
 
 cd /tmp/${SQUID_VERSION}
 
@@ -108,13 +126,10 @@ PREFIX="/usr"
 	--sysconfdir=/etc/squid \
 	--with-default-user=proxy \
 	--with-logdir=/var/log/squid \
-	--with-pidfile=/var/run/squid.pid \
-	--enable-linux-netfilter
+	--with-pidfile=/var/run/squid.pid
 
 NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-make -j$((NB_CORES + 2)) -l"${NB_CORES}"
-
-make install
+make -j$((NB_CORES + 2)) -l"${NB_CORES}" && make install
 
 # set rights to /var/log/squid
 sudo chown -R proxy:proxy /var/log/squid
