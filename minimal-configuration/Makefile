@@ -61,4 +61,4 @@ clean_work_dir:
 clean: clean_vagrant clean_work_dir
 	cd $(PWD)
 
-round_trip: clean init up halt clean
+round_trip: clean init up clean

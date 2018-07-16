@@ -27,6 +27,7 @@
         "sbin",
         "squidclient",
         "sysconfdir",
+        "vbox",
         "wais"
     ],
     "cSpell.language": "en",
