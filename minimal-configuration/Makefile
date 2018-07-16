@@ -14,7 +14,7 @@ define chdir
 endef
 
 create_work_dir:
-	$(info $(shell mkdir -p $(PWD)/$(WORK_DIR)))
+	mkdir -p $(PWD)/$(WORK_DIR)
 
 up:
 	$(info VM_NAME = $(VM_NAME))

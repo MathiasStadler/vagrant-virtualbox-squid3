@@ -18,6 +18,7 @@
         "localstatedir",
         "logdir",
         "mgmt",
+        "mkdir",
         "multiling",
         "netfilter",
         "noninteractive",
