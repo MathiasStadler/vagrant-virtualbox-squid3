@@ -42,7 +42,7 @@ init_vagrant:
 destroy: clean_vagrant
 
 clean_vagrant:
-	if [ -d "$(PWD)/$(WORK_DIR)/.vagrant)" ]; then \
+	if [ -d "$(PWD)/$(WORK_DIR)/.vagrant" ]; then \
         cd $(PWD)/$(WORK_DIR) && vagrant destroy -f ; \
 	else \
 		echo "vagrant was not running"; \
@@ -60,3 +60,5 @@ clean_work_dir:
 
 clean: clean_vagrant clean_work_dir
 	cd $(PWD)
+
+round_trip: clean init up halt clean
