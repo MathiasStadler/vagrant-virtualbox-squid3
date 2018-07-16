@@ -102,10 +102,10 @@ export DEBIAN_FRONTEND=noninteractive &&
 	sudo apt-get update &&
 	sudo apt-get upgrade -y &&
 	sudo apt-get autoremove -y &&
-	sudo apt-get install -y --no-install-recommends &&
-	build-essential &&
-	curl &&
-	g++
+	sudo apt-get install -y --no-install-recommends && \\
+build-essential && \\
+curl && \\
+g++
 
 save_package_list_for_compare "package_list_after_install"
 
