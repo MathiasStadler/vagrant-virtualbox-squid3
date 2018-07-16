@@ -13,7 +13,7 @@ define chdir
    $(info $(MAKE): cd $(_D)) $(eval SHELL = cd $(_D); $(CHDIR_SHELL))
 endef
 
-dirs:
+create_work_dir:
 	$(info $(shell mkdir -p $(WORK_DIR)))
 
 up:
@@ -33,7 +33,7 @@ copy_files:
 	cp ../install-squid3-debian.sh ../work
 	cd $(PWD)
 
-init: dirs init_vagrant copy_files
+init: create_work_dir init_vagrant copy_files
 
 init_vagrant:
 	$(call chdir,work) vagrant init
