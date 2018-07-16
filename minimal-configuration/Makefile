@@ -29,7 +29,7 @@ copy_files:
 	cd $(PWD)/$(WORK_DIR) && \
 	cp ../../vagrant/Vagrantfile ../$(WORK_DIR)  && \
 	cp ../../vagrant/found-bridge-adapter.sh ../$(WORK_DIR) && \
-	cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../$(WORK_DIR) \
+	cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../$(WORK_DIR) && \
 	cp ../install-squid3-debian.sh ../$(WORK_DIR) && \
 	cd $(PWD)
 
