@@ -1,6 +1,6 @@
 # thought
 
-company <--> department <--> team/project/CICD pipeline
+company <--> department <--> team/project/CI/CD pipeline
 
 project <--> team <--> developer
 
@@ -26,9 +26,9 @@ apt-get install -y openssl \
  build-essential \
  libfile-fcntllock-perl
 
-# libfile-fcntllock-perl required for
+## libfile-fcntllock-perl required for
 
-#dpkg-gencontrol: warning: File::FcntlLock not available; using flock which is not NFS-safe
+## dpkg-gencontrol: warning: File::FcntlLock not available; using flock which is not NFS-safe
 
 ./configure \
  --prefix=${PREFIX} \

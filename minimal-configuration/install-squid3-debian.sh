@@ -26,7 +26,7 @@ source "$SETTINGS_DIR/squid_download.sh"
 # shellcheck disable=SC1090,SC1091
 source "$SETTINGS_DIR/compare_package_list"
 
-# import from ../seetings/squid_download
+# import from ../settings/squid_download
 squid_download_and_extract
 
 # squid configuration
@@ -93,8 +93,8 @@ fi
 # from here
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
 
-echo ${SQUID_VERSION}
-echo ${SQUID_VERSION_STRING}
+echo "${SQUID_VERSION}"
+echo "${SQUID_VERSION_STRING}"
 
 save_package_list_for_compare "package_list_before_install"
 
@@ -108,7 +108,7 @@ export DEBIAN_FRONTEND=noninteractive &&
 
 save_package_list_for_compare "package_list_after_install"
 
-cd /tmp/${SQUID_VERSION}
+cd "/tmp/${SQUID_VERSION}"
 
 # explain a lot of ./configure flags
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+3.+Compiling+and+Installing/3.4+The+configure+Script/
