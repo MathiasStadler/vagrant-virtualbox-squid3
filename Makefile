@@ -70,4 +70,10 @@ clean_work_dir:
 clean: clean_vagrant clean_work_dir
 	cd $(PWD)
 
+
+ssh:
+	cd $(PWD)/$(WORK_DIR) && vagrant ssh
+	cd $(PWD)
+
+
 round_trip: clean init up clean
