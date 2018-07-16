@@ -110,7 +110,8 @@ export DEBIAN_FRONTEND=noninteractive &&
 	sudo apt-get update &&
 	sudo apt-get upgrade -y &&
 	sudo apt-get autoremove -y &&
-	apt-get install -y --no-install-recommends "$(grep -vE "^\\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\\n" " ")"
+	# apt-get install -y --no-install-recommends "$(grep -vE "^\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\n" " ")"
+	sudo apt-get install -y --no-install-recommends $(awk '{print $1'} ${INSTALL_PACKAGE_ADD_ON})
 # sudo apt-get install -y --no-install-recommends &&
 # build-essential &&
 # curl &&
