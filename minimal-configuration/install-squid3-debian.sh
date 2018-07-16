@@ -97,10 +97,10 @@ save_package_list_for_compare "package_list_before_install"
 
 export DEBIAN_FRONTEND=noninteractive &&
 	TERM=linux &&
-	apt-get update &&
-	apt-get upgrade -y &&
-	apt-get autoremove -y &&
-	apt-get install -y -no-install-recommends &&
+	sudo apt-get update &&
+	sudo apt-get upgrade -y &&
+	sudo apt-get autoremove -y &&
+	sudo apt-get install -y -no-install-recommends &&
 	build-essential &&
 	curl &&
 	g++
