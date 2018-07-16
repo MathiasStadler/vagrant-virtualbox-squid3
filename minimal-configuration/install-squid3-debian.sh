@@ -81,6 +81,14 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
+INSTALL_PACKAGE_ADD_ON="install_package_add_on.list"
+
+cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
+build-essential &&
+curl
+g++
+EOF
+
 # check squid.conf is wrote
 if [ -e "${SQUID_CONF}" ]; then
 	echo "ok file ${SQUID_CONF} there"
@@ -102,10 +110,11 @@ export DEBIAN_FRONTEND=noninteractive &&
 	sudo apt-get update &&
 	sudo apt-get upgrade -y &&
 	sudo apt-get autoremove -y &&
-	sudo apt-get install -y --no-install-recommends && \\
-build-essential && \\
-curl && \\
-g++
+	apt-get install -y --no-install-recommends "$(grep -vE "^\\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\\n" " ")"
+# sudo apt-get install -y --no-install-recommends &&
+# build-essential &&
+# curl &&
+# g++
 
 save_package_list_for_compare "package_list_after_install"
 
