@@ -26,11 +26,11 @@ halt:
 	cd $(PWD)
 
 copy_files:
-	$(call chdir,$(PWD)/$(WORK_DIR))
-	cp ../../vagrant/Vagrantfile ../work
-	cp ../../vagrant/found-bridge-adapter.sh ../work
-	cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../work
-	cp ../install-squid3-debian.sh ../work
+	cd $(PWD)/$(WORK_DIR) && \
+	cp ../../vagrant/Vagrantfile ../$(WORK_DIR)  && \
+	cp ../../vagrant/found-bridge-adapter.sh ../$(WORK_DIR) && \
+	cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../$(WORK_DIR) \
+	cp ../install-squid3-debian.sh ../$(WORK_DIR) && \
 	cd $(PWD)
 
 init: create_work_dir init_vagrant copy_files
