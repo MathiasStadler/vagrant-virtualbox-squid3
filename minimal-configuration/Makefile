@@ -1,17 +1,18 @@
 # handling vagrant
-WORK_DIR=work
 
-makfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
+WORK_DIR=work
 
 PWD := $(shell pwd )
 
 VM_NAME := $(shell pwd | sed 's@.*/@@')
 
-CHDIR_SHELL := $(SHELL)
-define chdir
-   $(eval _D=$(firstword $(1) $(@D)))
-   $(info $(MAKE): cd $(_D)) $(eval SHELL = cd $(_D) $(CHDIR_SHELL))
-endef
+FORCE:
+	echo "FORCE target"
+	if [ -d "$(PWD)/install-squid3-debian*" ]; then \
+        echo "ok  $(ls -l install-squid3-debian*) found ";\
+	else \
+		echo "Ups: install-squid3-debian* NOT found "; \
+    fi
 
 create_work_dir:
 	mkdir -p $(PWD)/$(WORK_DIR)
