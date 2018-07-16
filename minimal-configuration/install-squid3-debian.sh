@@ -110,10 +110,15 @@ export DEBIAN_FRONTEND=noninteractive &&
 	TERM=linux &&
 	sudo apt-get update &&
 	sudo apt-get upgrade -y &&
-	sudo apt-get autoremove -y &&
-	# apt-get install -y --no-install-recommends "$(grep -vE "^\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\n" " ")"
-	# sudo apt-get install -y --no-install-recommends "$(awk '{print $1}' ${INSTALL_PACKAGE_ADD_ON})"
-	sudo apt-get install -y --no-install-recommends "$(awk '!/^ *#/ && NF' ${INSTALL_PACKAGE_ADD_ON})"
+	sudo apt-get autoremove -y
+# apt-get install -y --no-install-recommends "$(grep -vE "^\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\n" " ")"
+# sudo apt-get install -y --no-install-recommends "$(awk '{print $1}' ${INSTALL_PACKAGE_ADD_ON})"
+# sudo apt-get install -y --no-install-recommends "$(awk '!/^ *#/ && NF' ${INSTALL_PACKAGE_ADD_ON})"
+
+# shellcheck disable=1072,2046
+# sudo apt-get install -y --no-install-recommends $(awk '!/^ *#/ && NF' ${INSTALL_PACKAGE_ADD_ON})
+sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_ADD_ON})
+
 # sudo apt-get install -y --no-install-recommends &&
 # build-essential &&
 # curl &&
