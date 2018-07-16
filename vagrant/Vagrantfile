@@ -263,10 +263,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # TODO check obsolete
     # create directory settings as target
-    # config.vm.provision "shell", inline: "mkdir -p /vagrant/settings"
+    # config.vm.provision "shell", inline: "mkdir -p /home/vagrant/settings"
 
     # copy all file from settings
-    config.vm.provision "copy_settings_directory", type: "local_shell", command: "vagrant scp ./settings/* #{VM_NAME}:/vagrant/"
+    config.vm.provision "copy_settings_directory", type: "local_shell", command: "vagrant scp ./settings/* #{VM_NAME}:/home/vagrant/"
 
     # shell scripts
     _disable_vg_guest_shell_scripts = ["found-bridge-adapter.sh",

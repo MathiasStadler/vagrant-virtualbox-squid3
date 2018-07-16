@@ -9,12 +9,14 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
 	echo "dir found => $PWD"
 fi
 
-SETTINGS_DIR="${DIR}/settings"
+# TODO ${DIR} = tmp WHY
+# SETTINGS_DIR="${DIR}/settings"
+SETTINGS_DIR="/home/vagrant/settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
 	echo "SETTINGS directory NOT found => $SETTINGS_DIR"
 	exit 1
 else
-	echo " settings dir found $SETTINGS_DIR"
+	echo "settings dir found $SETTINGS_DIR"
 fi
 
 # shellcheck disable=SC1090,SC1091
