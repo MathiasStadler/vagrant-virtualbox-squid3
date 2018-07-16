@@ -6,15 +6,15 @@ set -e
 # import project variables
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
-	echo "dir found $PWD"
+	echo "dir found => $PWD"
 fi
 
 SETTINGS_DIR="${DIR}/settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
-	echo "SETTINGS directory NOT found"
+	echo "SETTINGS directory NOT found => $SETTINGS_DIR"
 	exit 1
 else
-	echo " settings dir found $SETTINGS_DIR "
+	echo " settings dir found $SETTINGS_DIR"
 fi
 
 # shellcheck disable=SC1090,SC1091
