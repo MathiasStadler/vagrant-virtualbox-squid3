@@ -3,12 +3,13 @@
 WORK_DIR=work
 
 PWD := $(shell pwd )
+echo $(PWD)
 
 VM_NAME := $(shell pwd | sed 's@.*/@@')
 
 FORCE:
 	echo "FORCE target"
-	if [ -d "$(PWD)/install-squid3-debian*" ]; then \
+	if [ -e "$(PWD)/install-squid3-debian*" ]; then \
         echo "ok  $(ls -l install-squid3-debian*) found ";\
 	else \
 		echo "Ups: install-squid3-debian* NOT found "; \
