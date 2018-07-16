@@ -18,7 +18,7 @@ create_work_dir:
 
 up:
 	$(info VM_NAME = $(VM_NAME))
-	$(call chdir,$(PWD)/$(WORK_DIR)) VM_NAME=$(VM_NAME) vagrant up
+	cd $(PWD)/$(WORK_DIR) && VM_NAME=$(VM_NAME) vagrant up
 	cd $(PWD)
 
 halt:
