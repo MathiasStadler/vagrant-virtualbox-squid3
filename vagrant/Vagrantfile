@@ -193,17 +193,23 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.define VM_NAME
     cache_dir = local_cache(config.vm.box)
 
+    # disk for cache default values
+    cache_disk = {'/cache1' => 5000, '/cache2' => 5000}
+
+    cache_disk.each do |mountpoint, size|
+
     # add addinal disk
     # configure a persistent storage for mysql data
     config.persistent_storage.enabled = true
     config.persistent_storage.location = "virtualdrive.vdi"
-    config.persistent_storage.size = 5000
+    config.persistent_storage.size = size
     config.persistent_storage.mountname = 'mysql'
     config.persistent_storage.filesystem = 'ext4'
-    config.persistent_storage.mountpoint = '/var/lib/mysql'
+    config.persistent_storage.mountpoint = '#{mountpoint}'
     config.persistent_storage.use_lvm = false
     # not will config.persistent_storage.volgroupname = 'myvolgroup'
 
+    end
 
     # disable vgguest plugin to start before cache dir is mounted
     config.vbguest.auto_update = false
