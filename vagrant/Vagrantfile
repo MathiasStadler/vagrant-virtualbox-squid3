@@ -311,6 +311,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       '--portcount', 2
     ]
 
+
  end
 
     # approach for mount share volume on command line
