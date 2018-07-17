@@ -305,7 +305,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #
     # Increase portcount for second disk
     #
-    p.customize [
+    vb.customize [
       'storagectl', :id,
       '--name', 'SATA Controller',
       '--portcount', 2
