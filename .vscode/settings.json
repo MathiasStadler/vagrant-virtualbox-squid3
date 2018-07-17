@@ -29,6 +29,7 @@
         "pidfile",
         "sbin",
         "shellcheck",
+        "showvminfo",
         "squidclient",
         "swapoff",
         "sysconfdir",

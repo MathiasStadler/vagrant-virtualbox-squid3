@@ -75,5 +75,16 @@ ssh:
 	cd $(PWD)/$(WORK_DIR) && vagrant ssh
 	cd $(PWD)
 
+ssh-config:
+	cd $(PWD)/$(WORK_DIR) && vagrant ssh-config
+	cd $(PWD)
+
+info:
+	cd $(PWD)/$(WORK_DIR) && vagrant ssh
+	cd $(PWD)
+
+info_box:
+		VBoxManage showvminfo $(VM_NAME)
+
 
 round_trip: clean init up clean
