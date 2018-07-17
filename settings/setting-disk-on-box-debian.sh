@@ -10,6 +10,8 @@ MOUNT_POINT="$2"
 
 function create_partition_table() {
 
+	set +e
+
 	sudo fdisk -u "/dev/$1" <<EOF
 n
 p
@@ -20,6 +22,8 @@ w
 EOF
 
 	sync
+
+	set -e
 
 }
 
