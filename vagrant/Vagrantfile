@@ -83,6 +83,9 @@ if COMMAND == "up" then
   end
 elsif COMMAND == "init" then
   logger.info("init was call")
+elsif COMMAND == "validate" then
+  logger.info("validate was call")
+  logger.info("Attention: No file check during validate")
 else
   # not up and init
    _VM_NAME = File.open('vm_name.info', &:readline)
@@ -121,7 +124,7 @@ puts plugins.length
 # @param: plugin type: Array[String] desc: The desired plugin to install
 def ensure_plugins(plugins)
     logger = Vagrant::UI::Colored.new
-    logger.info("Start Installing plugin #{plugins}")
+    logger.info("Start Installing plugin")
     result = false
     plugins.each do |p|
       pm = Vagrant::Plugin::Manager.new(
@@ -143,7 +146,13 @@ def ensure_plugins(plugins)
     logger.info("Finish Installing plugin")
   end
 
-ensure_plugins(plugins)
+if COMMAND == "validate" then
+  logger = Vagrant::UI::Colored.new
+  logger.info("No plugins install during validate")
+else
+  ensure_plugins(plugins)
+end
+
 
 # used share cache directory
 # from here https://gist.github.com/juanje/3797297
@@ -183,6 +192,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.hostname = VM_NAME
     config.vm.define VM_NAME
     cache_dir = local_cache(config.vm.box)
+
+    # add addinal disk
+    # configure a persistent storage for mysql data
+    config.persistent_storage.enabled = true
+    config.persistent_storage.location = "virtualdrive.vdi"
+    config.persistent_storage.size = 5000
+    config.persistent_storage.mountname = 'mysql'
+    config.persistent_storage.filesystem = 'ext4'
+    config.persistent_storage.mountpoint = '/var/lib/mysql'
+    config.persistent_storage.use_lvm = false
+    # not will config.persistent_storage.volgroupname = 'myvolgroup'
+
 
     # disable vgguest plugin to start before cache dir is mounted
     config.vbguest.auto_update = false
