@@ -12,7 +12,7 @@ do
 	if [ $counter -le 10 ]; then
 		break
 	fi
-	echo "Wait for next seconds"
+	echo "Wait a second"
 	sleep 1
 	((counter++))
 done
