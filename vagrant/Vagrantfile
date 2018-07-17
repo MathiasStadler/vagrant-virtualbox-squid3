@@ -296,10 +296,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     "install-squid3-debian.sh"
     ]
 
-    # disable vguest in this project
-    shell_scripts = ["found-bridge-adapter.sh",
+    # disable vbguest in this project
+    _shell_scripts = ["found-bridge-adapter.sh",
     "install-squid3-debian.sh"
     ]
+
+    # disable for vagrant-persistent-storage test
+    shell_scripts = []
 
     puts shell_scripts.length
 
