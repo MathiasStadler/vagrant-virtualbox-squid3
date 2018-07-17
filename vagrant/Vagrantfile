@@ -197,6 +197,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     cache_disk = {'cache1' => 5000, 'cache2' => 5000}
 
 
+=begin
     # /dev/sda used by root partition
     diskdevices = [ '/dev/sdb',
                     '/dev/sdc',
@@ -221,6 +222,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     end
 
+=end
     # disable vgguest plugin to start before cache dir is mounted
     config.vbguest.auto_update = false
 
@@ -277,7 +279,61 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.memory = VIRTUALBOX_MEMORY
         vb.cpus = VIRTUALBOX_CPU
         vb.linked_clone = true
-     end
+
+
+        #
+    # Add first disk
+    #
+    unless File.exists?("/tmp/sdb.vdi")
+      vb.customize [
+        'createmedium', 'disk',
+        '--filename', "/tmp/sdb.vdi",
+        '--format', 'VDI',
+        '--size', 10 * 1024
+      ]
+    end
+
+    vb.customize [
+      'storageattach', :id,
+      '--storagectl', 'SATAController',
+      '--port', 1,
+      '--device', 0,
+      '--type', 'hdd',
+      '--medium', "/tmp/sdb.vdi"
+    ]
+
+    #
+    # Increase portcount for second disk
+    #
+    vb.customize [
+      'storagectl', :id,
+      '--name', 'SATAController',
+      '--portcount', 2
+    ]
+
+    #
+    # Add second disk
+    #
+    unless File.exists?("/tmp/sdc.vdi")
+      vb.customize [
+        'createmedium', 'disk',
+        '--filename', "/tmp/sdc.vdi",
+        '--format', 'VDI',
+        '--size', 10 * 1024
+      ]
+    end
+
+    vb.customize [
+      'storageattach', :id,
+      '--storagectl', 'SATAController',
+      '--port', 2,
+      '--device', 0,
+      '--type', 'hdd',
+      '--medium', "/tmp/sdc.vdi"
+    ]
+
+
+ end
 
     # approach for mount share volume on command line
     # mount share folders before provision
