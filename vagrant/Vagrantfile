@@ -302,6 +302,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       '--medium', "/tmp/sdb.vdi"
     ]
 
+    #
+    # Increase portcount for second disk
+    #
+    p.customize [
+      'storagectl', :id,
+      '--name', 'SATA Controller',
+      '--portcount', 2
+    ]
 
 
 
