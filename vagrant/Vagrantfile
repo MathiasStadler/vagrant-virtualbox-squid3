@@ -204,10 +204,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     cache_disk.each_with_index do |(name, size),i|
 
+      puts "Create disk #{name} #{size} /#{name} #{diskdevices[i]} "
+
     # add addinal disk
     # configure a persistent storage for mysql data
     config.persistent_storage.enabled = true
-    config.persistent_storage.location = "virtualdrive#{name}.vdi"
+    config.persistent_storage.location = "vd_#{name}.vdi"
     config.persistent_storage.size = size
     config.persistent_storage.mountname = "#{name}"
     config.persistent_storage.filesystem = 'ext4'
