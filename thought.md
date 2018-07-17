@@ -40,3 +40,5 @@ apt-get install -y openssl \
  --with-logdir=/var/log/squid \
  --with-pidfile=/var/run/squid.pid \
  --enable-linux-netfilter
+
+## HTTP Strict Transport Security (HSTS)
