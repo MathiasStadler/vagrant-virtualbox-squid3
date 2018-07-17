@@ -302,35 +302,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       '--medium', "/tmp/sdb.vdi"
     ]
 
-    #
-    # Increase portcount for second disk
-    #
-    vb.customize [
-      'storagectl', :id,
-      '--name', 'SATA Controller',
-      '--portcount', 2
-    ]
 
-    #
-    # Add second disk
-    #
-    unless File.exists?("/tmp/sdc.vdi")
-      vb.customize [
-        'createmedium', 'disk',
-        '--filename', "/tmp/sdc.vdi",
-        '--format', 'VDI',
-        '--size', 10 * 1024
-      ]
-    end
-
-    vb.customize [
-      'storageattach', :id,
-      '--storagectl', 'SATAController',
-      '--port', 2,
-      '--device', 0,
-      '--type', 'hdd',
-      '--medium', "/tmp/sdc.vdi"
-    ]
 
 
  end
