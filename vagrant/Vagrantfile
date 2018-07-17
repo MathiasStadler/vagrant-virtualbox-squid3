@@ -209,7 +209,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # add addinal disk
     # configure a persistent storage for mysql data
     config.persistent_storage.enabled = true
-    # config.persistent_storage.location = "vd_#{name}.vdi"
+    config.persistent_storage.location = "vd_#{name}.vdi"
     config.persistent_storage.size = size
     config.persistent_storage.mountname = "#{name}"
     config.persistent_storage.filesystem = 'ext4'
