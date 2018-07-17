@@ -196,7 +196,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # disk for cache default values
     cache_disk = {'cache1' => 5000, 'cache2' => 5000}
 
-    cache_disk.each do |name, size|
+
+    # /dev/sda used by root partition
+    diskdevices = [ '/dev/sdb',
+                    '/dev/sdc',
+                    '/dev/sdd']
+
+    cache_disk.each_with_index do |(name, size),i|
 
     # add addinal disk
     # configure a persistent storage for mysql data
@@ -207,6 +213,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.persistent_storage.filesystem = 'ext4'
     config.persistent_storage.mountpoint = "/#{name}"
     config.persistent_storage.use_lvm = false
+    config.persistent_storage.part_type_code = '82'
+    config.persistent_storage.diskdevice = diskdevices[i]
     # not will config.persistent_storage.volgroupname = 'myvolgroup'
 
     end
