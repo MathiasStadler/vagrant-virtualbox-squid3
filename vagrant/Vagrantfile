@@ -112,7 +112,8 @@ system("
 plugins = ["vagrant-disksize",
 "vagrant-vbguest",
 "vagrant-scp",
-"vagrant-proxyconf"]
+"vagrant-proxyconf",
+"vagrant-persistent-storage"]
 puts plugins.length
 
 # Install vagrant plugin

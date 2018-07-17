@@ -1,0 +1,1 @@
+echo "I'm cache_disk.rb"
