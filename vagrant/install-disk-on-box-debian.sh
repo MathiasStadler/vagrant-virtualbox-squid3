@@ -17,5 +17,5 @@ do
 	((counter++))
 done
 
-/home/vagrant/settings/setting-disk-on-box-debian.sh "sdb" "cacheB"
-/home/vagrant/settings/setting-disk-on-box-debian.sh "sdc" "cacheC"
+bash +x /home/vagrant/settings/setting-disk-on-box-debian.sh "sdb" "cacheB"
+bash +x /home/vagrant/settings/setting-disk-on-box-debian.sh "sdc" "cacheC"

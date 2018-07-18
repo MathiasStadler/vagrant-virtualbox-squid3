@@ -80,6 +80,10 @@ ssh-config:
 	cd $(PWD)/$(WORK_DIR) && vagrant ssh-config
 	cd $(PWD)
 
+status:
+	cd $(PWD)/$(WORK_DIR) && vagrant status
+	cd $(PWD)
+
 info:
 		VBoxManage showvminfo $(VM_NAME)
 
