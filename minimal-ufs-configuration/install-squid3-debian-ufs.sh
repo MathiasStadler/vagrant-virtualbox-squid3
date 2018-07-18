@@ -76,7 +76,7 @@ http_access deny CONNECT !SSL_ports
 http_access allow localhost manager
 http_access deny manager
 
-# We strongly recommend the following be uncommented to protect innocent
+# We strongly recommend the following be un commented to protect innocent
 # web applications running on the proxy server who think the only
 # one who can access services on "localhost" is a local user
 #http_access deny to_localhost
@@ -97,7 +97,7 @@ http_access deny all
 # Squid normally listens to port 3128
 http_port 3128
 
-# Uncomment and adjust the following to add a disk cache directory.
+# Un comment and adjust the following to add a disk cache directory.
 #cache_dir ufs /var/cache/squid 100 16 256
 
 # Leave coredumps in the first cache dir
@@ -207,7 +207,7 @@ sudo /usr/sbin/squid -f "${SQUID_CONF}"
 sleep 10
 
 # check squid is working (weak test)
-let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i ${SQUID_VERSION_STRING})
+let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
 echo $count_match
 if [ "$count_match" -gt "0" ]; then
 
@@ -215,7 +215,57 @@ if [ "$count_match" -gt "0" ]; then
 else
 
 	echo "squid NOT works"
+	exit 1
 fi
 
 # stop
-# sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
+sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
+
+# wait until squid is really stop
+
+## find pid of squid
+# SC2009
+# SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
+# improved
+SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
+
+## print process for debug
+ps -ef | grep "$SQUID_PID"
+
+## wait until the thread is finish
+while ps -p "$SQUID_PID" >/dev/null; do
+	echo "# Wait for finish stop squid PID=${SQUID_PID} "
+	sleep 1
+done
+
+# set cache_dir
+
+# set permission to cache dir
+sudo chown proxy:proxy /cache0
+sudo chown proxy:proxy /cache1
+
+# append cache_dir entry to squid.conf
+echo "cache_dir ufs /cache0 7000 16 256" | sudo tee -a ./squid.conf
+echo "cache_dir ufs /cache1 7000 16 256" | sudo tee -a ./squid.conf
+
+# create cache_dir structure
+sudo /usr/sbin/squid -z -f ./squid.conf
+
+# start squid again
+# start
+sudo /usr/sbin/squid -f "${SQUID_CONF}"
+
+# wait for squid
+sleep 10
+
+# check squid is working (weak test)
+let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
+echo $count_match
+if [ "$count_match" -gt "0" ]; then
+
+	echo "squid works with cache_dir"
+else
+
+	echo "squid NOT works with cache_dir"
+	exit 1
+fi
