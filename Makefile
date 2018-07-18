@@ -87,5 +87,12 @@ status:
 info:
 		VBoxManage showvminfo $(VM_NAME)
 
+cc: copy_crawler
+
+copy_crawler:
+	cd $(PWD)/$(WORK_DIR) && vagrant scp ../../cache-test/ $(VM_NAME):/home/vagrant
+	cd $(PWD)
+
+
 
 round_trip: clean init up clean
