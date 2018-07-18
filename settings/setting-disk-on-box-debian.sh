@@ -73,9 +73,9 @@ function get_device_info() {
 
 	# from here
 	# https://unix.stackexchange.com/questions/52215/determine-the-size-of-a-block-device
-	BLOCKSIZE="$(blockdev --getbsz "/dev/${1}"1)"
-	DEVICE_SIZE="(fdisk -l /dev/${1} | grep -m1 ^Disk | awk '{print $3 " " $4}')"
-	PARTITION_SIZE="$(fdisk -l /dev/"${1}"1 | grep -m1 ^Disk | awk '{print $3 " " $4}')"
+	BLOCKSIZE="$(sudo blockdev --getbsz "/dev/${1}1")"
+	DEVICE_SIZE="$(sudo fdisk -l /dev/"${1}" | grep -m1 ^Disk | awk '{print $3 " " $4}')"
+	PARTITION_SIZE="$(sudo fdisk -l /dev/"${1}"1 | grep -m1 ^Disk | awk '{print $3 " " $4}')"
 
 	echo
 	echo "# block size of device -> /dev/${1} => ${BLOCKSIZE}      "
