@@ -4,12 +4,24 @@
 
 # Exit immediately if a command returns a non-zero status
 set -e
+# from here
+# https://stackoverflow.com/questions/192319/how-do-i-know-the-script-file-name-in-a-bash-script
+echo
+echo "# script name ------------>  ${0##*/} "
+echo "# called with arguments -->  ${@}     "
+echo "# argument \$1 ----------->  $1       "
+echo "# argument \$2 ----------->  $2       "
+echo "# script path ------------>  ${0}     "
+echo "# script parent path ----->  ${0%/*}  "
+echo
 
+# argument
 DEVICE="$1"
 MOUNT_POINT="$2"
 
 function create_partition_table() {
 
+	echo "create partition table for device /dev/$1"
 	set +e
 
 	sudo fdisk -u "/dev/$1" <<EOF
@@ -29,25 +41,30 @@ EOF
 
 function make_filesystem() {
 
+	echo "Create new file system /dev/${1}1"
 	sudo mkfs.ext4 "/dev/${1}1"
 
 }
 
 function create_mount_point() {
 
-	sudo mkdir -p "${1}"
+	echo "Create new mount point ${1}"
+	sudo mkdir -p "/${1}"
 
 }
 
 function mount_device_on_mount_point() {
 
-	sudo mount -t ext4 "/dev/${1}1" "${2}"
+	echo "mount /dev/${1}1 on ${2}"
+	sudo mount -t ext4 "/dev/${1}1" "/${2}"
 
 }
 
 function create_etc_ftab_entry() {
 
 	UUID="$(find /dev/disk/by-uuid/ -type l -exec ls -l {} \; | grep "${1}"1 | awk '{print $9}' | sed 's#/dev/disk/by-uuid/##g')"
+	echo "create this item in /etc/fstab"
+	echo "UUID=${UUID} /${2}               ext4    errors=remount-ro 0       1"
 	echo "UUID=${UUID} /${2}               ext4    errors=remount-ro 0       1" | sudo tee -a /etc/fstab
 
 }
