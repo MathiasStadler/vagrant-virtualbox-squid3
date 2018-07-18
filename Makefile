@@ -96,7 +96,7 @@ copy_crawler:
 rcc: run_crawler
 
 run_crawler:
-	cd $(PWD)/$(WORK_DIR) && vagrant ssh --command /home/vagrant/cache-test/crawl.sh  http://www.w3.org/TR/SVG11/feature#BasicStructure 127.0.0.1 3128
+	cd $(PWD)/$(WORK_DIR) && vagrant ssh --command "/home/vagrant/cache-test/crawl.sh  http://www.w3.org/TR/SVG11/feature#BasicStructure 127.0.0.1 3128"
 	cd $(PWD)
 
 round_trip: clean init up clean
