@@ -71,6 +71,8 @@ function create_etc_ftab_entry() {
 
 function get_device_info() {
 
+	# from here
+	# https://unix.stackexchange.com/questions/52215/determine-the-size-of-a-block-device
 	BLOCKSIZE="$(blockdev --getbsz "/dev/${1}"1)"
 	DEVICE_SIZE="(fdisk -l /dev/${1} | grep -m1 ^Disk | awk '{print $3 " " $4}')"
 	PARTITION_SIZE="$(fdisk -l /dev/"${1}"1 | grep -m1 ^Disk | awk '{print $3 " " $4}')"
