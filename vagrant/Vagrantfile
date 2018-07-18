@@ -1,15 +1,11 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+VAGRANT_WORKDIR = File.expand_path(File.dirname(__FILE__))
+
 # local_shell
 # from here
 # https://superuser.com/questions/701735/run-script-on-host-machine-during-vagrant-up
-
-
-# VAGRANT_WORKDIR = File.expand_path(File.dirname(__FILE__))
-
-# puts "VAGRANT_WORKDIR #{VAGRANT_WORKDIR}"
-
 
 # provide the Virtualbox host version to file
 system("
@@ -292,10 +288,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #
     # from here
     # https://github.com/kusnier/vagrant-persistent-storage/issues/22
-    unless File.exists?("/tmp/sdb.vdi")
+    unless File.exists?("#{VAGRANT_WORKDIR}/sdb.vdi")
       vb.customize [
         'createmedium', 'disk',
-        '--filename', "/tmp/sdb.vdi",
+        '--filename', "#{VAGRANT_WORKDIR}/sdb.vdi",
         '--format', 'VDI',
         '--size', 10 * 1024
       ]
@@ -307,7 +303,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       '--port', 1,
       '--device', 0,
       '--type', 'hdd',
-      '--medium', "/tmp/sdb.vdi"
+      '--medium', "#{VAGRANT_WORKDIR}/sdb.vdi"
     ]
 
     #
@@ -322,10 +318,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #
     # Add second disk
     #
-    unless File.exists?("/tmp/sdc.vdi")
+    unless File.exists?("#{VAGRANT_WORKDIR}/sdc.vdi")
       vb.customize [
         'createmedium', 'disk',
-        '--filename', "/tmp/sdc.vdi",
+        '--filename', "#{VAGRANT_WORKDIR}/sdc.vdi",
         '--format', 'VDI',
         '--size', 100 * 1024
       ]
@@ -338,7 +334,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       '--port', 2,
       '--device', 0,
       '--type', 'hdd',
-      '--medium', "/tmp/sdc.vdi"
+      '--medium', "#{VAGRANT_WORKDIR}/sdc.vdi"
     ]
 
 
