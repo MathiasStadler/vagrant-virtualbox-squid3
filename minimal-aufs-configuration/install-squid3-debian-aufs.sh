@@ -135,6 +135,32 @@ cat <<EOF >${AUTOCONF_CONFIGURE}
 	--with-pidfile=/var/run/squid.pid
 EOF
 
+# from here
+# https://www.linuxjournal.com/content/bash-arrays
+
+array_configure_options=("first item"
+	"second item"
+	"third" "item")
+
+add=("--dd-d"
+	"--ss-d")
+
+echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
+for ix in ${!array_configure_options[*]}; do
+	printf "   %s\:\n" "${array_configure_options[$ix]}"
+done
+
+separator=" " # e.g. constructing regex, pray it does not contain %s
+regex="$(printf "${separator}%s" "${array_configure_options[@]}")"
+regex="${regex:${#separator}}" # remove leading separator
+echo "${regex}"
+
+ADD_ONE_AUTOCONF_CONFIGURE="add_one_auto_conf_configure.sh"
+
+cat <<EOF >"${ADD_ONE_AUTOCONF_CONFIGURE}"
+--enable-storeio=aufs,ufs
+EOF
+
 # check squid.conf is wrote
 if [ -e "${SQUID_CONF}" ]; then
 	echo "ok file ${SQUID_CONF} there"
@@ -196,10 +222,11 @@ PREFIX="/usr"
 # 	--with-pidfile=/var/run/squid.pid
 
 # make execute
-chmod +x ./$(AUTOCONF_CONFIGURE)
+chmod +x "./${AUTOCONF_CONFIGURE}"
 
 # exec AUTOCONF_CONFIGURE
-./$(AUTOCONF_CONFIGURE)
+readonly command_to_execute=$(${AUTOCONF_CONFIGURE})
+"$command_to_execute"
 
 # swapoff it is virtual box
 sudo swapoff -a
@@ -251,7 +278,7 @@ sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
 
 ## print process for debug
-ps -ef | grep "$SQUID_PID"
+pgrep "$SQUID_PID"
 
 ## wait until the thread is finish
 while ps -p "$SQUID_PID" >/dev/null; do
