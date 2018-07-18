@@ -6,9 +6,9 @@
 # https://superuser.com/questions/701735/run-script-on-host-machine-during-vagrant-up
 
 
-VAGRANT_WORKDIR = File.expand_path(File.dirname(__FILE__))
+# VAGRANT_WORKDIR = File.expand_path(File.dirname(__FILE__))
 
-puts "VAGRANT_WORKDIR #{VAGRANT_WORKDIR}"
+# puts "VAGRANT_WORKDIR #{VAGRANT_WORKDIR}"
 
 
 # provide the Virtualbox host version to file
