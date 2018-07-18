@@ -47,7 +47,7 @@ function mount_device_on_mount_point() {
 
 function create_etc_ftab_entry() {
 
-	UUID="$(grep </dev/disk/by-uuid "${1}"1 | awk '{print $9}')"
+	UUID="$(find /dev/disk/by-uuid/ -name "*" -exec ls -l {} \; | grep "${1}"1 | awk '{print $9}')"
 	echo "UUID=${UUID} /${2}               ext4    errors=remount-ro 0       1" | sudo tee -a /etc/fstab
 
 }
