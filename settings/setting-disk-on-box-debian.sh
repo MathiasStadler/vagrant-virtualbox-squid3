@@ -69,21 +69,34 @@ function create_etc_ftab_entry() {
 
 }
 
+function get_device_info() {
+
+	BLOCKSIZE="$(blockdev --getbsz "/dev/${1}"1)"
+	DEVICE_SIZE="(fdisk -l /dev/${1} | grep -m1 ^Disk | awk '{print $3 " " $4}')"
+	PARTITION_SIZE="$(fdisk -l /dev/"${1}"1 | grep -m1 ^Disk | awk '{print $3 " " $4}')"
+
+	echo
+	echo "# block size of device -> /dev/${1} => ${BLOCKSIZE}      "
+	echo "# size of device -------> /dev/${1} => ${DEVICE_SIZE}    "
+	echo "# size of partition ----> /dev/${1} => ${PARTITION_SIZE} "
+}
+
 # check if running on virtual box
 if (lsmod | grep vboxguest); then
 
-	echo "script run on a virtual box"
+	echo "# Script run on a virtual box"
 
 	create_partition_table "${DEVICE}"
 	make_filesystem "${DEVICE}"
 	create_mount_point "${MOUNT_POINT}"
 	mount_device_on_mount_point "${DEVICE}" "${MOUNT_POINT}"
 	create_etc_ftab_entry "${DEVICE}" "${MOUNT_POINT}"
+	get_device_info "${DEVICE}"
 	exit 0
 else
 
-	echo "No vboxguest kernel module found"
-	echo "ERROR This script should run only of a virtual box"
+	echo "# No vboxguest kernel module found"
+	echo "# ERROR This script should run only of a virtual box guest"
 	exit 1
 
 fi

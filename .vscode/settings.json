@@ -1,10 +1,12 @@
 {
     "cSpell.words": [
+        "BLOCKSIZE",
         "Fcntl",
         "Hoppla",
         "Vagrantfile",
         "autoremove",
         "avaible",
+        "blockdev",
         "chown",
         "coredump",
         "cpuinfo",
@@ -17,6 +19,7 @@
         "fstab",
         "ftab",
         "gencontrol",
+        "getbsz",
         "libexecdir",
         "libfile",
         "libssl",
