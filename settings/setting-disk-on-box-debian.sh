@@ -8,7 +8,7 @@ set -e
 # https://stackoverflow.com/questions/192319/how-do-i-know-the-script-file-name-in-a-bash-script
 echo
 echo "# script name ------------>  ${0##*/} "
-echo "# called with arguments -->  ${@}     "
+echo "# called with arguments -->  ${*}     "
 echo "# argument \$1 ----------->  $1       "
 echo "# argument \$2 ----------->  $2       "
 echo "# script path ------------>  ${0}     "
