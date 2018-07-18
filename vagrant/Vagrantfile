@@ -5,6 +5,12 @@
 # from here
 # https://superuser.com/questions/701735/run-script-on-host-machine-during-vagrant-up
 
+
+VAGRANT_WORKDIR = File.expand_path(File.dirname(__FILE__))
+
+puts "VAGRANT_WORKDIR #{VAGRANT_WORKDIR}"
+
+
 # provide the Virtualbox host version to file
 system("
     if [ #{ARGV[0]} = 'up' ]; then
@@ -289,7 +295,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     unless File.exists?("/tmp/sdb.vdi")
       vb.customize [
         'createmedium', 'disk',
-        '--filename', "/tmp/sdb.vdi",
+        '--filename', "#{VAGRANT_WORKDIR}/sdb.vdi",
         '--format', 'VDI',
         '--size', 10 * 1024
       ]
@@ -316,7 +322,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     #
     # Add second disk
     #
-    unless File.exists?("/tmp/sdc.vdi")
+    unless File.exists?("#{VAGRANT_WORKDIR}/sdc.vdi")
       vb.customize [
         'createmedium', 'disk',
         '--filename', "/tmp/sdc.vdi",
