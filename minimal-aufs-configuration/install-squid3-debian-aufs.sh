@@ -241,8 +241,10 @@ if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
 else
 
 	echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
-
+	exit 1
 fi
+
+exit 1
 
 # swapoff it is virtual box
 sudo swapoff -a
