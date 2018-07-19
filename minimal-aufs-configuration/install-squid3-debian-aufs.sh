@@ -158,10 +158,12 @@ for ix in ${!array_configure_options[*]}; do
 	printf "   %s\:\n" "${array_configure_options[$ix]}"
 done
 
-separator=" " # e.g. constructing regex, pray it does not contain %s
-regex="$(printf "${separator}%s" "${array_configure_options[@]}")"
-regex="${regex:${#separator}}" # remove leading separator
-echo "${regex}"
+# from here
+# https://stackoverflow.com/questions/1527049/join-elements-of-an-array
+separator=" " # e.g. constructing FINAL_AUTOCONF_OPTIONS, pray it does not contain %s
+FINAL_AUTOCONF_OPTIONS="$(printf "${separator}%s" "${array_configure_options[@]}")"
+FINAL_AUTOCONF_OPTIONS="${FINAL_AUTOCONF_OPTIONS:${#separator}}" # remove leading separator
+echo "${FINAL_AUTOCONF_OPTIONS}"
 
 # check squid.conf is wrote
 if [ -e "${SQUID_CONF}" ]; then
