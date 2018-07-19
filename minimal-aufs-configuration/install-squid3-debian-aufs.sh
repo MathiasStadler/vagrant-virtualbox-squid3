@@ -242,8 +242,6 @@ else
 
 fi
 
-exit 0
-
 # swapoff it is virtual box
 sudo swapoff -a
 
