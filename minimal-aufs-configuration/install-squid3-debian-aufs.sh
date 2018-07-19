@@ -122,6 +122,7 @@ g++
 EOF
 
 # TODO old remove
+
 # AUTOCONF_CONFIGURE="autoconf_configure.sh"
 
 # cat <<EOF >${AUTOCONF_CONFIGURE}
@@ -150,8 +151,7 @@ array_configure_options=(
 	"--with-pidfile=/var/run/squid.pid"
 )
 
-add=("--dd-d"
-	"--ss-d")
+array_add_one_configure_options=("--enable-storeio=aufs,ufs")
 
 echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
 for ix in ${!array_configure_options[*]}; do
@@ -162,12 +162,6 @@ separator=" " # e.g. constructing regex, pray it does not contain %s
 regex="$(printf "${separator}%s" "${array_configure_options[@]}")"
 regex="${regex:${#separator}}" # remove leading separator
 echo "${regex}"
-
-ADD_ONE_AUTOCONF_CONFIGURE="add_one_auto_conf_configure.sh"
-
-cat <<EOF >"${ADD_ONE_AUTOCONF_CONFIGURE}"
---enable-storeio=aufs,ufs
-EOF
 
 # check squid.conf is wrote
 if [ -e "${SQUID_CONF}" ]; then
@@ -228,10 +222,6 @@ PREFIX="/usr"
 # 	--with-default-user=proxy \
 # 	--with-logdir=/var/log/squid \
 # 	--with-pidfile=/var/run/squid.pid
-
-# exec AUTOCONF_CONFIGURE
-readonly command_to_execute=$(${AUTOCONF_CONFIGURE})
-"$command_to_execute"
 
 # swapoff it is virtual box
 sudo swapoff -a
