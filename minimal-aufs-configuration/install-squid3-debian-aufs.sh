@@ -153,10 +153,7 @@ array_configure_options=(
 	"--with-pidfile=/var/run/squid.pid"
 )
 
-# array_add_one_configure_options=("--enable-storeio=aufs,ufs")
-
-# test with without aufs
-array_add_one_configure_options=()
+array_add_one_configure_options=("--enable-storeio=aufs,ufs")
 
 echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
 for ix in ${!array_configure_options[*]}; do
@@ -237,7 +234,7 @@ cd "/tmp/${SQUID_VERSION}"
 # ./configure --prefix=/usr --localstatedir=/var --libexecdir=/usr/lib/squid --datadir=/usr/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid
 
 # if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
-if (./configure "${array_configure_options[@]}"); then
+if (./configure "${array_final_configure_options[@]}"); then
 
 	echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 
