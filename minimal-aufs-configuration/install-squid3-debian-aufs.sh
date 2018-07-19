@@ -234,7 +234,10 @@ cd "/tmp/${SQUID_VERSION}"
 # 	--with-logdir=/var/log/squid \
 # 	--with-pidfile=/var/run/squid.pid
 
-if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
+# ./configure --prefix=/usr --localstatedir=/var --libexecdir=/usr/lib/squid --datadir=/usr/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid
+
+# if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
+if (./configure "${array_configure_options[@]}"); then
 
 	echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 
@@ -244,13 +247,16 @@ else
 	exit 1
 fi
 
+# print config.status -config
+/tmp/squid-3.5.27/config.status --config
+
 exit 1
 
 # swapoff it is virtual box
 sudo swapoff -a
 
 NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-make -j$((NB_CORES + 2)) -l"${NB_CORES}"
+sudo make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 sudo make install
 
 # set rights to /var/log/squid
