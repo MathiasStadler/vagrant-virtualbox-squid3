@@ -137,9 +137,11 @@ EOF
 # 	--with-pidfile=/var/run/squid.pid
 # EOF
 
+# set prefix
+PREFIX="/usr"
+
 # from here
 # https://www.linuxjournal.com/content/bash-arrays
-
 array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--localstatedir=/var"
@@ -172,6 +174,8 @@ else
 	echo " file NOT ‚${SQUID_CONF} there"
 	exit 1
 fi
+
+exit 0
 
 # from here
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
@@ -211,8 +215,6 @@ cd "/tmp/${SQUID_VERSION}"
 
 # standard configure from here
 # https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-
-PREFIX="/usr"
 
 # old extends to AUTOCONF_CONFIGURE
 # ./configure \
