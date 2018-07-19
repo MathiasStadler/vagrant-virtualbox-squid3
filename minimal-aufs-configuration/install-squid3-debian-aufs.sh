@@ -138,9 +138,16 @@ EOF
 # from here
 # https://www.linuxjournal.com/content/bash-arrays
 
-array_configure_options=("first item"
-	"second item"
-	"third" "item")
+array_configure_options=(
+	"--prefix=${PREFIX}"
+	"--localstatedir=/var"
+	"--libexecdir=${PREFIX}/lib/squid"
+	"--datadir=${PREFIX}/share/squid"
+	"--sysconfdir=/etc/squid"
+	"--with-default-user=proxy"
+	"--with-logdir=/var/log/squid"
+	"--with-pidfile=/var/run/squid.pid"
+)
 
 add=("--dd-d"
 	"--ss-d")
