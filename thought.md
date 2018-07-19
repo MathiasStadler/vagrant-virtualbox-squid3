@@ -58,3 +58,9 @@ apt-get install -y openssl \
        print $path ;
      }
 ```
+
+## squid configure
+
+```txt
+http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
+```
