@@ -155,8 +155,9 @@ array_configure_options=(
 
 # array_add_one_configure_options=("--enable-storeio=aufs,ufs")
 
-# test without aufs
+# test with without aufs
 array_add_one_configure_options=()
+
 echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
 for ix in ${!array_configure_options[*]}; do
 	printf "   %s\:\n" "${array_configure_options[$ix]}"
