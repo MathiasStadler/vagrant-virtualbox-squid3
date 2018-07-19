@@ -250,8 +250,6 @@ fi
 # print config.status -config
 /tmp/squid-3.5.27/config.status --config
 
-exit 1
-
 # swapoff it is virtual box
 sudo swapoff -a
 
