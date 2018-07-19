@@ -11,6 +11,7 @@
         "avaible",
         "blockdev",
         "cachemgr",
+        "cbdata",
         "chmod",
         "chown",
         "coredump",
