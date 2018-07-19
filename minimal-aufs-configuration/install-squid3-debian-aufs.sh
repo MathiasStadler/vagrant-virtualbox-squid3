@@ -121,19 +121,20 @@ curl
 g++
 EOF
 
-AUTOCONF_CONFIGURE="autoconf_configure.sh"
+# TODO old remove
+# AUTOCONF_CONFIGURE="autoconf_configure.sh"
 
-cat <<EOF >${AUTOCONF_CONFIGURE}
-./configure \
-	--prefix=${PREFIX} \
-	--localstatedir=/var \
-	--libexecdir=${PREFIX}/lib/squid \
-	--datadir=${PREFIX}/share/squid \
-	--sysconfdir=/etc/squid \
-	--with-default-user=proxy \
-	--with-logdir=/var/log/squid \
-	--with-pidfile=/var/run/squid.pid
-EOF
+# cat <<EOF >${AUTOCONF_CONFIGURE}
+# ./configure \
+# 	--prefix=${PREFIX} \
+# 	--localstatedir=/var \
+# 	--libexecdir=${PREFIX}/lib/squid \
+# 	--datadir=${PREFIX}/share/squid \
+# 	--sysconfdir=/etc/squid \
+# 	--with-default-user=proxy \
+# 	--with-logdir=/var/log/squid \
+# 	--with-pidfile=/var/run/squid.pid
+# EOF
 
 # from here
 # https://www.linuxjournal.com/content/bash-arrays
@@ -227,9 +228,6 @@ PREFIX="/usr"
 # 	--with-default-user=proxy \
 # 	--with-logdir=/var/log/squid \
 # 	--with-pidfile=/var/run/squid.pid
-
-# make execute
-chmod +x "./${AUTOCONF_CONFIGURE}"
 
 # exec AUTOCONF_CONFIGURE
 readonly command_to_execute=$(${AUTOCONF_CONFIGURE})
