@@ -183,11 +183,8 @@ else
 	exit 1
 fi
 
-exit 0
-
 # from here
 # http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
-
 echo "${SQUID_VERSION}"
 echo "${SQUID_VERSION_STRING}"
 
@@ -234,6 +231,18 @@ cd "/tmp/${SQUID_VERSION}"
 # 	--with-default-user=proxy \
 # 	--with-logdir=/var/log/squid \
 # 	--with-pidfile=/var/run/squid.pid
+
+if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
+
+	echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
+
+else
+
+	echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
+
+fi
+
+exit 0
 
 # swapoff it is virtual box
 sudo swapoff -a
