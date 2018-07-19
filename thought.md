@@ -42,3 +42,19 @@ apt-get install -y openssl \
  --enable-linux-netfilter
 
 ## HTTP Strict Transport Security (HSTS)
+
+## dislplay cache object
+
+```txt
+# from here
+# https://lists.debian.org/debian-user/1997/05/msg00663.html
+#!/usr/bin/perl
+     $L1= 16;   # Level 1 directories
+     $L2= 256;  # Level 2 directories
+
+     while (<>) {
+       $f= hex($_);
+       $path= sprintf("%02X/%02X/%08X", $f % $L1, ($f / $L1) % $L2, $f);
+       print $path ;
+     }
+```
