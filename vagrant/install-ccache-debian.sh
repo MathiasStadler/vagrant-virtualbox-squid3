@@ -23,6 +23,10 @@ NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 make install
 
+# change permission for pre load via scp
+chown -R vagrant:vagrant /root/.ccache
+chmod 0660 /root/.cache
+
 # Create symbol link for ccache
 
 cp ccache /usr/local/bin/
