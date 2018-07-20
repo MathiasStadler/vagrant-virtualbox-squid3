@@ -29,7 +29,7 @@ make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 make install
 
 sudo mkdir -p -m 0666 "${CCACHE_DIR}"
-sudo chopwn g+s "${CCACHE_DIR}"
+sudo chown g+s "${CCACHE_DIR}"
 sudo chown vagrant:vagrant "${CCACHE_DIR}"
 
 export CCACHE_DIR="${CCACHE_DIR}"
