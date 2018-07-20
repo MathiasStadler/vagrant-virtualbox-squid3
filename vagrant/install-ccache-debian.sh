@@ -5,6 +5,8 @@ CCACHE_VERSION=${CCACHE_TAR//.tar.gz/}
 # shellcheck disable=SC2034
 CCACHE_VERSION_STRING=${SQUID_VERSION//-//}
 
+CCACHE_DIR="/var/cache/ccache"
+
 curl https://www.samba.org/ftp/ccache/${CCACHE_TAR} -o /tmp/${CCACHE_TAR}
 
 # un compress:
@@ -23,11 +25,11 @@ NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 make install
 
-sudo mkdir -p -m 0666 /var/cache/ccache
-sudo chown vagrant:vagrant /var/cache/ccache
+sudo mkdir -p -m 0666 "${CCACHE_DIR}"
+sudo chown vagrant:vagrant "${CCACHE_DIR}"
 
-export CCACHE_DIR=/var/cache/ccache/
-"export CCACHE_DIR=/var/cache/ccache/" | tee -a /etc/environment
+export CCACHE_DIR="${CCACHE_DIR}"
+"export CCACHE_DIR="${CCACHE_DIR}"" | sudo tee -a /etc/environment
 
 # delete the user ccache.conf
 find / -type d -name ".ccache" -exec sudo rm -rf {} \;
