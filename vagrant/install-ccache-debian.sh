@@ -23,9 +23,14 @@ NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 make install
 
-# change permission for pre load via scp
-chown -R vagrant:vagrant /root/.ccache
-chmod 0660 /root/.cache
+sudo mkdir -m 0666 /var/cache/ccache
+sudo chown vagrant:vagrant /var/cache/ccache
+
+export CCACHE_DIR=/var/cache/ccache/
+"export CCACHE_DIR=/var/cache/ccache/" | tee -a /etc/environment
+
+# delete the user ccache.conf
+find / -type d -name ".ccache" -exec sudo rm -rf {} \;
 
 # Create symbol link for ccache
 
