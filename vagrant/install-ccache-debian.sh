@@ -35,7 +35,7 @@ export CCACHE_DIR="${CCACHE_DIR}"
 echo "export CCACHE_DIR=${CCACHE_DIR}" | sudo tee -a /etc/environment
 
 # delete the user ccache.conf
-sudo find / -type d -name ".ccache" -exec rm -rf {} \;
+sudo find / -type d -name ".ccache" -exec echo {} \;
 
 # Create symbol link for ccache
 
