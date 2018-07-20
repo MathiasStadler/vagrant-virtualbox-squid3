@@ -331,7 +331,7 @@ echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
 # create cache_dir structure
 echo "create cache structure"
-sudo /usr/sbin/squid -z -f ./${SQUID_CONF}
+sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
 
 # start squid again
 # start

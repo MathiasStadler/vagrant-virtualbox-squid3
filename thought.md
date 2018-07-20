@@ -43,7 +43,7 @@ apt-get install -y openssl \
 
 ## HTTP Strict Transport Security (HSTS)
 
-## dislplay cache object
+## display cache object
 
 ```txt
 # from here

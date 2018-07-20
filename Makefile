@@ -104,12 +104,12 @@ round_trip: clean init up clean
 
 # clean_deep:
 # 	VBoxManage unregistervm  $(VM_NAME) --delete
-# 	if [ -d "/home/trapapa/VirtualBox\ VMs/$(VM_NAME)" ]; then \
-#         echo "clean_deep: VAGRNT_MACHINE_DIR exists => delete"; \
+# 	if [ -d "$USER/VirtualBox\ VMs/$(VM_NAME)" ]; then \
+#         echo "clean_deep: VAGRANT_MACHINE_DIR exists => delete"; \
 
-# 		cd /home/trapapa/VirtualBox\ VMs && rm -rf $(VM_NAME); \
+# 		cd $USER/VirtualBox\ VMs && rm -rf $(VM_NAME); \
 # 	else \
-# 		echo "Directory not avaible => /home/trapapa/VirtualBox\ VMs/$(VM_NAME)"; \
+# 		echo "Directory not avaible => $USER/VirtualBox\ VMs/$(VM_NAME)"; \
 #     fi
 
 # check_env_are_set:
