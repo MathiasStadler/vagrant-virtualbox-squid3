@@ -13,6 +13,7 @@
         "blockdev",
         "cachemgr",
         "cbdata",
+        "ccache",
         "chmod",
         "chown",
         "coredump",
@@ -58,7 +59,8 @@
         "uuid",
         "vbox",
         "vboxguest",
-        "wais"
+        "wais",
+        "zxvf"
     ],
     "cSpell.language": "en",
     "cSpell.enabledLanguageIds": [
