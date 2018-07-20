@@ -32,7 +32,7 @@ sudo mkdir -p -m 0666 "${CCACHE_DIR}"
 sudo chown vagrant:vagrant "${CCACHE_DIR}"
 
 export CCACHE_DIR="${CCACHE_DIR}"
-"export CCACHE_DIR="${CCACHE_DIR}"" | sudo tee -a /etc/environment
+echo "export CCACHE_DIR=${CCACHE_DIR}" | sudo tee -a /etc/environment
 
 # delete the user ccache.conf
 find / -type d -name ".ccache" -exec sudo rm -rf {} \;
