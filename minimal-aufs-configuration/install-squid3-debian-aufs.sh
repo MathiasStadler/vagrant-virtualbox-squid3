@@ -245,6 +245,7 @@ else
 fi
 
 # print config.status -config
+echo "config.status --config"
 /tmp/squid-3.5.27/config.status --config
 
 # swapoff it is virtual box
@@ -262,18 +263,23 @@ sudo chown -R proxy:proxy /var/log/squid
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
 # print version
+echo "Version of squid"
 sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
 
 # check/parse  config
+echo " parse config ${SQUID_CONF}"
 sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 
 # start
+echo "start squid"
 sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 # wait for squid
+echo "wait until squid is started"
 sleep 10
 
 # check squid is working (weak test)
+echo " check squid with weak request"
 let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
 echo $count_match
 if [ "$count_match" -gt "0" ]; then
@@ -286,6 +292,7 @@ else
 fi
 
 # stop
+echo "stop squid"
 sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 
 # wait until squid is really stop
@@ -294,12 +301,17 @@ sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 # SC2009
 # SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
 # improved
+echo " get PID of squid process"
 SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
 
+echo "the pid of squid is => ${SQUID_PID}"
+
+# TODO old
 ## print process for debug
-pgrep "$SQUID_PID"
+# pgrep "$SQUID_PID"
 
 ## wait until the thread is finish
+echo "wait until squid ist stop"
 while ps -p "$SQUID_PID" >/dev/null; do
 	echo "# Wait for finish stop squid PID=${SQUID_PID} "
 	sleep 1
@@ -308,24 +320,30 @@ done
 # set cache_dir
 
 # set permission to cache dir
+echo "change permission for cache directory"
 sudo chown proxy:proxy /cache0
 sudo chown proxy:proxy /cache1
 
 # append cache_dir entry to squid.conf
-echo "cache_dir ufs /cache0 7000 16 256" | sudo tee -a ./squid.conf
-echo "cache_dir ufs /cache1 7000 16 256" | sudo tee -a ./squid.conf
+echo "Add cache config to ${SQUID_CONF}"
+echo "cache_dir ufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+echo "cache_dir ufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
 # create cache_dir structure
+echo "create cache structure"
 sudo /usr/sbin/squid -z -f ./squid.conf
 
 # start squid again
 # start
+echo "start squid again"
 sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 # wait for squid
+echo "wait for squid"
 sleep 10
 
 # check squid is working (weak test)
+echo "check squid is working via request (weak test)"
 let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
 echo $count_match
 if [ "$count_match" -gt "0" ]; then
@@ -336,3 +354,6 @@ else
 	echo "squid NOT works with cache_dir"
 	exit 1
 fi
+
+# finish
+exit 0

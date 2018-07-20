@@ -101,3 +101,22 @@ run_crawler:
 	cd $(PWD)
 
 round_trip: clean init up clean
+
+# clean_deep:
+# 	VBoxManage unregistervm  $(VM_NAME) --delete
+# 	if [ -d "/home/trapapa/VirtualBox\ VMs/$(VM_NAME)" ]; then \
+#         echo "clean_deep: VAGRNT_MACHINE_DIR exists => delete"; \
+
+# 		cd /home/trapapa/VirtualBox\ VMs && rm -rf $(VM_NAME); \
+# 	else \
+# 		echo "Directory not avaible => /home/trapapa/VirtualBox\ VMs/$(VM_NAME)"; \
+#     fi
+
+# check_env_are_set:
+# 	if [ -z "$(VM_NAME+x})" ]; then
+# 		echo "VM_NAME is unset"
+# 		exit 1
+# 	else
+# 		echo "VM_NAME is set to '$(VM_NAME)'"
+
+# 	fi
