@@ -326,8 +326,8 @@ sudo chown proxy:proxy /cache1
 
 # append cache_dir entry to ${SQUID_CONF}
 echo "Add cache config to ${SQUID_CONF}"
-echo "cache_dir ufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
-echo "cache_dir ufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
 # create cache_dir structure
 echo "create cache structure"
