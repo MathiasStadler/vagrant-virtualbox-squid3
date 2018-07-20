@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Exit immediately if a command returns a non-zero status
+set -e
+
 CCACHE_TAR="ccache-3.4.2.tar.gz"
 CCACHE_VERSION=${CCACHE_TAR//.tar.gz/}
 # shellcheck disable=SC2034
