@@ -174,7 +174,7 @@ FINAL_AUTOCONF_OPTIONS="$(printf "${separator}%s" "${array_final_configure_optio
 FINAL_AUTOCONF_OPTIONS="${FINAL_AUTOCONF_OPTIONS:${#separator}}" # remove leading separator
 echo "${FINAL_AUTOCONF_OPTIONS}"
 
-# check squid.conf is wrote
+# check ${SQUID_CONF} is wrote
 if [ -e "${SQUID_CONF}" ]; then
 	echo "ok file ${SQUID_CONF} there"
 else
@@ -324,14 +324,14 @@ echo "change permission for cache directory"
 sudo chown proxy:proxy /cache0
 sudo chown proxy:proxy /cache1
 
-# append cache_dir entry to squid.conf
+# append cache_dir entry to ${SQUID_CONF}
 echo "Add cache config to ${SQUID_CONF}"
 echo "cache_dir ufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 echo "cache_dir ufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
 # create cache_dir structure
 echo "create cache structure"
-sudo /usr/sbin/squid -z -f ./squid.conf
+sudo /usr/sbin/squid -z -f ./${SQUID_CONF}
 
 # start squid again
 # start
