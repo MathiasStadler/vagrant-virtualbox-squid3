@@ -41,7 +41,7 @@ sudo find / -type d -name ".ccache" -exec echo {} \;
 
 cp ccache /usr/local/bin/
 cd /usr/local/bin/ || exit 1
-ln -s ccache /usr/local/bin/gcc
-ln -s ccache /usr/local/bin/g++
-ln -s ccache /usr/local/bin/cc
-ln -s ccache /usr/local/bin/c++
+ln -sf ccache /usr/local/bin/gcc
+ln -sf ccache /usr/local/bin/g++
+ln -sf ccache /usr/local/bin/cc
+ln -sf ccache /usr/local/bin/c++
