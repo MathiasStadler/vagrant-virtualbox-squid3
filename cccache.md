@@ -23,16 +23,16 @@ cd ccache-3.3.3
 
 ./configure
 make
-make install
+sudo make install
 
 # Create symbols link for ccache
 
-cp ccache /usr/local/bin/
-cd /usr/local/bin/
-ln -s ccache /usr/local/bin/gcc
-ln -s ccache /usr/local/bin/g++
-ln -s ccache /usr/local/bin/cc
-ln -s ccache /usr/local/bin/c++
+sudo cp ccache /usr/local/bin/
+sudo cd /usr/local/bin/
+sudo ln -s ccache /usr/local/bin/gcc
+sudo ln -s ccache /usr/local/bin/g++
+sudo ln -s ccache /usr/local/bin/cc
+sudo ln -s ccache /usr/local/bin/c++
 ```
 
 ## show Cache statistics
