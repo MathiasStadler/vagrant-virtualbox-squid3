@@ -12,7 +12,7 @@ CCACHE_DIR="/var/cache/ccache"
 
 # install curl
 export DEBIAN_FRONTEND=noninteractive
-apt-get update && sudo :apt-get install -y --no-install-recommends curl
+apt-get update && sudo apt-get install -y --no-install-recommends curl
 
 curl https://www.samba.org/ftp/ccache/${CCACHE_TAR} -o /tmp/${CCACHE_TAR}
 
