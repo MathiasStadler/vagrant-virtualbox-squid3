@@ -183,10 +183,6 @@ function squid-install-packages() {
 # import from ../settings/squid_download
 # squid_download_and_extract
 
-# print config.status -config
-echo "config.status --config"
-/tmp/squid-3.5.27/config.status --config
-
 function swap_off() {
 	# swapoff it is virtual box
 	# swapoff all swap area
@@ -209,6 +205,9 @@ function squid-make() {
 	if (./configure "${array_final_configure_options[@]}"); then
 
 		echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
+		# print config.status -config
+		echo "config.status --config"
+		/tmp/squid-3.5.27/config.status --config
 
 	else
 
