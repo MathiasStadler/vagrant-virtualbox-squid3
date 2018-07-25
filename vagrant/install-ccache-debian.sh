@@ -38,7 +38,7 @@ sudo chmod u+s "${CCACHE_DIR}"
 sudo chmod g+s "${CCACHE_DIR}"
 
 export CCACHE_DIR="${CCACHE_DIR}"
-echo "export CCACHE_DIR=${CCACHE_DIR}" | sudo tee -a /etc/environment
+echo "export CCACHE_DIR=${CCACHE_DIR}" | sudo tee -a /etc/profile.d/ccache-set-global-cache-directory.sh
 
 # delete the user ccache.conf
 sudo find / -type d -name ".ccache" -exec echo {} \;
