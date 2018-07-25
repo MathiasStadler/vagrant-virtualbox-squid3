@@ -19,7 +19,7 @@ else
 fi
 
 # shellcheck disable=SC1090,SC1091
-source "$SETTINGS/ccache-handling-debian.sh"
+source "$SETTINGS_DIR/ccache-handling-debian.sh"
 
 # shellcheck disable=SC1090,SC1091
 source "$SETTINGS_DIR/squid_version.sh"
