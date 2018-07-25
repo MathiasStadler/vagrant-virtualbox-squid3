@@ -9,7 +9,6 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
 	echo "dir found => $PWD"
 fi
 
-# TODO ${DIR} = tmp WHY
 # SETTINGS_DIR="${DIR}/settings"
 SETTINGS_DIR="/home/vagrant/settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
@@ -33,10 +32,11 @@ source "$SETTINGS_DIR/compare_package_list.sh"
 
 # minimal 3.5 config
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
-
 SQUID_CONF="/home/vagrant/squid.conf"
 
-cat <<EOF >"${SQUID_CONF}"
+function create_squid_conf() {
+
+	cat <<EOF >"${SQUID_CONF}"
 #
 # Recommended minimum configuration:
 #
@@ -112,48 +112,45 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
-INSTALL_PACKAGE_ADD_ON="install_package_add_on.list"
+}
 
-cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
+function prepare-package-list-for-install() {
+	INSTALL_PACKAGE_ADD_ON="install-package-add-on.list"
+
+	cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
 build-essential
 curl
 # test not need wget
 g++
 EOF
 
-# TODO old remove
+}
 
-# AUTOCONF_CONFIGURE="autoconf_configure.sh"
+function prepare_squid_default_autoconf_config() {
 
-# cat <<EOF >${AUTOCONF_CONFIGURE}
-# ./configure \
-# 	--prefix=${PREFIX} \
-# 	--localstatedir=/var \
-# 	--libexecdir=${PREFIX}/lib/squid \
-# 	--datadir=${PREFIX}/share/squid \
-# 	--sysconfdir=/etc/squid \
-# 	--with-default-user=proxy \
-# 	--with-logdir=/var/log/squid \
-# 	--with-pidfile=/var/run/squid.pid
-# EOF
+	# set prefix squid installation
+	PREFIX="/usr"
 
-# set prefix
-PREFIX="/usr"
+	# from here
+	# https://www.linuxjournal.com/content/bash-arrays
+	array_configure_options=(
+		"--prefix=${PREFIX}"
+		"--localstatedir=/var"
+		"--libexecdir=${PREFIX}/lib/squid"
+		"--datadir=${PREFIX}/share/squid"
+		"--sysconfdir=/etc/squid"
+		"--with-default-user=proxy"
+		"--with-logdir=/var/log/squid"
+		"--with-pidfile=/var/run/squid.pid"
+	)
 
-# from here
-# https://www.linuxjournal.com/content/bash-arrays
-array_configure_options=(
-	"--prefix=${PREFIX}"
-	"--localstatedir=/var"
-	"--libexecdir=${PREFIX}/lib/squid"
-	"--datadir=${PREFIX}/share/squid"
-	"--sysconfdir=/etc/squid"
-	"--with-default-user=proxy"
-	"--with-logdir=/var/log/squid"
-	"--with-pidfile=/var/run/squid.pid"
-)
+}
 
-array_add_one_configure_options=("--enable-storeio=aufs,ufs")
+function add_one_autoconf_config() {
+	# only autoconf config for this use case
+	array_add_one_configure_options=("--enable-storeio=aufs,ufs")
+
+}
 
 echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
 for ix in ${!array_configure_options[*]}; do
@@ -194,19 +191,11 @@ export DEBIAN_FRONTEND=noninteractive &&
 	sudo apt-get update &&
 	sudo apt-get upgrade -y &&
 	sudo apt-get autoremove -y
-# apt-get install -y --no-install-recommends "$(grep -vE "^\s*#" ${INSTALL_PACKAGE_ADD_ON} | tr "\n" " ")"
-# sudo apt-get install -y --no-install-recommends "$(awk '{print $1}' ${INSTALL_PACKAGE_ADD_ON})"
-# sudo apt-get install -y --no-install-recommends "$(awk '!/^ *#/ && NF' ${INSTALL_PACKAGE_ADD_ON})"
 
 # shellcheck disable=1072,2046
-# sudo apt-get install -y --no-install-recommends $(awk '!/^ *#/ && NF' ${INSTALL_PACKAGE_ADD_ON})
 sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_ADD_ON})
 
-# sudo apt-get install -y --no-install-recommends &&
-# build-essential &&
-# curl &&
-# g++
-
+# save list
 save_package_list_for_compare "package_list_after_install"
 
 # import from ../settings/squid_download
@@ -230,21 +219,6 @@ cd "/tmp/${SQUID_VERSION}"
 
 # standard configure from here
 # https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-
-# old extends to AUTOCONF_CONFIGURE
-# ./configure \
-# 	--prefix=${PREFIX} \
-# 	--localstatedir=/var \
-# 	--libexecdir=${PREFIX}/lib/squid \
-# 	--datadir=${PREFIX}/share/squid \
-# 	--sysconfdir=/etc/squid \
-# 	--with-default-user=proxy \
-# 	--with-logdir=/var/log/squid \
-# 	--with-pidfile=/var/run/squid.pid
-
-# ./configure --prefix=/usr --localstatedir=/var --libexecdir=/usr/lib/squid --datadir=/usr/share/squid --sysconfdir=/etc/squid --with-default-user=proxy --with-logdir=/var/log/squid --with-pidfile=/var/run/squid.pid
-
-# if (./configure "${FINAL_AUTOCONF_OPTIONS}"); then
 if (./configure "${array_final_configure_options[@]}"); then
 
 	echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
@@ -259,77 +233,96 @@ fi
 echo "config.status --config"
 /tmp/squid-3.5.27/config.status --config
 
-# swapoff it is virtual box
-sudo swapoff -a
+function swapp_off() {
+	# swapoff it is virtual box
+	# swapoff all swap area
+	sudo swapoff -a
+}
 
-NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-sudo make -j$((NB_CORES + 2)) -l"${NB_CORES}"
-sudo make install
+function make_squid() {
+	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+	sudo make -j$((NB_CORES + 2)) -l"${NB_CORES}"
+	sudo make install
+}
 
-# set rights to /var/log/squid
-sudo chown -R proxy:proxy /var/log/squid
+function install_squid() {
+	# set rights to /var/log/squid
+	sudo chown -R proxy:proxy /var/log/squid
+}
 
 # start squid as daemon
 # from here
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
-# print version
-echo "Version of squid"
-sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
+function squid_get_version() {
+	# print version
+	echo "Version of squid"
+	sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
+}
 
-# check/parse  config
-echo " parse config ${SQUID_CONF}"
-sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
+function squid_parse_config() {
+	# check/parse  config
+	echo " parse config ${SQUID_CONF}"
+	sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 
-# start
-echo "start squid"
-sudo /usr/sbin/squid -f "${SQUID_CONF}"
+}
+
+function squid_start() {
+	# start
+	echo "start squid"
+	sudo /usr/sbin/squid -f "${SQUID_CONF}"
+}
 
 # wait for squid
-echo "wait until squid is started"
-sleep 10
+# echo "wait until squid is started"
+# sleep 10
 
-# check squid is working (weak test)
-echo " check squid with weak request"
-let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
-echo $count_match
-if [ "$count_match" -gt "0" ]; then
+function squid_check() {
+	# check squid is working (weak test)
+	echo " check squid with weak request"
+	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
+	echo $count_match
+	if [ "$count_match" -gt "0" ]; then
 
-	echo "squid works"
-else
+		echo "squid works"
+	else
 
-	echo "squid NOT works"
-	exit 1
-fi
+		echo "squid NOT works"
+		exit 1
+	fi
 
-# stop
-echo "stop squid"
-sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
+}
 
-# wait until squid is really stop
+function squid_stop() {
+	# stop
+	echo "stop squid"
+	sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 
-## find pid of squid
-# SC2009
-# SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
-# improved
-echo " get PID of squid process"
-SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
+	# wait until squid is really stop
 
-echo "the pid of squid is => ${SQUID_PID}"
+	## find pid of squid
+	# SC2009
+	# SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
+	# improved
+	echo " get PID of squid process"
+	SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
 
-# TODO old
-## print process for debug
-# pgrep "$SQUID_PID"
+	echo "the pid of squid is => ${SQUID_PID}"
 
-## wait until the thread is finish
-echo "wait until squid ist stop"
-while ps -p "$SQUID_PID" >/dev/null; do
-	echo "# Wait for finish stop squid PID=${SQUID_PID} "
-	sleep 1
-done
+	# TODO old
+	## print process for debug
+	# pgrep "$SQUID_PID"
+
+	## wait until the thread is finish
+	echo "wait until squid ist stop"
+	while ps -p "$SQUID_PID" >/dev/null; do
+		echo "# Wait for stop squid PID=${SQUID_PID} "
+		sleep 1
+	done
+
+}
 
 # set cache_dir
-
 # set permission to cache dir
 echo "change permission for cache directory"
 sudo chown proxy:proxy /cache0
@@ -346,26 +339,26 @@ sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
 
 # start squid again
 # start
-echo "start squid again"
-sudo /usr/sbin/squid -f "${SQUID_CONF}"
+# echo "start squid again"
+# sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 # wait for squid
-echo "wait for squid"
-sleep 10
+# echo "wait for squid"
+# sleep 10
 
 # check squid is working (weak test)
-echo "check squid is working via request (weak test)"
-let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
-echo $count_match
-if [ "$count_match" -gt "0" ]; then
+# echo "check squid is working via request (weak test)"
+# let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
+# echo $count_match
+# if [ "$count_match" -gt "0" ]; then
 
-	echo "squid works with cache_dir"
-else
+#	echo "squid works with cache_dir"
+#else
 
-	echo "squid NOT works with cache_dir"
-	exit 1
-fi
+#	echo "squid NOT works with cache_dir"
+#	exit 1
+# fi
 
 # finish
-echo "works"
-exit 0
+# echo "works"
+# exit 0
