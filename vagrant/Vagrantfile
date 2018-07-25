@@ -398,8 +398,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # disable for vagrant-persistent-storage test
     shell_scripts = [
   "install-disk-on-box-debian.sh",
-  "install-ccache-debian.sh",
-  "install-squid3-debian.sh"
+  "install-ccache-debian.sh"
 ]
 
     puts shell_scripts.length
