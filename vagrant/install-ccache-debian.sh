@@ -32,8 +32,9 @@ NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 make install
 
-sudo mkdir -p -m 0666 "${CCACHE_DIR}"
+sudo mkdir -p -m 0770 "${CCACHE_DIR}"
 sudo chown vagrant:vagrant "${CCACHE_DIR}"
+sudo chmod u+s "${CCACHE_DIR}"
 sudo chmod g+s "${CCACHE_DIR}"
 
 export CCACHE_DIR="${CCACHE_DIR}"

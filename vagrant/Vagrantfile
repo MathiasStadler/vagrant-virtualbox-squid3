@@ -178,6 +178,16 @@ def local_cache(basebox_name)
   cache_dir
 end
 
+def box_cache(basebox_name, cache_dir)
+  cache_dir = Vagrant::Environment.new.home_path.join('cache', cache_dir, basebox_name)
+  # Vagrant::Environment.new.home_path
+  print cache_dir
+  cache_dir.mkpath unless cache_dir.exist?
+  partial_dir = cache_dir.join('partial')
+  partial_dir.mkdir unless partial_dir.exist?
+  cache_dir
+end
+
 require "open3"
 #set internet device name to the world
 worldwideinterfaces=%x(ip route get  $(dig +short google.com | tail -1) | grep $(dig +short google.com | tail -1)| awk '{print $5}').chomp
@@ -194,6 +204,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.hostname = VM_NAME
     config.vm.define VM_NAME
     cache_dir = local_cache(config.vm.box)
+
+    # cache dir for ccache
+    ccache_dir=box_cache(config.vm.box,'ccache')
 
     # disk for cache default values
     cache_disk = {'cache1' => 5000, 'cache2' => 5000}
@@ -241,7 +254,11 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       # with nfs flag
       # config.vm.synced_folder cache_dir, "/var/cache/apt/archives/",  mount_options: ["uid=0", "gid=0"], nfs: true, :bsd__nfs_options => ["-maproot=0:0"]
       # without nfs flag
+      # apt cache
       config.vm.synced_folder cache_dir, "/var/cache/apt/archives/", owner: "_apt",
+      group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
+      # ccache cache
+      config.vm.synced_folder ccache_dir, "/var/cache/ccache", owner: "_apt",
       group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
 
     end
