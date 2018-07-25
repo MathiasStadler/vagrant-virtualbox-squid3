@@ -183,8 +183,8 @@ def box_cache(basebox_name, cache_dir)
   # Vagrant::Environment.new.home_path
   print cache_dir
   cache_dir.mkpath unless cache_dir.exist?
-  partial_dir = cache_dir.join('partial')
-  partial_dir.mkdir unless partial_dir.exist?
+  # TODO old partial_dir = cache_dir.join('partial')
+  # TODO old partial_dir.mkdir unless partial_dir.exist?
   cache_dir
 end
 
@@ -258,7 +258,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vm.synced_folder cache_dir, "/var/cache/apt/archives/", owner: "_apt",
       group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
       # ccache cache
-      config.vm.synced_folder ccache_dir, "/var/cache/ccache", owner: "_apt",
+      config.vm.synced_folder ccache_dir, "/var/cache/ccache", owner: "vagrant",
       group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
 
     end
