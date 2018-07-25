@@ -19,10 +19,13 @@ else
 fi
 
 # shellcheck disable=SC1090,SC1091
+source "$SETTINGS/ccache-handling-debian.sh"
+
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS_DIR/squid_version.sh"
 
 # shellcheck disable=SC1090,SC1091
-source "$SETTINGS_DIR/squid_download.sh"
+source "$SETTINGS_DIR/squid-handling-debian.sh"
 
 # shellcheck disable=SC1090,SC1091
 source "$SETTINGS_DIR/compare_package_list.sh"
@@ -34,7 +37,7 @@ source "$SETTINGS_DIR/compare_package_list.sh"
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
 SQUID_CONF="/home/vagrant/squid.conf"
 
-function create_squid_conf() {
+function squid_create_conf() {
 
 	cat <<EOF >"${SQUID_CONF}"
 #
@@ -112,9 +115,17 @@ refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
+	# check ${SQUID_CONF} is wrote
+	if [ -e "${SQUID_CONF}" ]; then
+		echo "ok file ${SQUID_CONF} wrote"
+	else
+		echo " file NOT ‚${SQUID_CONF} avaible"
+		exit 1
+	fi
+
 }
 
-function prepare-package-list-for-install() {
+function squid-prepare-package-list() {
 	INSTALL_PACKAGE_ADD_ON="install-package-add-on.list"
 
 	cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
@@ -126,7 +137,7 @@ EOF
 
 }
 
-function prepare_squid_default_autoconf_config() {
+function squid-prepare-default-config() {
 
 	# set prefix squid installation
 	PREFIX="/usr"
@@ -143,109 +154,81 @@ function prepare_squid_default_autoconf_config() {
 		"--with-logdir=/var/log/squid"
 		"--with-pidfile=/var/run/squid.pid"
 	)
-
 }
 
-function add_one_autoconf_config() {
+function squid-add-one-config() {
 	# only autoconf config for this use case
 	array_add_one_configure_options=("--enable-storeio=aufs,ufs")
 
 }
 
-echo "Number of items in original array_configure_options: ${#array_configure_options[*]}"
-for ix in ${!array_configure_options[*]}; do
-	printf "   %s\:\n" "${array_configure_options[$ix]}"
-done
+function squid-install-packages() {
 
-# join arrays array_configure_options + array_add_one_configure_options
-# TODO old only sample UnixShell=("${Unix[@]}" "${Shell[@]}")
-array_final_configure_options=("${array_configure_options[@]}" "${array_add_one_configure_options[@]}")
+	save_package_list_for_compare "package_list_before_install"
 
-echo "array_final_configure_options => ${array_final_configure_options[@]}"
-echo " array_final_configure_options size => ${#array_final_configure_options[@]}"
+	export DEBIAN_FRONTEND=noninteractive &&
+		TERM=linux &&
+		sudo apt-get update &&
+		sudo apt-get upgrade -y &&
+		sudo apt-get autoremove -y
 
-# from here
-# https://stackoverflow.com/questions/1527049/join-elements-of-an-array
-separator=" " # e.g. constructing FINAL_AUTOCONF_OPTIONS, pray it does not contain %s
-FINAL_AUTOCONF_OPTIONS="$(printf "${separator}%s" "${array_final_configure_options[@]}")"
-FINAL_AUTOCONF_OPTIONS="${FINAL_AUTOCONF_OPTIONS:${#separator}}" # remove leading separator
-echo "${FINAL_AUTOCONF_OPTIONS}"
+	# shellcheck disable=1072,2046
+	sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_ADD_ON})
 
-# check ${SQUID_CONF} is wrote
-if [ -e "${SQUID_CONF}" ]; then
-	echo "ok file ${SQUID_CONF} there"
-else
-	echo " file NOT ‚${SQUID_CONF} there"
-	exit 1
-fi
+	# save list
+	save_package_list_for_compare "package_list_after_install"
 
-# from here
-# http://www.tonmann.com/2015/04/compile-squid-3-5-x-under-debian-jessie/
-echo "${SQUID_VERSION}"
-echo "${SQUID_VERSION_STRING}"
-
-save_package_list_for_compare "package_list_before_install"
-
-export DEBIAN_FRONTEND=noninteractive &&
-	TERM=linux &&
-	sudo apt-get update &&
-	sudo apt-get upgrade -y &&
-	sudo apt-get autoremove -y
-
-# shellcheck disable=1072,2046
-sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_ADD_ON})
-
-# save list
-save_package_list_for_compare "package_list_after_install"
+}
 
 # import from ../settings/squid_download
-squid_download_and_extract
-
-# check if ccache is in place
-if (ls -lh /usr/local/bin/gcc | grep ccache); then
-
-	echo "Found ccache"
-	ccache -s
-else
-
-	echo "CCache NOT found"
-	exit 1
-fi
-
-cd "/tmp/${SQUID_VERSION}"
-
-# explain a lot of ./configure flags
-# http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+3.+Compiling+and+Installing/3.4+The+configure+Script/
-
-# standard configure from here
-# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-if (./configure "${array_final_configure_options[@]}"); then
-
-	echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
-
-else
-
-	echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
-	exit 1
-fi
+# squid_download_and_extract
 
 # print config.status -config
 echo "config.status --config"
 /tmp/squid-3.5.27/config.status --config
 
-function swapp_off() {
+function swap_off() {
 	# swapoff it is virtual box
 	# swapoff all swap area
 	sudo swapoff -a
 }
 
-function make_squid() {
+function squid-make() {
+
+	# join arrays array_configure_options + array_add_one_configure_options
+	# TODO old only sample UnixShell=("${Unix[@]}" "${Shell[@]}")
+	array_final_configure_options=("${array_configure_options[@]}" "${array_add_one_configure_options[@]}")
+
+	cd "/tmp/${SQUID_VERSION}"
+
+	# explain a lot of ./configure flags
+	# http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+3.+Compiling+and+Installing/3.4+The+configure+Script/
+
+	# standard configure from here
+	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
+	if (./configure "${array_final_configure_options[@]}"); then
+
+		echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
+
+	else
+
+		echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
+		exit 1
+	fi
+
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 	sudo make -j$((NB_CORES + 2)) -l"${NB_CORES}"
 	sudo make install
 }
 
-function install_squid() {
+function squid-install() {
+
+	# set cache_dir
+	# set permission to cache dir
+	echo "change permission for cache directory"
+	sudo chown proxy:proxy /cache0
+	sudo chown proxy:proxy /cache1
+
 	# set rights to /var/log/squid
 	sudo chown -R proxy:proxy /var/log/squid
 }
@@ -254,20 +237,20 @@ function install_squid() {
 # from here
 # http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+5.+Running+Squid/5.5+Running+Squid+as+a+Daemon+Process/
 
-function squid_get_version() {
+function squid-get-version() {
 	# print version
 	echo "Version of squid"
 	sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
 }
 
-function squid_parse_config() {
+function squid-parse-config() {
 	# check/parse  config
 	echo " parse config ${SQUID_CONF}"
 	sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 
 }
 
-function squid_start() {
+function squid-start() {
 	# start
 	echo "start squid"
 	sudo /usr/sbin/squid -f "${SQUID_CONF}"
@@ -277,7 +260,7 @@ function squid_start() {
 # echo "wait until squid is started"
 # sleep 10
 
-function squid_check() {
+function squid-check() {
 	# check squid is working (weak test)
 	echo " check squid with weak request"
 	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
@@ -293,7 +276,7 @@ function squid_check() {
 
 }
 
-function squid_stop() {
+function squid-stop() {
 	# stop
 	echo "stop squid"
 	sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
@@ -322,20 +305,20 @@ function squid_stop() {
 
 }
 
-# set cache_dir
-# set permission to cache dir
-echo "change permission for cache directory"
-sudo chown proxy:proxy /cache0
-sudo chown proxy:proxy /cache1
+function squid_add_use_case_config() {
 
-# append cache_dir entry to ${SQUID_CONF}
-echo "Add cache config to ${SQUID_CONF}"
-echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
-echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+	# append cache_dir entry to ${SQUID_CONF}
+	echo "Add cache config to ${SQUID_CONF}"
+	echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+	echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
-# create cache_dir structure
-echo "create cache structure"
-sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
+}
+
+function squid-create-cache-structure() {
+	# create cache_dir structure
+	echo "create cache structure"
+	sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
+}
 
 # start squid again
 # start
@@ -362,3 +345,19 @@ sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
 # finish
 # echo "works"
 # exit 0
+
+# check ccache
+ccache-is-in-place
+
+# main loop squid
+squid-create-conf
+squid-compare_package_list
+prepare_squid_default_autoconf_config
+add_one_autoconf_config
+squid_make
+squid_install
+squid_version
+squid_parse_config
+squid_start
+squid_check
+squid_stop
