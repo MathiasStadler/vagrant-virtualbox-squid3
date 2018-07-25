@@ -259,7 +259,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
       # ccache cache
       config.vm.synced_folder ccache_dir, "/var/cache/ccache", owner: "vagrant",
-      group: "nogroup", :bsd__nfs_options => ["-maproot=0:0"]
+      group: "vagrant", :bsd__nfs_options => ["-maproot=0:0"]
 
     end
 
