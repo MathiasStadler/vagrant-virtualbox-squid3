@@ -51,3 +51,6 @@ ln -sf ccache /usr/local/bin/gcc
 ln -sf ccache /usr/local/bin/g++
 ln -sf ccache /usr/local/bin/cc
 ln -sf ccache /usr/local/bin/c++
+
+# add log file
+echo "log_file = /tmp/ccache.log" | sudo tee -a /var/cache/ccache/ccache.conf
