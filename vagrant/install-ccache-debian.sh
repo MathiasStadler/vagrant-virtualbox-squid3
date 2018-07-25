@@ -10,6 +10,10 @@ CCACHE_VERSION_STRING=${SQUID_VERSION//-//}
 
 CCACHE_DIR="/var/cache/ccache"
 
+# install curl
+export DEBIAN_FRONTEND=noninteractive
+apt-get update && apt-get install -y --no-install-recommends curl
+
 curl https://www.samba.org/ftp/ccache/${CCACHE_TAR} -o /tmp/${CCACHE_TAR}
 
 # un compress:
