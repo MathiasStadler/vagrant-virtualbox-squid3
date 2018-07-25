@@ -212,6 +212,17 @@ save_package_list_for_compare "package_list_after_install"
 # import from ../settings/squid_download
 squid_download_and_extract
 
+# check if ccache is in place
+if (ls -lh /usr/local/bin/gcc | grep ccache); then
+
+	echo "Found ccache"
+	ccache -s
+else
+
+	echo "CCache NOT found"
+	exit 1
+fi
+
 cd "/tmp/${SQUID_VERSION}"
 
 # explain a lot of ./configure flags
