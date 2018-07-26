@@ -219,7 +219,7 @@ function squid-prepare-default-autoconf-configure() {
 
 function squid-install-packages() {
 
-	echo"# ACTION install packages"
+	echo "# ACTION install packages"
 	# join default package list
 	cat ${INSTALL_DEFAULT_PACKAGE} >>${INSTALL_PACKAGE_FINAL_LIST}
 	# join use case package list
