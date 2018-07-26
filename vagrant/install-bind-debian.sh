@@ -14,7 +14,7 @@ readonly TEMP_FILE="/tmp/bind-version.txt"
 
 curl -L $BIND_DOWNLOAD_SITE -o $TEMP_FILE
 
-VERSION_NUMBER=$(cat "$TMP_FILE" | awk '{print $9}' | sed 's/-.*$//g' | sed 's/[^0-9.]*//' | sed 's/[a-z].*$//g' | sort -u | sort -V | tail -1)
+VERSION_NUMBER=$(cat "$TEMP_FILE" | awk '{print $9}' | sed 's/-.*$//g' | sed 's/[^0-9.]*//' | sed 's/[a-z].*$//g' | sort -u | sort -V | tail -1)
 
 BIND_TAR="bind-$VERSION_NUMBER.tar.gz"
 BIND_VERSION=${SQUID_TAR//.tar.gz/}
