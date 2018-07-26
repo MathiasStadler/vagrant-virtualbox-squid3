@@ -3,19 +3,19 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-readonly TEMP_DIR="/tmp"
+#readonly TEMP_DIR="/tmp"
 
 # BUILD_DIR for tar extract, make ...
-readonly BUILD_DIR=$TEMP_DIR
+#readonly BUILD_DIR=$TEMP_DIR
 
-readonly LOG_FILE="${BUILD_DIR}/build_$$_$(date +%F_%H-%M-%S).log"
+#readonly LOG_FILE="${BUILD_DIR}/build_$$_$(date +%F_%H-%M-%S).log"
 
 # CONSTANTS
 
-readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
-readonly INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
-readonly INSTALL_PACKAGE_USE_CASE="${BUILD_DIR}/install-package-use-case.list"
-readonly SQUID_CONF="${BUILD_DIR}/squid.conf"
+#readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
+#readonly INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
+#readonly INSTALL_PACKAGE_USE_CASE="${BUILD_DIR}/install-package-use-case.list"
+#readonly SQUID_CONF="${BUILD_DIR}/squid.conf"
 
 # import project variables
 DIR="${BASH_SOURCE%/*}"
