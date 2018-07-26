@@ -38,7 +38,6 @@ copy_files:
 	cp ../../vagrant/found-bridge-adapter.sh ../$(WORK_DIR) && \
 	cp ../../vagrant/install-*-debian.sh ../$(WORK_DIR) && \
     cp ../../vagrant/install_VBoxGuestAdditions_debian_based_linux.sh ../$(WORK_DIR) && \
-	cp ../install-squid3-debian*.sh ../$(WORK_DIR)/install-squid3-debian.sh && \
 	cp ../use-case-squid3-debian-*.sh ../$(WORK_DIR)/use-case-squid3-debian.sh && \
 	mkdir ../$(WORK_DIR)/settings && \
 	cp -a ../../settings/* ../$(WORK_DIR)/settings && \
