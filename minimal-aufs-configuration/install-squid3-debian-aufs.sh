@@ -8,6 +8,8 @@ readonly TEMP_DIR="/tmp"
 # BUILD_DIR for tar extract, make ...
 readonly BUILD_DIR=$TEMP_DIR
 
+readonly LOG_FILE="${BUILD_DIR}/build.log"
+
 # CONSTANTS
 readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
 readonly INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
@@ -169,7 +171,7 @@ coredump_dir /var/cache/squid
 #
 refresh_pattern ^ftp:           1440    20%     10080
 refresh_pattern ^gopher:        1440    0%      1440
-refresh_pattern -i (/cgi-bin/|\?) 0     0%      0
+refresh_pattern -i (/cgi-bin/|\\?) 0     0%      0
 refresh_pattern .               0       20%     4320
 EOF
 
@@ -260,12 +262,12 @@ function squid-configure() {
 
 	# standard configure from here
 	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-	if (./configure "${array_final_configure_options[@]}"); then
+	if (./configure "${array_final_configure_options[@]}" >$LOG_FILE); then
 
 		echo "# OK ./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 		# print config.status -config
 		# TODO old echo "config.status --config"
-		${BUILD_DIR}/${SQUID_VERSION}/config.status --config
+		"${BUILD_DIR}/${SQUID_VERSION}"/config.status --config
 
 	else
 
@@ -284,13 +286,13 @@ function squid-make() {
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 
 	# make
-	make -j$((NB_CORES + 2)) -l"${NB_CORES}"
+	make -j$((NB_CORES + 2)) -l"${NB_CORES}" >$LOG_FILE
 
 }
 
 function squid-install() {
 
-	sudo make install
+	sudo make install >$LOG_FILE
 
 	# set cache_dir
 	# set permission to cache dir
@@ -317,7 +319,7 @@ function squid-install() {
 
 function squid-get-version() {
 	# print version
-	echo "# Info Version of squid"
+	echo "# INFO Version of squid"
 	sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
 }
 
@@ -325,9 +327,9 @@ function squid-parse-config() {
 	# check/parse  config
 	echo "# INFO parse config ${SQUID_CONF}"
 	if (sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"); then
-		echo "OK squid config is ok"
+		echo "# OK squid config is valid"
 	else
-		echo "ERROR squid config is NOT ok"
+		echo "ERROR squid config is NOT valid"
 		echo "EXIT 1"
 		exit 1
 	fi
@@ -339,7 +341,7 @@ function squid-start() {
 	echo "# ACTION start squid"
 	sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
-	while ! (squidclient mgr:info | grep 200 >/dev/null); do
+	while ! (squidclient mgr:info | grep 200 >/dev/null 2>/dev/null); do
 		echo "# WAIT for start SQUID and try to connect"
 		sleep 1
 	done
@@ -352,8 +354,9 @@ function squid-start() {
 function squid-default-check() {
 	# check squid is working (weak test)
 	echo "# ACTION check squid with google.com request"
-	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
-	echo $count_match
+	((count_match = $(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")))
+	echo "# INFO $count_match request page(s) found"
+
 	if [ "$count_match" -gt "0" ]; then
 
 		echo "# OK squid works"

@@ -18,6 +18,6 @@ function squid-download-and-extract() {
 
 	curl "http://www.squid-cache.org/Versions/v3/3.5/${SQUID_TAR}" -o "/tmp/${SQUID_TAR}"
 
-	tar xzf "/tmp/${SQUID_TAR}" -C $1
+	tar xzf "/tmp/${SQUID_TAR}" -C "$1"
 
 }
