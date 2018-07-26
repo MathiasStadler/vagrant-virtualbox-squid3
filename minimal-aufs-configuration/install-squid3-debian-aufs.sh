@@ -183,7 +183,7 @@ EOF
 
 }
 
-function squid-default-package-list() {
+function squid-prepare-default-package-list() {
 	# TODO old INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
 
 	cat <<EOF >${INSTALL_DEFAULT_PACKAGE}
