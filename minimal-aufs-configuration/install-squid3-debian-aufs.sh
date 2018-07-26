@@ -292,8 +292,8 @@ function squid-start() {
 	echo "start squid"
 	sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
-	while squidclient mgr:info | grep 200 >/dev/null; do
-		echo "# WAIT for start squid"
+	while ! (squidclient mgr:info | grep 200 >/dev/null); do
+		echo "# WAIT for start SQUID and try to connect"
 		sleep 1
 	done
 }
