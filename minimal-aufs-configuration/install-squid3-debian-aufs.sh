@@ -3,6 +3,11 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+TEMP_DIR="/tmp"
+
+# BUILD_DIR for tar extract, make ...
+BUILD_DIR=$TEMP_DIR
+
 # import project variables
 DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
@@ -206,7 +211,8 @@ function squid-configure() {
 	# TODO old only sample UnixShell=("${Unix[@]}" "${Shell[@]}")
 	array_final_configure_options=("${array_configure_options[@]}" "${array_add_one_configure_options[@]}")
 
-	cd "/tmp/${SQUID_VERSION}"
+	# change to build dir
+	cd "${BUILD_DIR}/${SQUID_VERSION}"
 
 	# explain a lot of ./configure flags
 	# http://etutorials.org/Server+Administration/Squid.+The+definitive+guide/Chapter+3.+Compiling+and+Installing/3.4+The+configure+Script/
@@ -215,10 +221,10 @@ function squid-configure() {
 	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
 	if (./configure "${array_final_configure_options[@]}"); then
 
-		echo "./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
+		echo "# OK ./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 		# print config.status -config
-		echo "config.status --config"
-		/tmp/squid-3.5.27/config.status --config
+		# TODO old echo "config.status --config"
+		${BUILD_DIR}/${SQUID_VERSION}/config.status --config
 
 	else
 
@@ -229,6 +235,9 @@ function squid-configure() {
 }
 
 function squid-make() {
+
+	# change to build dir
+	cd "${BUILD_DIR}/${SQUID_VERSION}"
 
 	# calculate cpu count
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
@@ -378,7 +387,8 @@ squid-prepare-package-list
 squid-prepare-default-config
 squid-add-one-config
 squid-install-packages
-squid-download-and-extract "/tmp"
+squid-download-and-extract "$BUILD_DIR"
+squid-configure
 squid-make
 squid-install
 squid-get-version
