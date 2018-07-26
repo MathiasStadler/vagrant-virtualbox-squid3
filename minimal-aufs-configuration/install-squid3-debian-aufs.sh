@@ -219,6 +219,7 @@ function squid-prepare-default-autoconf-configure() {
 
 function squid-install-packages() {
 
+	echo"# ACTION install packages"
 	# join default package list
 	cat ${INSTALL_DEFAULT_PACKAGE} >>${INSTALL_PACKAGE_FINAL_LIST}
 	# join use case package list
@@ -229,12 +230,12 @@ function squid-install-packages() {
 	if (
 		export DEBIAN_FRONTEND=noninteractive &&
 			TERM=linux &&
-			sudo apt-get update >>$LOG_FILE &&
-			sudo apt-get upgrade -y >>$LOG_FILE &&
-			sudo apt-get autoremove -y >>$LOG_FILE
+			sudo apt-get update | tee -a "${LOG_FILE}" >/dev/null &&
+			sudo apt-get upgrade -y | tee -a "${LOG_FILE}" >/dev/null &&
+			sudo apt-get autoremove -y | tee -a "${LOG_FILE}" >/dev/null
 
 		# shellcheck disable=1072,2046
-		sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_FINAL_LIST}) >>$LOG_FILE
+		sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_FINAL_LIST}) | tee -a "${LOG_FILE}" >/dev/null
 
 	); then
 		echo "# OK package installed"
@@ -249,9 +250,6 @@ function squid-install-packages() {
 
 }
 
-# import from ../settings/squid_download
-# squid_download_and_extract
-
 function swap_off() {
 	# swapoff it is virtual box
 	# swapoff all swap area
@@ -261,7 +259,6 @@ function swap_off() {
 function squid-configure() {
 
 	# join arrays array_configure_options + array_add_one_configure_options
-	# TODO old only sample UnixShell=("${Unix[@]}" "${Shell[@]}")
 	array_final_configure_options=("${array_configure_options[@]}" "${array_add_one_configure_options[@]}")
 
 	# change to build dir
@@ -272,19 +269,16 @@ function squid-configure() {
 
 	# standard configure from here
 	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-	if (./configure "${array_final_configure_options[@]}" >>$LOG_FILE); then
-
+	if (./configure "${array_final_configure_options[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK ./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 		# print config.status -config
 		# TODO old echo "config.status --config"
 		"${BUILD_DIR}/${SQUID_VERSION}"/config.status --config
 
 	else
-
 		echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
 		exit 1
 	fi
-
 }
 
 function squid-make() {
@@ -296,13 +290,13 @@ function squid-make() {
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 
 	# make
-	make -j$((NB_CORES + 2)) -l"${NB_CORES}" >>$LOG_FILE
+	make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" >/dev/null
 
 }
 
 function squid-install() {
 
-	sudo make install >>$LOG_FILE
+	sudo make install tee -a "${LOG_FILE}" >/dev/null
 
 	# set cache_dir
 	# set permission to cache dir
@@ -357,10 +351,6 @@ function squid-start() {
 	done
 }
 
-# wait for squid
-# echo "wait until squid is started"
-# sleep 10
-
 function squid-default-check() {
 	# check squid is working (weak test)
 	echo "# ACTION check squid with google.com request"
@@ -384,21 +374,12 @@ function squid-stop() {
 	echo "# ACTION stop squid"
 	sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 
-	# wait until squid is really stop
-
-	## find pid of squid
-	# SC2009
-	# SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
-	# improved
-	# TODO old echo "# Info  PID of squid process"
+	# get PID of squid
 	SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
-
-	# TODO old echo "the pid of squid is => ${SQUID_PID}"
 
 	echo "# INFO PID of squid is => ${SQUID_PID}"
 
-	## wait until the thread is finish
-	# TODO old echo "#WAIT until squid stop"
+	#wait until the thread is finish
 	while ps -p "$SQUID_PID" >/dev/null; do
 		echo "# WAIT for stop squid PID => ${SQUID_PID} "
 		sleep 1
@@ -409,34 +390,8 @@ function squid-stop() {
 function squid-create-cache-structure() {
 	# create cache_dir structure
 	echo "# ACTION create cache structure"
-	sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
+	sudo /usr/sbin/squid -z -f "${SQUID_CONF}" | tee -a "${LOG_FILE}" >/dev/null
 }
-
-# start squid again
-# start
-# echo "start squid again"
-# sudo /usr/sbin/squid -f "${SQUID_CONF}"
-
-# wait for squid
-# echo "wait for squid"
-# sleep 10
-
-# check squid is working (weak test)
-# echo "check squid is working via request (weak test)"
-# let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
-# echo $count_match
-# if [ "$count_match" -gt "0" ]; then
-
-#	echo "squid works with cache_dir"
-#else
-
-#	echo "squid NOT works with cache_dir"
-#	exit 1
-# fi
-
-# finish
-# echo "works"
-# exit 0
 
 # ensure ccache
 ccache-is-in-place
