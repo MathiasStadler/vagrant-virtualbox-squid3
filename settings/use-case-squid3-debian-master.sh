@@ -31,17 +31,14 @@ if [[ ! -d "$SETTINGS_DIR" ]]; then
 	SETTINGS_DIR="$HOME/settings"
 	if [[ ! -d "$SETTINGS_DIR" ]]; then
 		echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
-		echo "# EXIT 1"
 		SETTINGS_DIR="/home/vagrant/settings"
 		if [[ ! -d "$SETTINGS_DIR" ]]; then
 			echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
 			echo "# EXIT 1"
 			exit 1
-
 		else
 			echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 		fi
-
 	else
 		echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 	fi

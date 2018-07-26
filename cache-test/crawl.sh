@@ -15,6 +15,11 @@ URL_TEXT="${WORK_DIR}/urls.txt"
 SUB_URLS_TXT="${WORK_DIR}/sub-urls.txt"
 SUB_2_URLS_TXT="${WORK_DIR}/sub-2-urls.txt"
 
+# create new empty files
+touch $URL_TEXT
+touch $SUB_URLS_TXT
+touch $SUB_2_URLS_TXT
+
 site=$1
 proxy_ip=$2
 proxy_port=$3
