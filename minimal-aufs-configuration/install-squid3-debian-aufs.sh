@@ -8,7 +8,7 @@ readonly TEMP_DIR="/tmp"
 # BUILD_DIR for tar extract, make ...
 readonly BUILD_DIR=$TEMP_DIR
 
-readonly LOG_FILE="${BUILD_DIR}/build.log"
+readonly LOG_FILE="${BUILD_DIR}/build_$$_$(date +%F_%H-%M-%S).log"
 
 # CONSTANTS
 readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
@@ -262,7 +262,7 @@ function squid-configure() {
 
 	# standard configure from here
 	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
-	if (./configure "${array_final_configure_options[@]}" >$LOG_FILE); then
+	if (./configure "${array_final_configure_options[@]}" >>$LOG_FILE); then
 
 		echo "# OK ./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
 		# print config.status -config
@@ -286,13 +286,13 @@ function squid-make() {
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 
 	# make
-	make -j$((NB_CORES + 2)) -l"${NB_CORES}" >$LOG_FILE
+	make -j$((NB_CORES + 2)) -l"${NB_CORES}" >>$LOG_FILE
 
 }
 
 function squid-install() {
 
-	sudo make install >$LOG_FILE
+	sudo make install >>$LOG_FILE
 
 	# set cache_dir
 	# set permission to cache dir
