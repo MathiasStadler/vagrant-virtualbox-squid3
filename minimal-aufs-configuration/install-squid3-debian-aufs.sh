@@ -200,7 +200,7 @@ function swap_off() {
 	sudo swapoff -a
 }
 
-function squid-make() {
+function squid-configure() {
 
 	# join arrays array_configure_options + array_add_one_configure_options
 	# TODO old only sample UnixShell=("${Unix[@]}" "${Shell[@]}")
@@ -226,21 +226,30 @@ function squid-make() {
 		exit 1
 	fi
 
+}
+
+function squid-make() {
+
+	# calculate cpu count
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
-	sudo make -j$((NB_CORES + 2)) -l"${NB_CORES}"
-	sudo make install
+
+	# make
+	make -j$((NB_CORES + 2)) -l"${NB_CORES}"
+
 }
 
 function squid-install() {
 
 	# set cache_dir
 	# set permission to cache dir
-	echo "change permission for cache directory"
+	echo "# Action change permission for cache directory"
 	sudo chown proxy:proxy /cache0
 	sudo chown proxy:proxy /cache1
 
 	# set rights to /var/log/squid
 	sudo chown -R proxy:proxy /var/log/squid
+
+	sudo make install
 }
 
 # start squid as daemon
@@ -249,7 +258,7 @@ function squid-install() {
 
 function squid-get-version() {
 	# print version
-	echo "Version of squid"
+	echo "# Info Version of squid"
 	sudo /usr/sbin/squid -v -f "${SQUID_CONF}"
 }
 
@@ -272,15 +281,16 @@ function squid-start() {
 
 function squid-check() {
 	# check squid is working (weak test)
-	echo " check squid with weak request"
+	echo "#Action check squid with weak request"
 	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
 	echo $count_match
 	if [ "$count_match" -gt "0" ]; then
 
-		echo "squid works"
+		echo "# Ok squid works"
 	else
 
-		echo "squid NOT works"
+		echo "# ERROR squid NOT works"
+		echo "# Exit 1"
 		exit 1
 	fi
 
@@ -288,7 +298,7 @@ function squid-check() {
 
 function squid-stop() {
 	# stop
-	echo "stop squid"
+	echo "# Action stop squid"
 	sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 
 	# wait until squid is really stop
@@ -297,19 +307,21 @@ function squid-stop() {
 	# SC2009
 	# SQUID_PID=$(ps auxww | grep "$*" | grep -v grep | grep /usr/sbin/squid | awk '{print $2}')
 	# improved
-	echo " get PID of squid process"
+	# TODO old echo "# Info  PID of squid process"
 	SQUID_PID="$(pgrep -a squid | grep /usr/sbin/squid | awk '{print $1}')"
 
-	echo "the pid of squid is => ${SQUID_PID}"
+	# TODO old echo "the pid of squid is => ${SQUID_PID}"
+
+	echo "# INFO PID of squid is => ${SQUID_PID}"
 
 	# TODO old
 	## print process for debug
 	# pgrep "$SQUID_PID"
 
 	## wait until the thread is finish
-	echo "wait until squid ist stop"
+	# TODO old echo "#WAIT until squid stop"
 	while ps -p "$SQUID_PID" >/dev/null; do
-		echo "# Wait for stop squid PID=${SQUID_PID} "
+		echo "# WAIT for stop squid PID=${SQUID_PID} "
 		sleep 1
 	done
 
@@ -318,7 +330,7 @@ function squid-stop() {
 function squid-add-use-case-config() {
 
 	# append cache_dir entry to ${SQUID_CONF}
-	echo "Add cache config to ${SQUID_CONF}"
+	echo "# ACTION Add use case config to ${SQUID_CONF}"
 	echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 	echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
 
@@ -326,7 +338,7 @@ function squid-add-use-case-config() {
 
 function squid-create-cache-structure() {
 	# create cache_dir structure
-	echo "create cache structure"
+	echo "# ACTION create cache structure"
 	sudo /usr/sbin/squid -z -f "${SQUID_CONF}"
 }
 
@@ -366,6 +378,7 @@ squid-prepare-package-list
 squid-prepare-default-config
 squid-add-one-config
 squid-install-packages
+squid-download-and-extract
 squid-make
 squid-install
 squid-get-version
