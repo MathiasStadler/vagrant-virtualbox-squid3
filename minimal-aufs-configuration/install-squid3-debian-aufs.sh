@@ -435,7 +435,7 @@ squid-use-case-additional-config-file
 squid-prepare-default-config-file
 squid-prepare-default-package-list
 squid-prepare-default-autoconf-configure
-squid-install-default-packages
+squid-install-packages
 squid-download-and-extract "$BUILD_DIR"
 # start install process from scratch
 squid-configure
