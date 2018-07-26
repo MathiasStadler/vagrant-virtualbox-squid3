@@ -394,7 +394,7 @@ function squid-stop() {
 function squid-create-cache-structure() {
 	# create cache_dir structure
 	echo "# ACTION create cache structure"
-	sudo /usr/sbin/squid -z -f "${SQUID_CONF}" | tee -a "${LOG_FILE}" >/dev/null
+	sudo /usr/sbin/squid -z -f "${SQUID_CONF}" 2>&1 | tee -a "${LOG_FILE}" >/dev/null
 }
 
 # ensure ccache
