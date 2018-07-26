@@ -10,12 +10,23 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
 fi
 
 # SETTINGS_DIR="${DIR}/settings"
-SETTINGS_DIR="/home/vagrant/settings"
+SETTINGS_DIR="../../settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
-	echo "SETTINGS directory NOT found => $SETTINGS_DIR"
-	exit 1
+	echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
+
 else
 	echo "# OK settings dir $SETTINGS_DIR"
+fi
+
+# SETTINGS_DIR="${DIR}/settings"
+SETTINGS_DIR="$HOME/settings"
+if [[ ! -d "$SETTINGS_DIR" ]]; then
+	echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
+	echo "# EXIT 1"
+	exit 1
+
+else
+	echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 fi
 
 # shellcheck disable=SC1090,SC1091
