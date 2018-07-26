@@ -10,11 +10,12 @@ function ccache-is-in-place() {
 	# check if ccache is in place
 	if (ls -lh /usr/local/bin/gcc | grep ccache); then
 
-		echo "OK found ccache"
+		echo "# OK found ccache"
 
 	else
 
-		echo "NOT OK CCache NOT found"
+		echo "# NOT OK CCache NOT found"
+		echo "# EXIT 1"
 		exit 1
 	fi
 

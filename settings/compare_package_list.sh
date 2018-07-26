@@ -14,12 +14,12 @@ function save_package_list_for_compare() {
 		echo "LIST is unset"
 		exit 1
 	else
-		echo "list is set to '$1'"
+		echo "# INFO list is set to '$1'"
 
 	fi
 
 	local LIST=$1
-	dpkg -l | sort >"$HOME/$LIST"
+	dpkg -l | sort >"$BUILD_DIR/$LIST"
 
 }
 

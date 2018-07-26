@@ -271,8 +271,8 @@ function squid-configure() {
 	# https://wiki.squid-cache.org/SquidFaq/CompilingSquid#Debian.2C_Ubuntu
 	if (./configure "${array_final_configure_options[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK ./configure ${FINAL_AUTOCONF_OPTIONS} run without error"
+
 		# print config.status -config
-		# TODO old echo "config.status --config"
 		"${BUILD_DIR}/${SQUID_VERSION}"/config.status --config
 
 	else
@@ -296,7 +296,7 @@ function squid-make() {
 
 function squid-install() {
 
-	sudo make install tee -a "${LOG_FILE}" >/dev/null
+	sudo make install-exec | tee -a "${LOG_FILE}" >/dev/null
 
 	# set cache_dir
 	# set permission to cache dir
@@ -337,7 +337,6 @@ function squid-parse-config() {
 		echo "EXIT 1"
 		exit 1
 	fi
-
 }
 
 function squid-start() {
@@ -358,15 +357,12 @@ function squid-default-check() {
 	echo "# INFO $count_match request page(s) found"
 
 	if [ "$count_match" -gt "0" ]; then
-
 		echo "# OK squid works"
 	else
-
 		echo "# ERROR squid NOT works"
 		echo "# EXIT 1"
 		exit 1
 	fi
-
 }
 
 function squid-stop() {
@@ -384,7 +380,6 @@ function squid-stop() {
 		echo "# WAIT for stop squid PID => ${SQUID_PID} "
 		sleep 1
 	done
-
 }
 
 function squid-create-cache-structure() {
