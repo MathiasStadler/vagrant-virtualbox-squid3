@@ -361,13 +361,17 @@ ccache-is-in-place
 
 # main loop squid
 
-squid-compare-package-list
-prepare-squiddefault-autoconf-config
-add_one_autoconf_config
+squid-create-conf
+squid-prepare-package-list
+squid-prepare-default-config
+squid-add-one-config
+squid-install-packages
 squid-make
 squid-install
-squid-version
+squid-get-version
 squid-parse-config
 squid-start
 squid-check
 squid-stop
+squid-add-use-case-config
+squid-create-cache-structure
