@@ -305,7 +305,7 @@ function squid-make() {
 
 function squid-install() {
 
-	sudo make install-exec | tee -a "${LOG_FILE}" >/dev/null
+	sudo make install | tee -a "${LOG_FILE}" >/dev/null
 
 	# set cache_dir
 	# set permission to cache dir
