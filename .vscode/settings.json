@@ -59,6 +59,7 @@
         "uuid",
         "vbox",
         "vboxguest",
+        "virtualbox",
         "wais",
         "zxvf"
     ],
