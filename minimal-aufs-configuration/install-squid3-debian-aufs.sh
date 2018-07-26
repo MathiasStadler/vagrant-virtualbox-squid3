@@ -3,10 +3,15 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-TEMP_DIR="/tmp"
+readonly TEMP_DIR="/tmp"
 
 # BUILD_DIR for tar extract, make ...
-BUILD_DIR=$TEMP_DIR
+readonly BUILD_DIR=$TEMP_DIR
+
+# CONSTANTS
+readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
+readonly INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
+readonly INSTALL_PACKAGE_USE_CASE="${BUILD_DIR}/install-package-use-case.list"
 
 # import project variables
 DIR="${BASH_SOURCE%/*}"
@@ -18,20 +23,19 @@ fi
 SETTINGS_DIR="../../settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
 	echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
+	# SETTINGS_DIR="${DIR}/settings"
+	SETTINGS_DIR="$HOME/settings"
+	if [[ ! -d "$SETTINGS_DIR" ]]; then
+		echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
+		echo "# EXIT 1"
+		exit 1
+
+	else
+		echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
+	fi
 
 else
 	echo "# OK settings dir $SETTINGS_DIR"
-fi
-
-# SETTINGS_DIR="${DIR}/settings"
-SETTINGS_DIR="$HOME/settings"
-if [[ ! -d "$SETTINGS_DIR" ]]; then
-	echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
-	echo "# EXIT 1"
-	exit 1
-
-else
-	echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 fi
 
 # shellcheck disable=SC1090,SC1091
@@ -51,9 +55,47 @@ source "$SETTINGS_DIR/compare_package_list.sh"
 
 # minimal 3.5 config
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
-SQUID_CONF="/home/vagrant/squid.conf"
+SQUID_CONF="${BUILD_DIR}/squid.conf"
 
-function squid-create-conf() {
+#######################################
+# Modify for use case start############
+#######################################
+function squid-use-case-package-list() {
+
+	cat <<EOF >${INSTALL_PACKAGE_USE_CASE}
+	# empty
+	# package 1
+	# entry package name without default bash comment sign
+
+EOF
+
+}
+
+function squid-use-case-additional-autoconf-configure() {
+	# only autoconf config for this use case
+	array_add_one_configure_options=("--enable-storeio=aufs,ufs")
+
+}
+
+function squid-use-case-additional-config-file() {
+
+	# append cache_dir entry to ${SQUID_CONF}
+	echo "# ACTION Add use case config to ${SQUID_CONF}"
+	echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+	echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+
+}
+
+function squid-use-case-check() {
+	# check use case
+
+	squid-default-check
+}
+#######################################
+# Modify for use case end  ############
+#######################################
+
+function squid-prepare-default-config-file() {
 
 	cat <<EOF >"${SQUID_CONF}"
 #
@@ -141,10 +183,10 @@ EOF
 
 }
 
-function squid-prepare-package-list() {
-	INSTALL_PACKAGE_ADD_ON="install-package-add-on.list"
+function squid-default-package-list() {
+	# TODO old INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
 
-	cat <<EOF >${INSTALL_PACKAGE_ADD_ON}
+	cat <<EOF >${INSTALL_DEFAULT_PACKAGE}
 build-essential
 curl
 # test not need wget
@@ -153,7 +195,7 @@ EOF
 
 }
 
-function squid-prepare-default-config() {
+function squid-prepare-default-autoconf-configure() {
 
 	# set prefix squid installation
 	PREFIX="/usr"
@@ -172,13 +214,12 @@ function squid-prepare-default-config() {
 	)
 }
 
-function squid-add-one-config() {
-	# only autoconf config for this use case
-	array_add_one_configure_options=("--enable-storeio=aufs,ufs")
-
-}
-
 function squid-install-packages() {
+
+	# join default package list
+	cat ${INSTALL_DEFAULT_PACKAGE} >>${INSTALL_PACKAGE_FINAL_LIST}
+	# join use case package list
+	cat ${INSTALL_PACKAGE_USE_CASE} >>${INSTALL_DEFAULT_PACKAGE}
 
 	save_package_list_for_compare "package_list_before_install"
 
@@ -189,7 +230,7 @@ function squid-install-packages() {
 		sudo apt-get autoremove -y
 
 	# shellcheck disable=1072,2046
-	sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_ADD_ON})
+	sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_FINAL_LIST})
 
 	# save list
 	save_package_list_for_compare "package_list_after_install"
@@ -302,7 +343,7 @@ function squid-start() {
 # echo "wait until squid is started"
 # sleep 10
 
-function squid-check() {
+function squid-default-check() {
 	# check squid is working (weak test)
 	echo "#Action check squid with weak request"
 	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
@@ -350,15 +391,6 @@ function squid-stop() {
 
 }
 
-function squid-add-use-case-config() {
-
-	# append cache_dir entry to ${SQUID_CONF}
-	echo "# ACTION Add use case config to ${SQUID_CONF}"
-	echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
-	echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
-
-}
-
 function squid-create-cache-structure() {
 	# create cache_dir structure
 	echo "# ACTION create cache structure"
@@ -391,24 +423,38 @@ function squid-create-cache-structure() {
 # echo "works"
 # exit 0
 
-# check ccache
+# ensure ccache
 ccache-is-in-place
 
-# main loop squid
+# prepare  use case
+squid-use-case-package-list
+squid-use-case-additional-autoconf-configure
+squid-use-case-additional-config-file
 
-squid-create-conf
-squid-prepare-package-list
-squid-prepare-default-config
-squid-add-one-config
-squid-install-packages
+# start main loop squid
+squid-prepare-default-config-file
+squid-prepare-default-package-list
+squid-prepare-default-autoconf-configure
+squid-install-default-packages
 squid-download-and-extract "$BUILD_DIR"
+# start install process from scratch
 squid-configure
 squid-make
 squid-install
+# check installation
 squid-get-version
 squid-parse-config
 squid-start
-squid-check
+squid-default-check
 squid-stop
+# end main loop
+
+# start test use case
 squid-add-use-case-config
+squid-parse-config
 squid-create-cache-structure
+# check use case
+squid-start
+squid-use-case-check
+squid-stop
+# end test use case
