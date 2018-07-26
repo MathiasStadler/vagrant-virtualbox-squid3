@@ -324,13 +324,19 @@ function squid-get-version() {
 function squid-parse-config() {
 	# check/parse  config
 	echo "# INFO parse config ${SQUID_CONF}"
-	sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
+	if (sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"); then
+		echo "OK squid config is ok"
+	else
+		echo "ERROR squid config is NOT ok"
+		echo "EXIT 1"
+		exit 1
+	fi
 
 }
 
 function squid-start() {
 	# start
-	echo "start squid"
+	echo "# ACTION start squid"
 	sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 	while ! (squidclient mgr:info | grep 200 >/dev/null); do
@@ -345,16 +351,16 @@ function squid-start() {
 
 function squid-default-check() {
 	# check squid is working (weak test)
-	echo "#Action check squid with weak request"
+	echo "# ACTION check squid with google.com request"
 	let count_match=$(curl -vs -vvv -x 127.0.0.1:3128 google.com 2>&1 | grep -c -i "${SQUID_VERSION_STRING}")
 	echo $count_match
 	if [ "$count_match" -gt "0" ]; then
 
-		echo "# Ok squid works"
+		echo "# OK squid works"
 	else
 
 		echo "# ERROR squid NOT works"
-		echo "# Exit 1"
+		echo "# EXIT 1"
 		exit 1
 	fi
 
@@ -362,7 +368,7 @@ function squid-default-check() {
 
 function squid-stop() {
 	# stop
-	echo "# Action stop squid"
+	echo "# ACTION stop squid"
 	sudo /usr/sbin/squid -k shutdown -f "${SQUID_CONF}"
 
 	# wait until squid is really stop
@@ -378,14 +384,10 @@ function squid-stop() {
 
 	echo "# INFO PID of squid is => ${SQUID_PID}"
 
-	# TODO old
-	## print process for debug
-	# pgrep "$SQUID_PID"
-
 	## wait until the thread is finish
 	# TODO old echo "#WAIT until squid stop"
 	while ps -p "$SQUID_PID" >/dev/null; do
-		echo "# WAIT for stop squid PID=${SQUID_PID} "
+		echo "# WAIT for stop squid PID => ${SQUID_PID} "
 		sleep 1
 	done
 
@@ -458,3 +460,6 @@ squid-start
 squid-use-case-check
 squid-stop
 # end test use case
+echo "# Finished"
+echo "# EXIT 0"
+exit 0
