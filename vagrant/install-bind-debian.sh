@@ -37,6 +37,7 @@ function detect-last-bind-version() {
 
 }
 
+# call function
 detect-last-bind-version
 
 echo "# INFO GLOBAL BIND last release is $VERSION_NUMBER"
@@ -47,4 +48,19 @@ BIND_VERSION=${BIND_TAR//.tar.gz/}
 # shellcheck disable=SC2034
 BIND_VERSION_STRING=${BIND_VERSION//-//}
 
+# call function
 download-and-extract "$BIND_DOWNLOAD_SITE$VERSION_NUMBER" "$BIND_TAR" "$BUILD_DIR"
+
+array_configure_options=(
+	"--prefix=${PREFIX}"
+	"--localstatedir=/var"
+	"--libexecdir=${PREFIX}/lib/squid"
+	"--datadir=${PREFIX}/share/squid"
+	"--sysconfdir=/etc/squid"
+	"--with-default-user=proxy"
+	"--with-logdir=/var/log/squid"
+	"--with-pidfile=/var/run/squid.pid"
+)
+
+# call function
+configure-package "$BUILD_DIR" "${array_configure_options[@]}"

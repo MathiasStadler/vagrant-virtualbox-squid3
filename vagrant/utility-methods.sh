@@ -16,7 +16,7 @@ function download-and-extract() {
 
 	DOWNLOAD_URL=""
 
-	echo "call download-and-extract"
+	echo "# INFO call download-and-extract"
 
 	if [ -z ${1+x} ]; then
 		echo "# ERROR ARG1 DOWNLOAD_URL NOT set"
@@ -51,5 +51,47 @@ function download-and-extract() {
 	curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
 
 	tar xzf "$TARGET_DIR/${DOWNLOAD_FILE}" -C "${TARGET_DIR}"
+
+}
+
+function configure-package() {
+
+	# ARG1 = TARGET_DIR
+	# ARG2 = ARRAY of AUTOCONF option
+
+	echo "# INFO call configure-package"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 TARGET_DIR NOT set"
+		echo "# EXIT 1"
+		exit 1
+	else
+		TARGET_DIR="$1"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
+
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG2 ARRAY of AUTOCONF option NOT set"
+		echo "# EXIT 1"
+		exit 1
+	else
+		ARRAY_OF_AUTOCONF_OPTION="$2"
+		echo "# INFO ARRAY of AUTOCONF option set to '$DOWNLOAD_FILE'"
+
+	fi
+
+	# run configure
+	if ($TARGET_DIR/configure "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
+		echo "# OK ./configure ${ARRAY_OF_AUTOCONF_OPTION} run without error"
+
+		# print config.status -config
+		"$TARGET_DIR"/config.status --config
+
+	else
+		echo "# ERROR ./configure ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
+		echo "# EXIT 1"
+		exit 1
+	fi
 
 }

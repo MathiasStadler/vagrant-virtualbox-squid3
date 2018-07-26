@@ -282,7 +282,8 @@ function squid-configure() {
 		"${BUILD_DIR}/${SQUID_VERSION}"/config.status --config
 
 	else
-		echo "./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
+		echo "# ERROR ./configure ${FINAL_AUTOCONF_OPTIONS} raise ERROR"
+		echo "# EXIT 1"
 		exit 1
 	fi
 }
