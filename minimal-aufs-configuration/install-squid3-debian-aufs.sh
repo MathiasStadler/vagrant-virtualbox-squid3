@@ -429,7 +429,6 @@ ccache-is-in-place
 # prepare  use case
 squid-use-case-package-list
 squid-use-case-additional-autoconf-configure
-squid-use-case-additional-config-file
 
 # start main loop squid
 squid-prepare-default-config-file
@@ -444,13 +443,14 @@ squid-install
 # check installation
 squid-get-version
 squid-parse-config
+squid-create-cache-structure
 squid-start
 squid-default-check
 squid-stop
 # end main loop
 
 # start test use case
-squid-add-use-case-config
+squid-use-case-additional-config-file
 squid-parse-config
 squid-create-cache-structure
 # check use case
