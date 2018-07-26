@@ -8,10 +8,11 @@ function squid-download-and-extract() {
 	echo "call squid-download-and-extract"
 
 	if [ -z ${1+x} ]; then
-		echo "DIRECTORY to extract NOT set"
+		echo "# ERROR DIRECTORY to extract NOT set"
+		echo "# EXIT 1"
 		exit 1
 	else
-		echo "install to '$1'"
+		echo "# INFO install to '$1'"
 
 	fi
 

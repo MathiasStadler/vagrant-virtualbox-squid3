@@ -378,7 +378,7 @@ squid-prepare-package-list
 squid-prepare-default-config
 squid-add-one-config
 squid-install-packages
-squid-download-and-extract
+squid-download-and-extract "/tmp"
 squid-make
 squid-install
 squid-get-version
