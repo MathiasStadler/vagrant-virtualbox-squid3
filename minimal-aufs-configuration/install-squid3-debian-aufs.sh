@@ -48,7 +48,7 @@ source "$SETTINGS_DIR/compare_package_list.sh"
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
 SQUID_CONF="/home/vagrant/squid.conf"
 
-function squid_create_conf() {
+function squid-create-conf() {
 
 	cat <<EOF >"${SQUID_CONF}"
 #
@@ -315,7 +315,7 @@ function squid-stop() {
 
 }
 
-function squid_add_use_case_config() {
+function squid-add-use-case-config() {
 
 	# append cache_dir entry to ${SQUID_CONF}
 	echo "Add cache config to ${SQUID_CONF}"
@@ -360,14 +360,14 @@ function squid-create-cache-structure() {
 ccache-is-in-place
 
 # main loop squid
-squid-create-conf
-squid-compare_package_list
-prepare_squid_default_autoconf_config
+
+squid-compare-package-list
+prepare-squiddefault-autoconf-config
 add_one_autoconf_config
-squid_make
-squid_install
-squid_version
-squid_parse_config
-squid_start
-squid_check
-squid_stop
+squid-make
+squid-install
+squid-version
+squid-parse-config
+squid-start
+squid-check
+squid-stop
