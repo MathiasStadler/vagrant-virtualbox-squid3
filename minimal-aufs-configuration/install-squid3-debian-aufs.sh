@@ -177,9 +177,10 @@ EOF
 
 	# check ${SQUID_CONF} is wrote
 	if [ -e "${SQUID_CONF}" ]; then
-		echo "ok file ${SQUID_CONF} wrote"
+		echo "# OK file ${SQUID_CONF} wrote"
 	else
-		echo " file NOT ‚${SQUID_CONF} avaible"
+		echo "# ERROR file ${SQUID_CONF} not avaible"
+		echo "# EXIT 1"
 		exit 1
 	fi
 
@@ -225,14 +226,23 @@ function squid-install-packages() {
 
 	save_package_list_for_compare "package_list_before_install"
 
-	export DEBIAN_FRONTEND=noninteractive &&
-		TERM=linux &&
-		sudo apt-get update &&
-		sudo apt-get upgrade -y &&
-		sudo apt-get autoremove -y
+	if (
+		export DEBIAN_FRONTEND=noninteractive &&
+			TERM=linux &&
+			sudo apt-get update >>$LOG_FILE &&
+			sudo apt-get upgrade -y >>$LOG_FILE &&
+			sudo apt-get autoremove -y >>$LOG_FILE
 
-	# shellcheck disable=1072,2046
-	sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_FINAL_LIST})
+		# shellcheck disable=1072,2046
+		sudo apt-get install -y --no-install-recommends $(sed -e '/^[[:space:]]*$/d' -e '/^[[:space:]]*#/d' ${INSTALL_PACKAGE_FINAL_LIST}) >>$LOG_FILE
+
+	); then
+		echo "# OK package installed"
+	else
+		echo "# ERROR packages NOT installed"
+		echo "# EXIT 1"
+		exit 1
+	fi
 
 	# save list
 	save_package_list_for_compare "package_list_after_install"
