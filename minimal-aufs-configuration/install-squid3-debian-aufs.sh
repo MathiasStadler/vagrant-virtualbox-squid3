@@ -249,16 +249,25 @@ function squid-make() {
 
 function squid-install() {
 
+	sudo make install
+
 	# set cache_dir
 	# set permission to cache dir
 	echo "# Action change permission for cache directory"
-	sudo chown proxy:proxy /cache0
-	sudo chown proxy:proxy /cache1
 
+	if [ -d /cache0 ]; then
+		sudo chown proxy:proxy /cache0
+	fi
+
+	if [ -d /cache1 ]; then
+		sudo chown proxy:proxy /cache1
+	fi
+
+	sudo mkdir -p /var/log/squid
+	sudo chown proxy:proxy /var/log/squid
 	# set rights to /var/log/squid
 	sudo chown -R proxy:proxy /var/log/squid
 
-	sudo make install
 }
 
 # start squid as daemon
@@ -273,7 +282,7 @@ function squid-get-version() {
 
 function squid-parse-config() {
 	# check/parse  config
-	echo " parse config ${SQUID_CONF}"
+	echo "# INFO parse config ${SQUID_CONF}"
 	sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"
 
 }
