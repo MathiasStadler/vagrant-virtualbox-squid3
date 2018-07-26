@@ -11,9 +11,11 @@ readonly BUILD_DIR=$TEMP_DIR
 readonly LOG_FILE="${BUILD_DIR}/build_$$_$(date +%F_%H-%M-%S).log"
 
 # CONSTANTS
+
 readonly INSTALL_PACKAGE_FINAL_LIST="${BUILD_DIR}/install-final-package.list"
 readonly INSTALL_DEFAULT_PACKAGE="${BUILD_DIR}/install-default-package.list"
 readonly INSTALL_PACKAGE_USE_CASE="${BUILD_DIR}/install-package-use-case.list"
+readonly SQUID_CONF="${BUILD_DIR}/squid.conf"
 
 # import project variables
 DIR="${BASH_SOURCE%/*}"
@@ -65,7 +67,6 @@ source "$SETTINGS_DIR/compare_package_list.sh"
 
 # minimal 3.5 config
 # https://wiki.squid-cache.org/SquidFaq/ConfiguringSquid#Squid-3.5_default_config
-SQUID_CONF="${BUILD_DIR}/squid.conf"
 
 #######################################
 # Modify for use case start############
@@ -338,7 +339,7 @@ function squid-get-version() {
 function squid-parse-config() {
 	# check/parse  config
 	echo "# INFO parse config ${SQUID_CONF}"
-	if (sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}"); then
+	if ! (sudo /usr/sbin/squid -k parse -f "${SQUID_CONF}" 2>&1 | grep 'FATAL:'); then
 		echo "# OK squid config is valid"
 	else
 		echo "ERROR squid config is NOT valid"
@@ -349,7 +350,7 @@ function squid-parse-config() {
 
 function squid-start() {
 	# start
-	echo "# ACTION start squid"
+	echo "# ACTION start squid with -f ${SQUID_CONF} "
 	sudo /usr/sbin/squid -f "${SQUID_CONF}"
 
 	while ! (squidclient mgr:info | grep 200 >/dev/null 2>/dev/null); do
