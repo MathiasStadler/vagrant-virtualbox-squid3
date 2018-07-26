@@ -81,8 +81,8 @@ function squid-use-case-additional-config-file() {
 
 	# append cache_dir entry to ${SQUID_CONF}
 	echo "# ACTION Add use case config to ${SQUID_CONF}"
-	echo "cache_dir aufs /cache0 7000 16 256" | sudo tee -a "${SQUID_CONF}"
-	echo "cache_dir aufs /cache1 7000 16 256" | sudo tee -a "${SQUID_CONF}"
+	echo "cache_dir aufs /cache0 7000 16 256" | tee -a "${SQUID_CONF}"
+	echo "cache_dir aufs /cache1 7000 16 256" | tee -a "${SQUID_CONF}"
 
 }
 
