@@ -139,7 +139,25 @@ function make-package() {
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 
 	# make
-	make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" >/dev/null
+	echo "# ACTION start make with -j $((NB_CORES + 2)) -l ${NB_CORES}"
 
-	sudo make install
+	if (make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" >/dev/null); then
+		echo "# OK make finished without error"
+	else
+		echo "# ERROR make raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# ACTION make install"
+
+	if (sudo make install tee -a "${LOG_FILE}" >/dev/null); then
+		echo "# OK make install finished without error"
+	else
+		echo "# ERROR make install raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# INFO make install finished"
 }
