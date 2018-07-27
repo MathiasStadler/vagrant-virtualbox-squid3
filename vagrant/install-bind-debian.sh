@@ -28,11 +28,10 @@ VERSION_NUMBER="0.0.0"
 function detect-last-bind-version() {
 
 	readonly TEMP_FILE="/tmp/bind-version.txt"
-	#
 
 	curl -L $BIND_DOWNLOAD_SITE -o $TEMP_FILE
 
-	VERSION_NUMBER=$(cat "$TEMP_FILE" | awk '{print $9}' | sed 's/-.*$//g' | sed 's/[^0-9.]*//' | sed 's/[a-z].*$//g' | sort -u | sort -V | tail -1)
+	VERSION_NUMBER=$(awk '{print $9}' $TEMP_FILE | sed 's/-.*$//g' | sed 's/[^0-9.]*//' | sed 's/[a-z].*$//g' | sort -u | sort -V | tail -1)
 
 	echo "# INFO BIND last release is $VERSION_NUMBER"
 
