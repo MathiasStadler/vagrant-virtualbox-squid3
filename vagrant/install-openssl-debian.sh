@@ -55,7 +55,6 @@ array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
-	"-fPIC"
 	"shared"
 	"zlib-dynamic"
 )
