@@ -61,3 +61,6 @@ array_configure_options=(
 
 # call function
 configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
+
+#call function
+make-package "$BUILD_DIR/$OPENSSL_VERSION"
