@@ -51,16 +51,20 @@ BIND_VERSION_STRING=${BIND_VERSION//-//}
 # call function
 download-and-extract "$BIND_DOWNLOAD_SITE$VERSION_NUMBER" "$BIND_TAR" "$BUILD_DIR"
 
+# set prefix installation
+PREFIX="/usr"
+
+# from here
+# http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 array_configure_options=(
 	"--prefix=${PREFIX}"
+	"--sysconfdir=/etc"
 	"--localstatedir=/var"
-	"--libexecdir=${PREFIX}/lib/squid"
-	"--datadir=${PREFIX}/share/squid"
-	"--sysconfdir=/etc/squid"
-	"--with-default-user=proxy"
-	"--with-logdir=/var/log/squid"
-	"--with-pidfile=/var/run/squid.pid"
+	"--mandir=/usr/share/man"
+	"--enable-threads"
+	"--with-libtool"
+	"--disable-static"
 )
 
 # call function
-configure-package "$BUILD_DIR" "${array_configure_options[@]}"
+configure-package "$BUILD_DIR/$BIND_VERSION" "${array_configure_options[@]}"
