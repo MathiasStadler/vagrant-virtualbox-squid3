@@ -55,8 +55,8 @@ array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
-	"shared"
-	"zlib-dynamic"
+	" shared"
+	" zlib-dynamic"
 )
 
 # CFLAGS=-fPIC from here
@@ -67,3 +67,14 @@ configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_opti
 
 #call function
 make-package "$BUILD_DIR/$OPENSSL_VERSION"
+
+# call install-packages
+
+#
+array_install_packages=(
+	"libz-dev"
+
+)
+
+#call function
+install-packages "${array_install_packages[@]}"

@@ -101,7 +101,7 @@ function configure-package() {
 	cd ${TARGET_DIR}
 
 	# run configure
-	if ! ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep 'error:' >/dev/null); then
+	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
@@ -144,7 +144,7 @@ function make-package() {
 	# make
 	echo "# ACTION start make with -j $((NB_CORES + 2)) -l ${NB_CORES}"
 
-	if (make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" >/dev/null); then
+	if (make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK make finished without error"
 	else
 		echo "# ERROR make raise a error"
@@ -154,7 +154,7 @@ function make-package() {
 
 	echo "# ACTION make install"
 
-	if (sudo make install | tee -a "${LOG_FILE}" >/dev/null); then
+	if (sudo make install | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK make install finished without error"
 	else
 		echo "# ERROR make install raise a error"
@@ -163,4 +163,42 @@ function make-package() {
 	fi
 
 	echo "# INFO make-packages finished"
+}
+
+function install-packages() {
+
+	# ARG1 = ARRAY OF INSTALL PACKAGES
+
+	echo "# INFO call install-packages"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 ARRAY OF INSTALL PACKAGES NOT set"
+		echo "# EXIT 1"
+		exit 1
+	else
+
+		ARRAY_OF_INSTALL_PACKAGES="$*"
+		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '$ARRAY_OF_INSTALL_PACKAGES'"
+
+	fi
+
+	if (
+		export DEBIAN_FRONTEND=noninteractive &&
+			TERM=linux &&
+			sudo apt-get update | tee -a "${LOG_FILE}" >/dev/null
+		# TODO check it is nesseccary at each run
+		# sudo apt-get upgrade -y | tee -a "${LOG_FILE}" >/dev/null
+		# sudo apt-get autoremove -y | tee -a "${LOG_FILE}" >/dev/null
+
+		# shellcheck disable=1072,2046
+		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[@]}" | tee -a "${LOG_FILE}" >/dev/null
+
+	); then
+		echo "# OK package installed"
+	else
+		echo "# ERROR packages NOT installed"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
 }
