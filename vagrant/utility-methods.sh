@@ -151,7 +151,7 @@ function make-package() {
 
 	echo "# ACTION make install"
 
-	if (sudo make install tee -a "${LOG_FILE}" >/dev/null); then
+	if (sudo make install | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK make install finished without error"
 	else
 		echo "# ERROR make install raise a error"
