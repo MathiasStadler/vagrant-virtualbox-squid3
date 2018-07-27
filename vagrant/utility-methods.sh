@@ -70,6 +70,7 @@ function configure-package() {
 		exit 1
 	else
 		TARGET_DIR="$1"
+		shift
 		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
 
 	fi
@@ -79,7 +80,7 @@ function configure-package() {
 		echo "# EXIT 1"
 		exit 1
 	else
-		ARRAY_OF_AUTOCONF_OPTION="$2"
+		ARRAY_OF_AUTOCONF_OPTION="$@"
 		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
 
 	fi
