@@ -58,6 +58,7 @@ function configure-package() {
 
 	# ARG1 = TARGET_DIR
 	# ARG2 = ARRAY of AUTOCONF option
+	# ARG3 = name of config script e.g. configure, config
 
 	echo "# INFO call configure-package"
 
@@ -81,8 +82,25 @@ function configure-package() {
 
 	fi
 
+	if [ -z ${3+x} ]; then
+		echo "# ERROR ARG3 = name of config script e.g. configure, config NOT set"
+		# echo "# EXIT 1"
+		# exit 1
+		# not set
+		echo "# INFO name of config script not set"
+		echo "# ACTION set to default configure"
+		NAME_OF_CONFIG_SCRIPT="configure"
+		echo "# INFo name of config script set to '$NAME_OF_CONFIG_SCRIPT'"
+
+	else
+
+		NAME_OF_CONFIG_SCRIPT="$3"
+		echo "# INFO ARG3 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
+
+	fi
+
 	# run configure
-	if ($TARGET_DIR/configure "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
+	if ($TARGET_DIR/$NAME_OF_CONFIG_SCRIPT "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK ./configure ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
