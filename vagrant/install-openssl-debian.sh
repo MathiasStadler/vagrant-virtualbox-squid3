@@ -52,12 +52,13 @@ PREFIX="/usr"
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 array_configure_options=(
+	"-fPIC"
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
 	" shared"
 	"zlib-dynamic"
-	"CFLAGS=-fPIC"
+
 )
 
 # CFLAGS=-fPIC from here
