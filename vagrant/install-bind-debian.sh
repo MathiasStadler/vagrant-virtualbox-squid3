@@ -64,9 +64,11 @@ array_configure_options=(
 	"--enable-threads"
 	"--with-libtool"
 	"--disable-static"
-	"--enable-debug"
-	"--enable-selftest"
 )
+
+# configure option
+# "--enable-debug"
+# "--enable-selftest"
 
 # call function
 configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
