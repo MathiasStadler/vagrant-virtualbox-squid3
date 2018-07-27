@@ -114,3 +114,32 @@ function configure-package() {
 	fi
 
 }
+
+function make-package() {
+
+	# ARG1 = TARGET_DIR
+
+	echo "# INFO call make-package"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 TARGET_DIR NOT set"
+		echo "# EXIT 1"
+		exit 1
+	else
+		TARGET_DIR="$1"
+
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
+
+	fi
+
+	# change to build dir
+	cd "${TARGET_DIR}"
+
+	# calculate cpu count
+	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
+
+	# make
+	make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" >/dev/null
+
+	sudo make install
+}
