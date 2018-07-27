@@ -71,3 +71,15 @@ configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_opti
 
 #call function
 make-package "$BUILD_DIR/$BIND_VERSION"
+
+function create-zone-file() {
+
+	NAME_CONF_ZONE="named.conf"
+
+	# from here
+	# http://roberts.bplaced.net/index.php/linux-guides/centos-6-guides/proxy-server/squid-transparent-proxy-http-https
+
+	cat <<EOF >"$ZONE_FILE_NAME"
+EOF
+
+}

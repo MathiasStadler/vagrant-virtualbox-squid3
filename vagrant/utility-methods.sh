@@ -81,7 +81,7 @@ function configure-package() {
 		exit 1
 	else
 		NAME_OF_CONFIG_SCRIPT="$2"
-		echo "# INFO ARG2 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
+		echo "# INFO ARG2 = name of config script set to '$NAME_OF_CONFIG_SCRIPT'"
 	fi
 
 	if [ -z ${3+x} ]; then
@@ -99,7 +99,7 @@ function configure-package() {
 	fi
 
 	# run configure
-	if ("$TARGET_DIR/$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
+	if ("$TARGET_DIR/$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
