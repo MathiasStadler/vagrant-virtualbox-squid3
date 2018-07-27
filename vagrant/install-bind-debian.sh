@@ -64,6 +64,7 @@ array_configure_options=(
 	"--enable-threads"
 	"--with-libtool"
 	"--disable-static"
+	"--disable-linux-caps"
 )
 
 # configure option
