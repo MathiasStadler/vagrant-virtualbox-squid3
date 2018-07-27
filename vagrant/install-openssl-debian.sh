@@ -97,7 +97,7 @@ _array_configure_options=(
 	" zlib-dynamic"
 )
 
-array_configure_options=(
+_array_configure_options=(
 	"--prefix=/usr"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib"
@@ -113,7 +113,10 @@ array_configure_options=(
 # https://stackoverflow.com/questions/28234300/usr-local-ssl-lib-libcrypto-a-could-not-read-symbols-bad-value
 
 # call function
-configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
+#onfigure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
+
+cd "$BUILD_DIR/$OPENSSL_VERSION"
+./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
 #call function
 make-package "$BUILD_DIR/$OPENSSL_VERSION"
