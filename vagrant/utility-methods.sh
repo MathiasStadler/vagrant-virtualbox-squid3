@@ -59,8 +59,8 @@ function download-and-extract() {
 function configure-package() {
 
 	# ARG1 = TARGET_DIR
-	# ARG2 = ARRAY of AUTOCONF option
-	# ARG3 = name of config script e.g. configure, config
+	# ARG2 = name of config script e.g. configure, config
+	# ARG3 = ARRAY of AUTOCONF option
 
 	echo "# INFO call configure-package"
 
@@ -76,29 +76,25 @@ function configure-package() {
 	fi
 
 	if [ -z ${2+x} ]; then
-		echo "# ERROR ARG2 ARRAY of AUTOCONF option NOT set"
+		echo "# ERROR ARG2 = name of config script e.g. configure, config NOT set"
 		echo "# EXIT 1"
 		exit 1
+
 	else
-		ARRAY_OF_AUTOCONF_OPTION="$@"
-		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
+
+		NAME_OF_CONFIG_SCRIPT="$2"
+		shift
+		echo "# INFO ARG3 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
 
 	fi
 
 	if [ -z ${3+x} ]; then
-		echo "# ERROR ARG3 = name of config script e.g. configure, config NOT set"
-		# echo "# EXIT 1"
-		# exit 1
-		# not set
-		echo "# INFO name of config script not set"
-		echo "# ACTION set to default configure"
-		NAME_OF_CONFIG_SCRIPT="configure"
-		echo "# INFo name of config script set to '$NAME_OF_CONFIG_SCRIPT'"
-
+		echo "# ERROR ARG3 ARRAY of AUTOCONF option NOT set"
+		echo "# EXIT 1"
+		exit 1
 	else
-
-		NAME_OF_CONFIG_SCRIPT="$3"
-		echo "# INFO ARG3 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
+		ARRAY_OF_AUTOCONF_OPTION="$*"
+		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
 
 	fi
 
