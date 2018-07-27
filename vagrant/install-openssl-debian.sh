@@ -5,9 +5,9 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-# load utility-method.sh
+# load utility-method.sh from same directory
 # shellcheck disable=SC1090,SC1091
-source "./utility-methods.sh"
+source "$(dirname "$0")/utility-methods.sh"
 
 # TEMP_DIR
 readonly TEMP_DIR="/tmp"
