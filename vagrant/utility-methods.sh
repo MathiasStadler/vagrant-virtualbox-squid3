@@ -89,6 +89,10 @@ function configure-package() {
 		echo "# EXIT 1"
 		exit 1
 	else
+		# for first parameter
+		shift
+		# for second parameter
+		shift
 		ARRAY_OF_AUTOCONF_OPTION="$*"
 		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
 
