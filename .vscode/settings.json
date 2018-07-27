@@ -53,6 +53,7 @@
         "printf",
         "readonly",
         "sbin",
+        "selftest",
         "shellcheck",
         "showvminfo",
         "sprintf",

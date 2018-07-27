@@ -64,6 +64,8 @@ array_configure_options=(
 	"--enable-threads"
 	"--with-libtool"
 	"--disable-static"
+	"--enable-debug"
+	"--enable-selftest"
 )
 
 # call function
