@@ -97,15 +97,15 @@ _array_configure_options=(
 	" zlib-dynamic"
 )
 
-_array_configure_options=(
-	"--prefix=/usr"
-	"--openssldir=/etc/ssl"
-	"--libdir=lib"
-	"shared"
-	"zlib-dynamic"
-	"-Wl,-R,'$(LIBRPATH)'"
-	"-Wl,--enable-new-dtags"
-)
+# _array_configure_options=(
+# 	"--prefix=/usr"
+# 	"--openssldir=/etc/ssl"
+# 	"--libdir=lib"
+# 	"shared"
+# 	"zlib-dynamic"
+# 	"-Wl,-R,'\$(LIBRPATH)'"
+# 	"-Wl,--enable-new-dtags"
+# )
 
 #./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
@@ -119,4 +119,8 @@ cd "$BUILD_DIR/$OPENSSL_VERSION"
 ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
 #call function
-make-package "$BUILD_DIR/$OPENSSL_VERSION"
+#make-package "$BUILD_DIR/$OPENSSL_VERSION"
+
+make -j 6 -l 4
+
+sudo make install_sw
