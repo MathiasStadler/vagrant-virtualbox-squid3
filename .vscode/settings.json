@@ -5,6 +5,7 @@
         "Fcntl",
         "HSTS",
         "Hoppla",
+        "LIBRPATH",
         "Vagrantfile",
         "aufs",
         "autoremove",

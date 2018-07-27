@@ -98,11 +98,13 @@ _array_configure_options=(
 )
 
 array_configure_options=(
-	"--prefix=${PREFIX}"
+	"--prefix=/usr"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib"
-	" shared"
-	" zlib-dynamic"
+	"shared"
+	"zlib-dynamic"
+	"-Wl,-R,'$(LIBRPATH)'"
+	"-Wl,--enable-new-dtags"
 )
 
 #./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
