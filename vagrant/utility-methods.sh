@@ -109,6 +109,7 @@ function configure-package() {
 
 	else
 		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
+		echo "# INFO see log $LOG_FILE"
 		echo "# EXIT 1"
 		exit 1
 	fi
