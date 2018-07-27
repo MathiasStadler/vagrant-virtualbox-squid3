@@ -43,6 +43,15 @@ OPENSSL_VERSION=${OPENSSL_TAR//.tar.gz/}
 # shellcheck disable=SC2034
 OPENSSL_VERSION_STRING=${OPENSSL_VERSION//-//}
 
+#
+array_install_packages=(
+	"libz-dev"
+
+)
+
+#call function
+install-packages "${array_install_packages[@]}"
+
 # call function
 download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$OPENSSL_TAR" "$BUILD_DIR"
 
@@ -67,8 +76,6 @@ configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_opti
 
 #call function
 make-package "$BUILD_DIR/$OPENSSL_VERSION"
-
-# call install-packages
 
 #
 array_install_packages=(
