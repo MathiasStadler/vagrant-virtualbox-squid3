@@ -60,6 +60,9 @@ array_configure_options=(
 	"CFLAGS=-fPIC"
 )
 
+# CFLAGS=-fPIC from here
+# https://stackoverflow.com/questions/28234300/usr-local-ssl-lib-libcrypto-a-could-not-read-symbols-bad-value
+
 # call function
 configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
 
