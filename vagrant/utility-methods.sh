@@ -8,7 +8,7 @@ LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 # message
 echo "# OK ${0##*/} loaded"
 #echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
-printf "# INFO script %s post load script %s\\n" "$0" "$BASH_SOURCE"
+printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
 
 function download-and-extract() {
 
@@ -99,11 +99,11 @@ function configure-package() {
 	fi
 
 	# run configure
-	if ($TARGET_DIR/$NAME_OF_CONFIG_SCRIPT "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
+	if ("$TARGET_DIR/$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
-		if [ -e "$TARGET_DIR"/config.status]; then
+		if [ -e "$TARGET_DIR"/config.status ]; then
 			"$TARGET_DIR"/config.status --config
 		fi
 

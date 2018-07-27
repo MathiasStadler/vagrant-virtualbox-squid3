@@ -21,17 +21,13 @@ echo "# OK ${0##*/} loaded"
 # CONSTANTS
 readonly OPENSSL_DOWNLOAD_SITE="https://ftp.openssl.org/source/"
 
-# VARIABLES
-VERSION_NUMBER="0.0.0"
-# check git
-
 function detect-last-bind-version() {
 
 	readonly TEMP_FILE="/tmp/openssl-version.txt"
 
 	curl -L $OPENSSL_DOWNLOAD_SITE -o $TEMP_FILE
 
-	OPENSSL_TAR=$(cat $TEMP_FILE | grep -o '<a href=['"'"'"][^"'"'"']*['"'"'"]' | sed -e 's/^<a href=["'"'"']//' -e 's/["'"'"']$//' | grep tar.gz$ | grep -v fips | sort -V | tail -1)
+	OPENSSL_TAR=$(grep -o '<a href=['"'"'"][^"'"'"']*['"'"'"]' $TEMP_FILE | sed -e 's/^<a href=["'"'"']//' -e 's/["'"'"']$//' | grep tar.gz$ | grep -v fips | sort -V | tail -1)
 	echo "# INFO openssl tar last release is $OPENSSL_TAR"
 
 }
