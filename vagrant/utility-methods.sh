@@ -70,7 +70,7 @@ function configure-package() {
 		exit 1
 	else
 		TARGET_DIR="$1"
-		shift
+
 		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
 
 	fi
@@ -79,13 +79,9 @@ function configure-package() {
 		echo "# ERROR ARG2 = name of config script e.g. configure, config NOT set"
 		echo "# EXIT 1"
 		exit 1
-
 	else
-
 		NAME_OF_CONFIG_SCRIPT="$2"
-		shift
-		echo "# INFO ARG3 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
-
+		echo "# INFO ARG2 = name of config script  set to '$NAME_OF_CONFIG_SCRIPT'"
 	fi
 
 	if [ -z ${3+x} ]; then
