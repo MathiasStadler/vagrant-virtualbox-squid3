@@ -104,13 +104,13 @@ function configure-package() {
 
 	# run configure
 	if ($TARGET_DIR/$NAME_OF_CONFIG_SCRIPT "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
-		echo "# OK ./configure ${ARRAY_OF_AUTOCONF_OPTION} run without error"
+		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
 		"$TARGET_DIR"/config.status --config
 
 	else
-		echo "# ERROR ./configure ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
+		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
 		echo "# EXIT 1"
 		exit 1
 	fi
