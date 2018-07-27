@@ -39,9 +39,7 @@ function detect-last-bind-version() {
 # call function
 detect-last-bind-version
 
-exit 0
-
-echo "# INFO GLOBAL BIND last release is $VERSION_NUMBER"
+echo "# INFO GLOBAL openssl tar last release is $OPENSSL_TAR"
 
 # set global
 
