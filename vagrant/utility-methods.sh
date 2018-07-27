@@ -6,7 +6,7 @@ set -e
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
 # message
-echo "# OK ${0##*/} loaded"
+echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
 #echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
 printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
 
@@ -18,35 +18,35 @@ function download-and-extract() {
 
 	DOWNLOAD_URL=""
 
-	echo "# INFO call download-and-extract"
+	echo "# INFO call download-and-extract" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
-		echo "# ERROR ARG1 DOWNLOAD_URL NOT set"
+		echo "# ERROR ARG1 DOWNLOAD_URL NOT set" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1"
 		exit 1
 	else
 		DOWNLOAD_URL="$1"
-		echo "# INFO DOWNLOAD_URL set to '$DOWNLOAD_URL'"
+		echo "# INFO DOWNLOAD_URL set to '$DOWNLOAD_URL'" | tee -a "${LOG_FILE}"
 
 	fi
 
 	if [ -z ${2+x} ]; then
-		echo "# ERROR ARG2 DOWNLOAD_FILE NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG2 DOWNLOAD_FILE NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		DOWNLOAD_FILE="$2"
-		echo "# INFO DOWNLOAD_FILE set to '$DOWNLOAD_FILE'"
+		echo "# INFO DOWNLOAD_FILE set to '$DOWNLOAD_FILE'" | tee -a "${LOG_FILE}"
 
 	fi
 
 	if [ -z ${3+x} ]; then
-		echo "# ERROR ARG3 TARGET_DIR NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG3 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		TARGET_DIR="$3"
-		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
 
 	fi
 
@@ -62,31 +62,31 @@ function configure-package() {
 	# ARG2 = name of config script e.g. configure, config
 	# ARG3 = ARRAY of AUTOCONF option
 
-	echo "# INFO call configure-package"
+	echo "# INFO call configure-package" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
-		echo "# ERROR ARG1 TARGET_DIR NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		TARGET_DIR="$1"
 
-		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
 
 	fi
 
 	if [ -z ${2+x} ]; then
-		echo "# ERROR ARG2 = name of config script e.g. configure, config NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG2 = name of config script e.g. configure, config NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		NAME_OF_CONFIG_SCRIPT="$2"
-		echo "# INFO ARG2 = name of config script set to '$NAME_OF_CONFIG_SCRIPT'"
+		echo "# INFO ARG2 = name of config script set to '$NAME_OF_CONFIG_SCRIPT'" | tee -a "${LOG_FILE}"
 	fi
 
 	if [ -z ${3+x} ]; then
-		echo "# ERROR ARG3 ARRAY of AUTOCONF option NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG3 ARRAY of AUTOCONF option NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		# for first parameter
@@ -94,7 +94,7 @@ function configure-package() {
 		# for second parameter
 		shift
 		ARRAY_OF_AUTOCONF_OPTION="$*"
-		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
+		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'" | tee -a "${LOG_FILE}"
 
 	fi
 
@@ -102,7 +102,7 @@ function configure-package() {
 
 	# run configure
 	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
-		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
+		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error" | tee -a "${LOG_FILE}"
 
 		# print config.status -config
 		if [ -e "$TARGET_DIR"/config.status ]; then
@@ -110,9 +110,9 @@ function configure-package() {
 		fi
 
 	else
-		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
-		echo "# INFO see log $LOG_FILE"
-		echo "# EXIT 1"
+		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR" | tee -a "${LOG_FILE}"
+		echo "# INFO see log $LOG_FILE" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	fi
 
@@ -122,16 +122,16 @@ function make-package() {
 
 	# ARG1 = TARGET_DIR
 
-	echo "# INFO call make-package"
+	echo "# INFO call make-package" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
-		echo "# ERROR ARG1 TARGET_DIR NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 		TARGET_DIR="$1"
 
-		echo "# INFO TARGET_DIR set to '$TARGET_DIR'"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
 
 	fi
 
@@ -142,43 +142,43 @@ function make-package() {
 	NB_CORES=$(grep -c '^processor' /proc/cpuinfo)
 
 	# make
-	echo "# ACTION start make with -j $((NB_CORES + 2)) -l ${NB_CORES}"
+	echo "# ACTION start make with -j $((NB_CORES + 2)) -l ${NB_CORES}" | tee -a "${LOG_FILE}"
 
 	if (make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
-		echo "# OK make finished without error"
+		echo "# OK make finished without error" | tee -a "${LOG_FILE}"
 	else
-		echo "# ERROR make raise a error"
-		echo "# EXIT 1"
+		echo "# ERROR make raise a error" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	fi
 
-	echo "# ACTION make install"
+	echo "# ACTION make install" | tee -a "${LOG_FILE}"
 
 	if (sudo make install | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
-		echo "# OK make install finished without error"
+		echo "# OK make install finished without error" | tee -a "${LOG_FILE}"
 	else
-		echo "# ERROR make install raise a error"
-		echo "# EXIT 1"
+		echo "# ERROR make install raise a error" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	fi
 
-	echo "# INFO make-packages finished"
+	echo "# INFO make-packages finished" | tee -a "${LOG_FILE}"
 }
 
 function install-packages() {
 
 	# ARG1 = ARRAY OF INSTALL PACKAGES
 
-	echo "# INFO call install-packages"
+	echo "# INFO call install-packages" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
-		echo "# ERROR ARG1 ARRAY OF INSTALL PACKAGES NOT set"
-		echo "# EXIT 1"
+		echo "# ERROR ARG1 ARRAY OF INSTALL PACKAGES NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
 
 		ARRAY_OF_INSTALL_PACKAGES="$*"
-		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '$ARRAY_OF_INSTALL_PACKAGES'"
+		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '$ARRAY_OF_INSTALL_PACKAGES'" | tee -a "${LOG_FILE}"
 
 	fi
 
@@ -194,10 +194,10 @@ function install-packages() {
 		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[@]}" | tee -a "${LOG_FILE}" >/dev/null
 
 	); then
-		echo "# OK package installed"
+		echo "# OK package installed" | tee -a "${LOG_FILE}"
 	else
-		echo "# ERROR packages NOT installed"
-		echo "# EXIT 1"
+		echo "# ERROR packages NOT installed" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	fi
 

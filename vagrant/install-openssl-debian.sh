@@ -85,12 +85,3 @@ configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_opti
 
 #call function
 make-package "$BUILD_DIR/$OPENSSL_VERSION"
-
-#
-array_install_packages=(
-	"libz-dev"
-
-)
-
-#call function
-install-packages "${array_install_packages[@]}"
