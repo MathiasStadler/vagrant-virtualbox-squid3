@@ -48,7 +48,7 @@ OPENSSL_VERSION=${OPENSSL//.tar.gz/}
 OPENSSL_VERSION_STRING=${BIND_VERSION//-//}
 
 # call function
-download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$BIND_TAR" "$BUILD_DIR"
+download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$OPENSSL_TAR" "$BUILD_DIR"
 
 # set prefix installation
 PREFIX="/usr"
