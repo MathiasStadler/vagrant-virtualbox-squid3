@@ -23,15 +23,12 @@ if [[ ! -d "$SETTINGS_DIR" ]]; then
 			echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
 			echo "# EXIT 1"
 			exit 1
-
 		else
 			echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 		fi
-
 	else
 		echo "# OK SETTINGS_DIRECTORY => $SETTINGS_DIR"
 	fi
-
 else
 	echo "# OK settings dir $SETTINGS_DIR"
 fi
