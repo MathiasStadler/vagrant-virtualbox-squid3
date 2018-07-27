@@ -103,7 +103,9 @@ function configure-package() {
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
-		"$TARGET_DIR"/config.status --config
+		if [ -e "$TARGET_DIR"/config.status]; then
+			"$TARGET_DIR"/config.status --config
+		fi
 
 	else
 		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR"
