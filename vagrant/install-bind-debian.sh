@@ -23,6 +23,7 @@ readonly BIND_DOWNLOAD_SITE="ftp://ftp.isc.org/isc/bind9/"
 
 # VARIABLES
 VERSION_NUMBER="0.0.0"
+# check git
 
 function detect-last-bind-version() {
 
