@@ -43,9 +43,9 @@ echo "# INFO GLOBAL openssl tar last release is $OPENSSL_TAR"
 
 # set global
 
-OPENSSL_VERSION=${OPENSSL//.tar.gz/}
+OPENSSL_VERSION=${OPENSSL_TAR//.tar.gz/}
 # shellcheck disable=SC2034
-OPENSSL_VERSION_STRING=${BIND_VERSION//-//}
+OPENSSL_VERSION_STRING=${OPENSSL_VERSION//-//}
 
 # call function
 download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$OPENSSL_TAR" "$BUILD_DIR"
