@@ -3,6 +3,8 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
+
 # message
 echo "# OK ${0##*/} loaded"
 #echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
@@ -78,7 +80,7 @@ function configure-package() {
 		exit 1
 	else
 		ARRAY_OF_AUTOCONF_OPTION="$2"
-		echo "# INFO ARRAY of AUTOCONF option set to '$DOWNLOAD_FILE'"
+		echo "# INFO ARRAY of AUTOCONF option set to '$ARRAY_OF_AUTOCONF_OPTION'"
 
 	fi
 
