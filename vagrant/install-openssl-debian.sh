@@ -29,7 +29,7 @@ function detect-last-bind-version() {
 
 	readonly TEMP_FILE="/tmp/openssl-version.txt"
 
-	curl -L $BIND_DOWNLOAD_SITE -o $TEMP_FILE
+	curl -L $OPENSSL_DOWNLOAD_SITE -o $TEMP_FILE
 
 	OPENSSL_TAR=$(cat TEMP_FILE | grep -o '<a href=['"'"'"][^"'"'"']*['"'"'"]' | sed -e 's/^<a href=["'"'"']//' -e 's/["'"'"']$//' | grep tar.gz$ | grep -v fips | sort -V | tail -1)
 	echo "# INFO openssl tar last release is $OPENSSL_TAR"
