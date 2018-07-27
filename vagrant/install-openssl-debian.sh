@@ -46,7 +46,6 @@ OPENSSL_VERSION_STRING=${OPENSSL_VERSION//-//}
 #
 array_install_packages=(
 	"libz-dev"
-
 )
 
 #call function
@@ -60,13 +59,23 @@ PREFIX="/usr"
 
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
-array_configure_options=(
+_array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
 	" shared"
 	" zlib-dynamic"
 )
+
+array_configure_options=(
+	"--prefix=${PREFIX}"
+	"--openssldir=/etc/ssl"
+	"--libdir=lib"
+	" shared"
+	" zlib-dynamic"
+)
+
+#./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
 # CFLAGS=-fPIC from here
 # https://stackoverflow.com/questions/28234300/usr-local-ssl-lib-libcrypto-a-could-not-read-symbols-bad-value

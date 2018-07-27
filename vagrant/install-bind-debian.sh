@@ -48,6 +48,14 @@ BIND_VERSION=${BIND_TAR//.tar.gz/}
 # shellcheck disable=SC2034
 BIND_VERSION_STRING=${BIND_VERSION//-//}
 
+#
+array_install_packages=(
+	"libcap-dev"
+)
+
+#call function
+install-packages "${array_install_packages[@]}"
+
 # call function
 download-and-extract "$BIND_DOWNLOAD_SITE$VERSION_NUMBER" "$BIND_TAR" "$BUILD_DIR"
 
