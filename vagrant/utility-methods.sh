@@ -159,5 +159,5 @@ function make-package() {
 		exit 1
 	fi
 
-	echo "# INFO make install finished"
+	echo "# INFO make-packages finished"
 }

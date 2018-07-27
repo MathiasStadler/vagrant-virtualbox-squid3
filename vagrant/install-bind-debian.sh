@@ -68,3 +68,6 @@ array_configure_options=(
 
 # call function
 configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
+
+#call function
+make-package "$BUILD_DIR/$BIND_VERSION"
