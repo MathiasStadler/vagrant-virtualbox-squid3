@@ -98,8 +98,10 @@ function configure-package() {
 
 	fi
 
+	cd ${TARGET_DIR}
+
 	# run configure
-	if ! ("$TARGET_DIR/$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep 'error:' >/dev/null); then
+	if ! ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep 'error:' >/dev/null); then
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error"
 
 		# print config.status -config
