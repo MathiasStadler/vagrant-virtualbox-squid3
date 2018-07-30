@@ -12,7 +12,7 @@ if [[ ! -d "$DIR" ]]; then DIR="$PWD"; else
 fi
 
 # SETTINGS_DIR="${DIR}/settings"
-SETTINGS_DIR="../../settings"
+SETTINGS_DIR="../settings"
 if [[ ! -d "$SETTINGS_DIR" ]]; then
 	echo "# ERROR SETTINGS_DIRECTORY NOT found => $SETTINGS_DIR"
 	# SETTINGS_DIR="${DIR}/settings"
