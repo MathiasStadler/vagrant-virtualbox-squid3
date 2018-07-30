@@ -90,7 +90,7 @@ PREFIX="/usr"
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 #shellcheck disable=SC2034
-_array_configure_options=(
+array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
@@ -114,14 +114,14 @@ _array_configure_options=(
 # https://stackoverflow.com/questions/28234300/usr-local-ssl-lib-libcrypto-a-could-not-read-symbols-bad-value
 
 # call function
-#configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
+configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
 
-cd "$BUILD_DIR/$OPENSSL_VERSION"
-./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
+## cd "$BUILD_DIR/$OPENSSL_VERSION"
+## ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
 #call function
-#make-package "$BUILD_DIR/$OPENSSL_VERSION"
+make-package "$BUILD_DIR/$OPENSSL_VERSION"
 
-make -j 6 -l 4
+## make -j 6 -l 4
 
-sudo make install_sw
+## sudo make install_sw
