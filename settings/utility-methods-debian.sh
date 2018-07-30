@@ -95,7 +95,7 @@ function configure-package() {
 		shift
 		declare -a ARRAY_OF_AUTOCONF_OPTION="$3"
 		echo "# INFO ARRAY of AUTOCONF option set to '${ARRAY_OF_AUTOCONF_OPTION[*]}'" | tee -a "${LOG_FILE}"
-		echo "# INFO n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
+		echo "# DEBUG n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
 	fi
 
 	cd ${TARGET_DIR}
