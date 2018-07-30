@@ -108,6 +108,8 @@ array_configure_options=(
 # "--enable-debug"
 # "--enable-selftest"
 
+echo "# DEBUG count of parameter ${#array_configure_options[@]} "
+
 # call function
 configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
 
