@@ -96,7 +96,7 @@ function configure-package() {
 		# see SC2124
 		ARRAY_OF_AUTOCONF_OPTION=("$@")
 		echo "# INFO ARRAY of AUTOCONF option set to '${ARRAY_OF_AUTOCONF_OPTION[*]}'" | tee -a "${LOG_FILE}"
-		echo "# DEBUG n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
+		echo "# DEBUG receive n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
 	fi
 
 	cd ${TARGET_DIR}
