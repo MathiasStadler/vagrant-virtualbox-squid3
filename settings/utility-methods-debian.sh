@@ -194,7 +194,7 @@ function make-install-package() {
 
 	echo "# ACTION make $MAKE_TARGET" | tee -a "${LOG_FILE}"
 
-	if (sudo make MAKE_TARGET | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
+	if (sudo make $MAKE_TARGET | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK make  $MAKE_TARGET finished without error" | tee -a "${LOG_FILE}"
 	else
 		echo "# ERROR make $MAKE_TARGET raise a error" | tee -a "${LOG_FILE}"
