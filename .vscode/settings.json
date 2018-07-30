@@ -2,6 +2,7 @@
     "cSpell.words": [
         "AUTOCONF",
         "BLOCKSIZE",
+        "CFLAGS",
         "Fcntl",
         "HSTS",
         "Hoppla",
@@ -22,6 +23,7 @@
         "cpuinfo",
         "datadir",
         "dpkg",
+        "dtags",
         "endef",
         "fcntllock",
         "fdisk",

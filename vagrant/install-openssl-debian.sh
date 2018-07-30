@@ -89,6 +89,7 @@ PREFIX="/usr"
 
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
+#shellcheck disable=SC2034
 _array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
@@ -113,7 +114,7 @@ _array_configure_options=(
 # https://stackoverflow.com/questions/28234300/usr-local-ssl-lib-libcrypto-a-could-not-read-symbols-bad-value
 
 # call function
-#onfigure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
+#configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_options[@]}"
 
 cd "$BUILD_DIR/$OPENSSL_VERSION"
 ./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags

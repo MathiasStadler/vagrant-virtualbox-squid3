@@ -50,8 +50,15 @@ function download-and-extract() {
 
 	fi
 
-	curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
+	if [ -e "${TARGET_DIR}/${DOWNLOAD_FILE}" ]; then
+		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} already downloaded"
+		echo "# INFO we used this"
+	else
+		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} missing => we must downloaded first"
+		curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
+	fi
 
+	echo "# INFO we extract $TARGET_DIR/${DOWNLOAD_FILE} to ${TARGET_DIR}"
 	tar xzf "$TARGET_DIR/${DOWNLOAD_FILE}" -C "${TARGET_DIR}"
 
 }
@@ -99,7 +106,8 @@ function configure-package() {
 		echo "# DEBUG receive n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
 	fi
 
-	cd ${TARGET_DIR}
+	echo "# INFO change to ${TARGET_DIR}"
+	cd "${TARGET_DIR}"
 
 	# run configure
 	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
@@ -107,7 +115,7 @@ function configure-package() {
 		# if ("./$NAME_OF_CONFIG_SCRIPT" printf "%s" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 
 		# printf "%s " "${ARR[@]}"
-		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} run without error" | tee -a "${LOG_FILE}"
+		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
 
 		# print config.status -config
 		if [ -e "$TARGET_DIR"/config.status ]; then
@@ -115,7 +123,7 @@ function configure-package() {
 		fi
 
 	else
-		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION} raise ERROR" | tee -a "${LOG_FILE}"
+		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} raise ERROR" | tee -a "${LOG_FILE}"
 		echo "# INFO see log $LOG_FILE" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
