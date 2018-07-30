@@ -90,7 +90,7 @@ PREFIX="/usr"
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 #shellcheck disable=SC2034
-array_configure_options=(
+_array_configure_options=(
 	"--prefix=${PREFIX}"
 	"--openssldir=/etc/ssl"
 	"--libdir=lib/openssl-1.0"
@@ -98,15 +98,15 @@ array_configure_options=(
 	" zlib-dynamic"
 )
 
-# _array_configure_options=(
-# 	"--prefix=/usr"
-# 	"--openssldir=/etc/ssl"
-# 	"--libdir=lib"
-# 	"shared"
-# 	"zlib-dynamic"
-# 	"-Wl,-R,'\$(LIBRPATH)'"
-# 	"-Wl,--enable-new-dtags"
-# )
+array_configure_options=(
+	"--prefix=/usr"
+	"--openssldir=/etc/ssl"
+	"--libdir=lib"
+	"shared"
+	"zlib-dynamic"
+	"-Wl,-R,'\$(LIBRPATH)'"
+	"-Wl,--enable-new-dtags"
+)
 
 #./config --prefix=/usr --openssldir=/etc/ssl --libdir=lib shared zlib-dynamic -Wl,-R,'$(LIBRPATH)' -Wl,--enable-new-dtags
 
