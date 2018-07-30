@@ -122,6 +122,8 @@ configure-package "$BUILD_DIR/$OPENSSL_VERSION" "config" "${array_configure_opti
 #call function
 make-package "$BUILD_DIR/$OPENSSL_VERSION"
 
+make-install-package "$BUILD_DIR/$OPENSSL_VERSION" "install_sw"
+
 ## make -j 6 -l 4
 
 ## sudo make install_sw

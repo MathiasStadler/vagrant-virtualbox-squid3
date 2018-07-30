@@ -143,9 +143,7 @@ function make-package() {
 		exit 1
 	else
 		TARGET_DIR="$1"
-
 		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
-
 	fi
 
 	# change to build dir
@@ -165,17 +163,46 @@ function make-package() {
 		exit 1
 	fi
 
-	echo "# ACTION make install" | tee -a "${LOG_FILE}"
+	echo "# INFO make-packages finished" | tee -a "${LOG_FILE}"
 
-	if (sudo make install | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
-		echo "# OK make install finished without error" | tee -a "${LOG_FILE}"
+}
+
+function make-install-package() {
+
+	# ARG1 = TARGET_DIR
+	# ARG2 = MAKE_TARGET
+
+	echo "# INFO call make-install-package" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
 	else
-		echo "# ERROR make install raise a error" | tee -a "${LOG_FILE}"
+		TARGET_DIR="$1"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG2 = MAKE_TARGET NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		MAKE_TARGET="$2"
+		echo "# INFO MAKE_TARGET set to '$MAKE_TARGET'" | tee -a "${LOG_FILE}"
+	fi
+
+	echo "# ACTION make $MAKE_TARGET" | tee -a "${LOG_FILE}"
+
+	if (sudo make MAKE_TARGET | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
+		echo "# OK make  $MAKE_TARGET finished without error" | tee -a "${LOG_FILE}"
+	else
+		echo "# ERROR make $MAKE_TARGET raise a error" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	fi
 
-	echo "# INFO make-packages finished" | tee -a "${LOG_FILE}"
+	echo "# INFO make-install-packages finished" | tee -a "${LOG_FILE}"
 }
 
 function install-packages() {

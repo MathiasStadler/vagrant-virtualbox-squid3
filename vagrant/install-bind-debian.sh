@@ -116,6 +116,8 @@ configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_opti
 #call function
 make-package "$BUILD_DIR/$BIND_VERSION"
 
+make-install-package "$BUILD_DIR/$OPENSSL_VERSION" "install"
+
 function create-zone-file() {
 
 	ZONE_FILE_NAME="named.conf"
