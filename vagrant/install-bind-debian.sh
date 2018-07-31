@@ -116,9 +116,9 @@ echo "# DEBUG count of parameter ${#array_configure_options[@]} "
 configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
 
 #call function
-make-package "$BUILD_DIR/$BIND_VERSION"
+# deactivate for test  make-package "$BUILD_DIR/$BIND_VERSION"
 
-make-install-package "$BUILD_DIR/$BIND_VERSION" "install"
+# deactivate for test make-install-package "$BUILD_DIR/$BIND_VERSION" "install"
 
 function check-installation() {
 
@@ -129,6 +129,8 @@ function check-installation() {
 	sudo sh ifconfig.sh down
 
 }
+
+# check-installation
 
 function create-zone-file() {
 
@@ -240,3 +242,5 @@ function enable-bind-as-service() {
 	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
 	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
 }
+
+enable-bind-as-service
