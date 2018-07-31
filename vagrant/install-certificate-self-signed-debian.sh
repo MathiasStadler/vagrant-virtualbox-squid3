@@ -1,20 +1,18 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+function create-path-and-file() {
 
-function create-path-and-file(){
+	mkdir -p /etc/squid/ssl_cert
 
+	chown -R squid:squid /etc/squid/ssl_cert
 
-
-mkdir -p /etc/squid/ssl_cert
-
-chown -R squid:squid /etc/squid/ssl_cert
-
-# TODO not needed
-# cd /etc/squid/ssl_cert
+	# TODO not needed
+	# cd /etc/squid/ssl_cert
 
 }
 
+# call function
 create-path-and-file
 
 function prepare-openssl-conf() {
@@ -65,19 +63,16 @@ EOF
 
 }
 
+# call function
 prepare-openssl-conf
 
 function create-certificate-self-signed() {
 
 	echo "# INFO create certificate"
 
-    openssl req -new -newkey rsa:1024 -days 1365 -nodes -x509 -keyout myca.pem -out myca.pem
-
+	openssl req -new -newkey rsa:1024 -days 1365 -nodes -x509 -keyout myca.pem -out myca.pem
 
 }
 
+# call function
 create-certificate-self-signed
-
-
-
-}

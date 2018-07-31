@@ -350,6 +350,16 @@ function enable-bind-as-service() {
 
 	DEBOIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
 
+	DOWNLOAD_DNS_FILES=(
+		"named.conf"
+		"db.0"
+
+	)
+
+	for dnsFile in "$DOWNLOAD_DNS_FILES[@]"; do #  <-- Note: Added "" quotes.
+		echo "$dnsFile" # (i.e. do action / processing of $databaseName here...)
+	done
+
 	# /etc/bind/named.conf
 	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
 
