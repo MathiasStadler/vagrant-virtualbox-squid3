@@ -109,6 +109,7 @@ array_configure_options=(
 	"--disable-static"
 )
 
+#Shellcheck disable=SC2034
 _array_configure_options=(
 	"--sysconfdir=/etc/bind"
 	"--with-python=python3"
@@ -188,6 +189,38 @@ function create-home-directory() {
 
 create-home-directory
 
+function create-chroot-dir() {
+
+	echo "# ACTION create chroot dir for bind/named"
+
+	if (
+		mkdir -p /var/lib/named/{etc,dev}
+		mkdir -p /var/lib/named/var/{cache,run}
+		mkdir -p /var/lib/named/var/cache/bind
+		mkdir -p /var/lib/named/var/run/bind/run
+
+		mknod /var/lib/named/dev/null c 1 3
+		mknod /var/lib/named/dev/random c 1 8
+
+		mv /etc/bind /var/lib/named/etc
+		ln -s /var/lib/named/etc/bind /etc/bind
+
+		chmod 666 /var/lib/named/dev/{null,random}
+		chown -R bind.bind /var/lib/named/var/*
+		chown -R bind.bind /var/lib/named/etc/bind
+
+	); then
+		echo "# INFO chroot create"
+	else
+		echo "# ERROR chroot create raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+create-chroot-dir
+
 function create-etc-default-bind() {
 
 	ETC_DEFAULT_BIND="/etc/default/bind9"
@@ -198,7 +231,7 @@ function create-etc-default-bind() {
 RESOLVCONF=yes
 
 # startup options for the server
-OPTIONS="-u bind"
+OPTIONS="-u bind -t /var/lib/named"
 
 EOF
 
@@ -350,7 +383,7 @@ function prepare-resolv-conf() {
 	echo "# ACTION config $RESOLV_CONF"
 
 	echo"# ACTION save old /etc/resolv.conf"
-	cp /etc/$RESOLV_CONF /etc/$RESOLV_CONF_before_install_bind
+	cp "/etc/$RESOLV_CONF" "/etc/${RESOLV_CONF}_before_install_bind"
 	cat <<EOF >"/etc/$RESOLV_CONF"
 
 search localdomain home.lan
@@ -358,19 +391,10 @@ nameserver 127.0.0.1
 EOF
 }
 
-function enable-bind-as-service() {
+function prepare-zones-files() {
 
 	echo "# INFO change to $TEMP_DIR"
 	cd $TEMP_DIR
-
-	echo "# INFO DOWNLOAD /etc/init.d/bind file"
-	#curl https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init -o $TEMP_DIR/bind9
-
-	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
-
-	echo "# INFO Download bind9.services file"
-	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
-	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
 
 	ETC_BIND="/etc/bind"
 
@@ -417,7 +441,22 @@ function enable-bind-as-service() {
 
 }
 
-enable-bind-as-service
+prepare-zones-files
+
+function prepare-init-and-services-file() {
+
+	echo "# INFO change to $TEMP_DIR"
+	cd $TEMP_DIR
+
+	echo "# INFO DOWNLOAD /etc/init.d/bind file"
+
+	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
+
+	echo "# INFO Download bind9.services file"
+
+	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
+
+}
 
 function check-named-conf() {
 
@@ -433,3 +472,70 @@ function check-named-conf() {
 }
 
 check-named-conf
+
+function enable-logging() {
+
+	echo "# INFO enabling logging"
+
+	echo "# ACTION append logging to "
+
+	touch /var/log/bind.log
+	chown bind:bind /var/log/bind.log
+	chmod 0664 /var/log/bind.log
+
+	# append to file
+	cat <<EOF >>"/etc/bind/named.conf.options"
+
+	# https://adminwerk.com/bind9-im-gefangnis/
+logging {
+        channel simple_log {
+                // 'file' relativ zu chroot()-Umgebung
+                file "/var/log/bind.log" versions 3 size 5m;
+                severity warning;
+                print-time yes;
+                print-severity yes;
+                print-category yes;
+        };
+        category default {
+                simple_log;
+        };
+};
+EOF
+
+	echo "# ACTION add bind9 logging to rsyslog"
+
+	cat <<EOF >"/etc/rsyslog.d/bind9-chroot.conf"
+$AddUnixListenSocket /var/lib/named/dev/log
+EOF
+
+	echo "# ACTION restart rsyslog"
+
+	if (sudo service rsyslog restart); then
+		echo "# INFO rsyslog restart"
+	else
+		echo "# ERROR rsyslog restart raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+enable-logging
+
+function run-bind9() {
+
+	echo "# ACTION start bind9 "
+
+	if (sudo service bind9 start); then
+		echo "# INFO bind9 started"
+	else
+		echo "# ERROR bind9 start raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+run-bind9
