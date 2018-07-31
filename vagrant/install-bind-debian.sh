@@ -346,6 +346,40 @@ function enable-bind-as-service() {
 	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
 	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
 
+	ETC_BIND="/etc/bind"
+
+	DEBOIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
+
+	# /etc/bind/named.conf
+	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
+
+	# /etc/bind/named.conf.options
+	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.options" "named.conf.options" "$ETC_BIND"
+
+	# named.conf.local
+	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.local" "named.conf.local" "$ETC_BIND"
+
+	# named.conf.default-zones
+	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.default-zones" "named.conf.default-zones" "$ETC_BIND"
+
+	# zones.rfc1918
+	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}zones.rfc1918" "zones.rfc1918" "$ETC_BIND"
+
 }
 
 enable-bind-as-service
+
+function check-named-conf() {
+
+	echo "# ACTION check /etc/bind/named.conf"
+
+	if (/usr/sbin/named-checkconf /etc/bind/named.conf); then
+		echo "# INFO /etc/named.conf valid"
+	else
+		echo "# ERROR /etc/named.conf raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+}
+
+check-named-conf
