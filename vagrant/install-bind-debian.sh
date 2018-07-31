@@ -139,12 +139,12 @@ _array_configure_options=(
 echo "# DEBUG count of parameter ${#array_configure_options[@]} "
 
 # call function
-# deaktivate for test configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
+configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
 
-#call function
-# deactivate for test  make-package "$BUILD_DIR/$BIND_VERSION"
-
-# deactivate for test make-install-package "$BUILD_DIR/$BIND_VERSION" "install"
+# call function
+make-package "$BUILD_DIR/$BIND_VERSION"
+# call function
+make-install-package "$BUILD_DIR/$BIND_VERSION" "install"
 
 function check-installation() {
 
@@ -168,6 +168,8 @@ function create-user-and-group() {
 			adduser --system --home /var/cache/bind --no-create-home
 
 }
+
+create-user-and-group
 
 function create-etc-default-bind() {
 
@@ -270,7 +272,7 @@ EOF
 # call function
 create-zone-file
 
-function bind_prepare_home_zine() {
+function bind-prepare-home-zone() {
 
 	mkdir /var/named/home.lan
 
@@ -279,6 +281,8 @@ function bind_prepare_home_zine() {
 	chown -R named.named /var/named/home.lan
 
 }
+
+bind-prepare-home-zone
 
 function enable-bind-as-service() {
 
