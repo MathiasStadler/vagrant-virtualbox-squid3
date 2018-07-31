@@ -353,27 +353,38 @@ function enable-bind-as-service() {
 	DOWNLOAD_DNS_FILES=(
 		"named.conf"
 		"db.0"
+		"db.127"
+		"db.255"
+		"db.empty"
+		"db.local"
+		"named.conf"
+		"named.conf.default-zones"
+		"named.conf.local"
+		"named.conf.options"
+		"zones.rfc1918"
 
 	)
 
-	for dnsFile in "$DOWNLOAD_DNS_FILES[@]"; do #  <-- Note: Added "" quotes.
+	for dnsFile in "${DOWNLOAD_DNS_FILES[@]}"; do #  <-- Note: Added "" quotes.
 		echo "$dnsFile" # (i.e. do action / processing of $databaseName here...)
+		file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}${dnsFile}" "${dnsFile}" "$ETC_BIND"
+
 	done
 
 	# /etc/bind/named.conf
-	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
+	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
 
 	# /etc/bind/named.conf.options
-	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.options" "named.conf.options" "$ETC_BIND"
+	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.options" "named.conf.options" "$ETC_BIND"
 
 	# named.conf.local
-	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.local" "named.conf.local" "$ETC_BIND"
+	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.local" "named.conf.local" "$ETC_BIND"
 
 	# named.conf.default-zones
-	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.default-zones" "named.conf.default-zones" "$ETC_BIND"
+	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.default-zones" "named.conf.default-zones" "$ETC_BIND"
 
 	# zones.rfc1918
-	file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}zones.rfc1918" "zones.rfc1918" "$ETC_BIND"
+	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}zones.rfc1918" "zones.rfc1918" "$ETC_BIND"
 
 }
 
