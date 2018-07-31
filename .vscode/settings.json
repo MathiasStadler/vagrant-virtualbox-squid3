@@ -66,6 +66,7 @@
         "storeio",
         "swapoff",
         "sysconfdir",
+        "systemd",
         "unregistervm",
         "uuid",
         "vbox",

@@ -92,6 +92,8 @@ download-and-extract "$BIND_DOWNLOAD_SITE$VERSION_NUMBER" "$BIND_TAR" "$BUILD_DI
 # set prefix installation
 PREFIX="/usr"
 
+#https://sources.debian.org/src/bind9/1:9.11.4+dfsg-3/debian/
+
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 array_configure_options=(
@@ -116,7 +118,17 @@ configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_opti
 #call function
 make-package "$BUILD_DIR/$BIND_VERSION"
 
-make-install-package "$BUILD_DIR/$OPENSSL_VERSION" "install"
+make-install-package "$BUILD_DIR/$BIND_VERSION" "install"
+
+function check-installation() {
+
+	cd "$BUILD_DIR/$BIND_VERSION"
+	cd ./bin/test/system
+	sudo sh ifconfig.sh up
+	sudo ./runall.sh
+	sudo sh ifconfig.sh down
+
+}
 
 function create-zone-file() {
 
@@ -126,6 +138,105 @@ function create-zone-file() {
 	# http://roberts.bplaced.net/index.php/linux-guides/centos-6-guides/proxy-server/squid-transparent-proxy-http-https
 
 	cat <<EOF >"$ZONE_FILE_NAME"
+
+
+
+//
+// named.conf
+//
+// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
+// server as a caching only nameserver (as a localhost DNS resolver only).
+//
+// See /usr/share/doc/bind*/sample/ for example named configuration files.
+//
+
+acl mynet {
+    192.168.201.0/24; # test network
+    127.0.0.1; # localhost
+    };
+
+options {
+    listen-on {
+        mynet;
+        };
+    listen-on-v6 port 53 { ::1; };
+    directory     "/var/named";
+    dump-file     "/var/named/data/cache_dump.db";
+        statistics-file "/var/named/data/named_stats.txt";
+        memstatistics-file "/var/named/data/named_mem_stats.txt";
+    allow-query     { mynet; };
+    recursion yes;
+
+    forward only;
+    forwarders {
+        8.8.8.8;
+        };
+
+    dnssec-enable yes;
+    dnssec-validation yes;
+    dnssec-lookaside auto;
+
+    /* Path to ISC DLV key */
+    bindkeys-file "/etc/named.iscdlv.key";
+
+    managed-keys-directory "/var/named/dynamic";
+};
+
+logging {
+        channel default_debug {
+                file "data/named.run";
+                severity dynamic;
+        };
+};
+
+zone "." IN {
+    type hint;
+    file "named.ca";
+};
+
+include "/etc/named.rfc1912.zones";
+include "/etc/named.root.key";
+
+#############################################
+#    home.lan
+#############################################
+
+zone "home.lan" IN {
+    type master;
+    file "/var/named/home.lan/db.home";
+    allow-query {
+    mynet;
+    };
+    };
+
 EOF
 
+}
+
+# call function
+create-zone-file
+
+function bind_prepare_home_zine() {
+
+	mkdir /var/named/home.lan
+
+	touch /var/named/home.lan/db.home
+
+	chown -R named.named /var/named/home.lan
+
+}
+
+function enable-bind-as-service() {
+
+	echo "# INFO change to $TEMP_DIR"
+	cd $TEMP_DIR
+
+	echo "# INFO DOWNLOAD /etc/init.d/bind file"
+	#curl https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init -o $TEMP_DIR/bind9
+
+	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
+
+	echo "# INFO DOWNLOAD bind9.services file"
+	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
+	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
 }

@@ -27,7 +27,6 @@ function download-and-extract() {
 	else
 		DOWNLOAD_URL="$1"
 		echo "# INFO DOWNLOAD_URL set to '$DOWNLOAD_URL'" | tee -a "${LOG_FILE}"
-
 	fi
 
 	if [ -z ${2+x} ]; then
@@ -239,6 +238,57 @@ function install-packages() {
 		echo "# ERROR packages NOT installed" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
+	fi
+
+}
+
+function file-download() {
+
+	echo "# INFO call file-download" | tee -a "${LOG_FILE}"
+
+	# ARG1 = DOWNLOAD_URL
+	# ARG2 = DOWNLOAD_FILE
+	# ARG3 = TARGET_DIR
+
+	DOWNLOAD_URL=""
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 DOWNLOAD_URL NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		DOWNLOAD_URL="$1"
+		echo "# INFO DOWNLOAD_URL set to '$DOWNLOAD_URL'" | tee -a "${LOG_FILE}"
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG2 DOWNLOAD_FILE NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		DOWNLOAD_FILE="$2"
+		echo "# INFO DOWNLOAD_FILE set to '$DOWNLOAD_FILE'" | tee -a "${LOG_FILE}"
+
+	fi
+
+	if [ -z ${3+x} ]; then
+		echo "# ERROR ARG3 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		TARGET_DIR="$3"
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
+
+	fi
+
+	echo "# ACTION  change to $TEMP_DIR"
+
+	if [ -e "${TARGET_DIR}/${DOWNLOAD_FILE}" ]; then
+		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} already downloaded"
+		echo "# INFO we used this"
+	else
+		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} missing => we must downloaded first"
+		curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
 	fi
 
 }
