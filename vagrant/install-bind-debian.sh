@@ -340,14 +340,12 @@ function enable-bind-as-service() {
 	echo "# INFO DOWNLOAD /etc/init.d/bind file"
 	#curl https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init -o $TEMP_DIR/bind9
 
-	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
+	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
 
 	echo "# INFO Download bind9.services file"
 	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
-	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
+	file-download-from-url "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
 
-	echo"# INFO Download /etc/default/bind9"
-	file-download ""
 }
 
 enable-bind-as-service

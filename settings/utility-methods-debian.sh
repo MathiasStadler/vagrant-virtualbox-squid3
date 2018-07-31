@@ -242,7 +242,7 @@ function install-packages() {
 
 }
 
-function file-download() {
+function file-download-from-url() {
 
 	echo "# INFO call file-download" | tee -a "${LOG_FILE}"
 
@@ -288,7 +288,7 @@ function file-download() {
 		echo "# INFO we used this"
 	else
 		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} missing => we must downloaded first"
-		curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TEMP_DIR/${DOWNLOAD_FILE}"
+		curl "$DOWNLOAD_URL" -o "$TEMP_DIR/${DOWNLOAD_FILE}"
 
 		echo "# ACTION copy ${DOWNLOAD_FILE} to $TARGET_DIR"
 		sudo cp "$TEMP_DIR/${DOWNLOAD_FILE}" "$TARGET_DIR/${DOWNLOAD_FILE}"
