@@ -348,10 +348,9 @@ function enable-bind-as-service() {
 
 	ETC_BIND="/etc/bind"
 
-	DEBOIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
+	DEBIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
 
 	DOWNLOAD_DNS_FILES=(
-		"named.conf"
 		"db.0"
 		"db.127"
 		"db.255"
