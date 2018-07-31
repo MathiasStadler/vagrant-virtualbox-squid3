@@ -398,6 +398,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     # disable for vagrant-persistent-storage test
     shell_scripts = [
   "install-disk-on-box-debian.sh",
+  "install-git-debian.sh"
   "install-ccache-debian.sh",
   "install-openssl-debian.sh",
   "install-bind-debian.sh"
