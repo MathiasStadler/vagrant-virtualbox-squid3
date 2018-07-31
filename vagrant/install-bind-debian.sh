@@ -113,7 +113,7 @@ array_configure_options=(
 echo "# DEBUG count of parameter ${#array_configure_options[@]} "
 
 # call function
-configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
+# deaktivate for test configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
 
 #call function
 # deactivate for test  make-package "$BUILD_DIR/$BIND_VERSION"
