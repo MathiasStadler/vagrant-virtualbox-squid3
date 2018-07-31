@@ -53,7 +53,10 @@ readonly BIND_DOWNLOAD_SITE="ftp://ftp.isc.org/isc/bind9/"
 
 # VARIABLES
 VERSION_NUMBER="0.0.0"
-# check git
+
+#
+BIND_USER="bind"
+BIND_GROUP="bind"
 
 function detect-last-bind-version() {
 
@@ -164,10 +167,8 @@ function create-user-and-group() {
 
 	# from here
 	# https://sources.debian.org/src/bind9/1:9.11.4+dfsg-3/debian/bind9.postinst/
-	getent group bind >/dev/null 2>&1 || addgroup --system bind
-	getent passwd bind >/dev/null 2>&1 ||
-		adduser --system --home /var/cache/bind --no-create-home \
-			adduser --system --home /var/cache/bind --no-create-home
+	getent group $BIND_GROUP >/dev/null 2>&1 || addgroup --system $BIND_GROUP
+	getent passwd $BIND_USER >/dev/null 2>&1 || adduser --system --home /var/cache/$BIND_USER --no-create-home --disabled-password --ingroup $BIND_GROUP $BIND_USER
 
 }
 
@@ -283,11 +284,11 @@ function bind-prepare-home-zone() {
 
 	echo "# ACTION prepare home zone"
 
-	mkdir /var/named/home.lan
+	mkdir -p /var/named/home.lan
 
 	touch /var/named/home.lan/db.home
 
-	chown -R named.named /var/named/home.lan
+	chown -R $BIND_USER:$BIND_GROUP /var/named/home.lan
 
 }
 
