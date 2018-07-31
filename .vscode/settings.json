@@ -82,6 +82,7 @@
         "printf",
         "randomdev",
         "readonly",
+        "rndc",
         "runall",
         "sbin",
         "selftest",

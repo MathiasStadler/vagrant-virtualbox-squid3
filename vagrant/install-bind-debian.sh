@@ -174,9 +174,23 @@ function create-user-and-group() {
 
 create-user-and-group
 
+function create-home-directory() {
+
+	BIND_USER_HOME_DIR=$(getent passwd bind | cut -f6 -d:)
+
+	echo "# ACTION create $HOME_BIND home directory $BIND_USER_HOME_DIR"
+
+	mkdir -p "$BIND_USER_HOME_DIR"
+	chown "$BIND_USER":"$BIND_GROUP" "$BIND_USER_HOME_DIR"
+	chmod 0755 "$BIND_USER_HOME_DIR"
+
+}
+
+create-home-directory
+
 function create-etc-default-bind() {
 
-	ETC_DEFAULT_BIND="/etc/default/bind"
+	ETC_DEFAULT_BIND="/etc/default/bind9"
 
 	echo "# ACTION prepare $ETC_DEFAULT_BIND"
 	cat <<EOF >"$ETC_DEFAULT_BIND"
@@ -292,6 +306,18 @@ function bind-prepare-home-zone() {
 
 }
 
+function prepare-rndc-config-generation() {
+
+	ETC_BIND_RNDC_CONF="/etc/bind/rndc.conf"
+
+	echo "# ACTION generate $ETC_BIND_RNDC_CONF"
+
+	rndc-confgen >$ETC_BIND_RNDC_CONF
+
+}
+
+prepare-rndc-config-generation
+
 function prepare-db-home-zone() {
 
 	VAR_NAMED_HOME_LAN_DB_HOME="/var/named/home.lan/db.home"
@@ -370,7 +396,9 @@ function enable-bind-as-service() {
 
 	done
 
+	mkdir -p /usr/share/dns/
 	# https://www.internic.net/domain/named.root
+	file-download-from-url "https://www.internic.net/domain/named.root" "root.hints" "/usr/share/dns/"
 
 	# /etc/bind/named.conf
 	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
