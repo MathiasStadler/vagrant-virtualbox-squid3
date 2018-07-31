@@ -278,7 +278,7 @@ EOF
 }
 
 # call function
-create-zone-file
+# deactivate create-zone-file
 
 function bind-prepare-home-zone() {
 
@@ -369,6 +369,8 @@ function enable-bind-as-service() {
 		file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}${dnsFile}" "${dnsFile}" "$ETC_BIND"
 
 	done
+
+	# https://www.internic.net/domain/named.root
 
 	# /etc/bind/named.conf
 	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
