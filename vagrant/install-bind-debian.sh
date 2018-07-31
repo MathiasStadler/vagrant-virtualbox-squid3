@@ -160,6 +160,8 @@ function check-installation() {
 
 function create-user-and-group() {
 
+	echo "#INFO create user bind and group bind"
+
 	# from here
 	# https://sources.debian.org/src/bind9/1:9.11.4+dfsg-3/debian/bind9.postinst/
 	getent group bind >/dev/null 2>&1 || addgroup --system bind
@@ -173,7 +175,10 @@ create-user-and-group
 
 function create-etc-default-bind() {
 
-	cat <<EOF >/etc/default/bind
+	ETC_DEFAULT_BIND="/etc/default/bind"
+
+	echo "# ACTION prepare $ETC_DEFAULT_BIND"
+	cat <<EOF >"$ETC_DEFAULT_BIND"
 # run resolvconf?
 RESOLVCONF=yes
 
@@ -189,6 +194,8 @@ create-etc-default-bind
 function create-zone-file() {
 
 	ZONE_FILE_NAME="/etc/bind/named.conf"
+
+	echo "# ACTION prepare file $ZONE_FILE_NAME"
 
 	# from here
 	# http://roberts.bplaced.net/index.php/linux-guides/centos-6-guides/proxy-server/squid-transparent-proxy-http-https
@@ -274,6 +281,8 @@ create-zone-file
 
 function bind-prepare-home-zone() {
 
+	echo "# ACTION prepare home zone"
+
 	mkdir /var/named/home.lan
 
 	touch /var/named/home.lan/db.home
@@ -282,7 +291,45 @@ function bind-prepare-home-zone() {
 
 }
 
+function prepare-db-home-zone() {
+
+	VAR_NAMED_HOME_LAN_DB_HOME="/var/named/home.lan/db.home"
+
+	echo "# ACTION create file $VAR_NAMED_HOME_LAN_DB_HOME"
+
+	cat <<EOF >"$VAR_NAMED_HOME_LAN_DB_HOME"
+	# check is wrote
+$ORIGIN home.lan.
+$TTL 86400
+@    IN    SOA    proxy.home.lan.    proxy.home.lan. (
+    2014032801 ; Serial
+    28800 ; Refresh
+    7200 ; Retry
+    604800 ; Expire
+    86400 ; Negative Cache TTL
+    )
+@    IN    NS    proxy.home.lan.
+proxy    IN    A    192.168.201.250
+EOF
+
+}
+
 bind-prepare-home-zone
+
+function prepare-resolv-conf() {
+
+	RESOLV_CONF="resolv.conf"
+
+	echo "# ACTION config $RESOLV_CONF"
+
+	echo"# ACTION save old /etc/resolv.conf"
+	cp /etc/$RESOLV_CONF /etc/$RESOLV_CONF_before_install_bind
+	cat <<EOF >"/etc/$RESOLV_CONF"
+
+search localdomain home.lan
+nameserver 127.0.0.1
+EOF
+}
 
 function enable-bind-as-service() {
 
