@@ -98,12 +98,38 @@ PREFIX="/usr"
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
 array_configure_options=(
 	"--prefix=${PREFIX}"
-	"--sysconfdir=/etc"
+	"--sysconfdir=/etc/bind"
 	"--localstatedir=/var"
 	"--mandir=/usr/share/man"
 	"--enable-threads"
 	"--with-libtool"
 	"--disable-static"
+)
+
+_array_configure_options=(
+	"--sysconfdir=/etc/bind"
+	"--with-python=python3"
+	"--localstatedir=/"
+	"--enable-threads"
+	"--enable-largefile"
+	"--with-libtool"
+	"--enable-shared"
+	"--enable-static"
+	"--with-gost=no"
+	"--with-openssl=/usr"
+	"--with-gssapi=/usr"
+	"--with-libidn2"
+	"--with-libjson=/usr"
+	"--with-lmdb=/usr"
+	"--with-gnu-ld"
+	"--with-geoip=/usr"
+	"--with-atf=no"
+	"--enable-ipv6"
+	"--enable-rrl"
+	"--enable-filter-aaaa"
+	"--with-randomdev=/dev/urandom"
+	"--enable-dnstap"
+
 )
 
 # configure option
@@ -130,11 +156,37 @@ function check-installation() {
 
 }
 
-# check-installation
+# deactivate check-installation
+
+function create-user-and-group() {
+
+	# from here
+	# https://sources.debian.org/src/bind9/1:9.11.4+dfsg-3/debian/bind9.postinst/
+	getent group bind >/dev/null 2>&1 || addgroup --system bind
+	getent passwd bind >/dev/null 2>&1 ||
+		adduser --system --home /var/cache/bind --no-create-home \
+			adduser --system --home /var/cache/bind --no-create-home
+
+}
+
+function create-etc-default-bind() {
+
+	cat <<EOF >/etc/default/bind
+# run resolvconf?
+RESOLVCONF=yes
+
+# startup options for the server
+OPTIONS="-u bind"
+
+EOF
+
+}
+
+create-etc-default-bind
 
 function create-zone-file() {
 
-	ZONE_FILE_NAME="named.conf"
+	ZONE_FILE_NAME="/etc/bind/named.conf"
 
 	# from here
 	# http://roberts.bplaced.net/index.php/linux-guides/centos-6-guides/proxy-server/squid-transparent-proxy-http-https
@@ -238,9 +290,12 @@ function enable-bind-as-service() {
 
 	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.init" "bind9" "/etc/init.d"
 
-	echo "# INFO DOWNLOAD bind9.services file"
+	echo "# INFO Download bind9.services file"
 	# curl "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" -o $TEMP_DIR/bind.service
 	file-download "https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/bind9.service" "bind9.service" "/etc/systemd/system"
+
+	echo"# INFO Download /etc/default/bind9"
+	file-download ""
 }
 
 enable-bind-as-service
