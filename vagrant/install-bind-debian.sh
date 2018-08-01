@@ -233,8 +233,11 @@ function create-etc-default-bind() {
 RESOLVCONF=yes
 
 # startup options for the server
-# OPTIONS="-u bind -t /var/lib/named"
-OPTIONS="-u bind"
+# with chroot
+OPTIONS="-u bind -t /var/lib/named"
+
+# without chroot
+# OPTIONS="-u bind"
 
 EOF
 
