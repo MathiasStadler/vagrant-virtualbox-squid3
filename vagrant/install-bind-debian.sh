@@ -559,3 +559,5 @@ function run-bind9() {
 }
 
 run-bind9
+
+# https://www.nowiasz.de/anleitungen/automatisierte-lets-encrypt-wildcardzertifikate-mit-lokalem-bind/
