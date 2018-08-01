@@ -193,6 +193,8 @@ function get-current-network-wide() {
 # call function
 get-current-network-wide
 
+exit 0
+
 function create-user-and-group() {
 
 	echo "# INFO create user bind and group bind"
