@@ -114,7 +114,7 @@ array_configure_options=(
 	"--with-randomdev=/dev/urandom"
 )
 
-#Shellcheck disable=SC2034
+#shellcheck disable=SC2034
 _array_configure_options=(
 	"--sysconfdir=/etc/bind"
 	"--with-python=python3"
@@ -184,7 +184,7 @@ function get-current-network-wide() {
 
 	VM_IP="$(cat /home/vagrant/vm.bridge.ip)"
 
-	NETWORK_AND_WIDE="$(ipcalc $VM_IP | grep Network: | awk '{print $2}')"
+	NETWORK_AND_WIDE="$(ipcalc "${VM_IP}" | grep Network: | awk '{print $2}')"
 
 	echo "# ACTION get network and wide $NETWORK_AND_WIDE"
 
@@ -686,6 +686,7 @@ function prepare-zones-files() {
 
 	DEBIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
 
+	# shellcheck disable=SC2034
 	_DOWNLOAD_DNS_FILES=(
 		"db.0"
 		"db.127"
