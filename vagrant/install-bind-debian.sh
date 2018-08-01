@@ -182,11 +182,16 @@ get-current-name-server
 
 function get-current-network-wide() {
 
-	NETWORK_AND_WIDE="$(ipcalc 192.168.178.128 | grep Network: | awk '{print $2}')"
+	VM_IP="$(cat /home/vagrant/vm.bridge.ip)"
+
+	NETWORK_AND_WIDE="$(ipcalc $VM_IP | grep Network: | awk '{print $2}')"
 
 	echo "# ACTION get network and wide $NETWORK_AND_WIDE"
 
 }
+
+# call function
+get-current-network-wide
 
 function create-user-and-group() {
 
