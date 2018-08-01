@@ -217,7 +217,7 @@ function install-packages() {
 	else
 		ARRAY_OF_INSTALL_PACKAGES=("$@")
 		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '${ARRAY_OF_INSTALL_PACKAGES[*]}'" | tee -a "${LOG_FILE}"
-
+		echo "# DEBUG we will install ${#ARRAY_OF_INSTALL_PACKAGES[@]} package(s)" | tee -a "${LOG_FILE}
 	fi
 
 	if (
@@ -232,8 +232,8 @@ function install-packages() {
 		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
 
 	); then
-		echo "# OK package installed" | tee -a "${LOG_FILE}"
-	else
+		echo " # OK package installed" | tee -a "${LOG_FILE}"
+		else
 		echo "# ERROR packages NOT installed" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
