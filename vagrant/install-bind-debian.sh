@@ -489,6 +489,14 @@ function enable-logging() {
 
 	echo "# ACTION append logging to "
 
+	# for logging
+	BIND_LOG="/var/log/bind.log"
+
+	touch $BIND_LOG
+	chown bind:bind $BIND_LOG
+	chmod 0664 $BIND_LOG
+
+	# for chroot logging
 	BIND_LOG="/var/lib/named/var/log/bind.log"
 
 	touch $BIND_LOG
