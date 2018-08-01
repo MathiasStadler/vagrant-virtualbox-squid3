@@ -40,6 +40,7 @@ source "$SETTINGS_DIR/utility-methods-debian.sh"
 #
 array_install_packages=(
 	"git"
+	"tree"
 )
 
 #call function
