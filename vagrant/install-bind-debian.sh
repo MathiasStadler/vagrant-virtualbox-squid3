@@ -458,6 +458,8 @@ function prepare-init-and-services-file() {
 
 }
 
+prepare-init-and-services-file
+
 function check-named-conf() {
 
 	echo "# ACTION check /etc/bind/named.conf"
