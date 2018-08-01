@@ -107,6 +107,7 @@ array_configure_options=(
 	"--enable-threads"
 	"--with-libtool"
 	"--disable-static"
+	"--with-randomdev=/dev/urandom"
 )
 
 #Shellcheck disable=SC2034
@@ -200,14 +201,14 @@ function create-chroot-dir() {
 		mkdir -p /var/lib/named/var/run/bind/run
 
 		mknod /var/lib/named/dev/null c 1 3
-		mknod /var/lib/named/dev/random c 1 8
+		mknod /var/lib/named/dev/urandom c 1 8
 
 		mv /etc/bind /var/lib/named/etc
 		ln -s /var/lib/named/etc/bind /etc/bind
 
-		chmod 666 /var/lib/named/dev/{null,random}
-		chown -R bind.bind /var/lib/named/var/*
-		chown -R bind.bind /var/lib/named/etc/bind
+		chmod 666 /var/lib/named/dev/{null,urandom}
+		chown -R bind:bind /var/lib/named/var/*
+		chown -R bind:bind /var/lib/named/etc/bind
 
 	); then
 		echo "# INFO chroot create"
