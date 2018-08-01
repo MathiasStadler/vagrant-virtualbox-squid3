@@ -229,8 +229,10 @@ function install-packages() {
 		# sudo apt-get autoremove -y | tee -a "${LOG_FILE}" >/dev/null
 
 		echo "# DEBUG exec sudo apt-get install -y --no-install-recommends ${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
-		# shellcheck disable=1072,2046
-		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
+
+		for package in "${ARRAY_OF_INSTALL_PACKAGES[@]}"; do
+			sudo apt-get install -y --no-install-recommends $package | tee -a "${LOG_FILE}" >/dev/null
+		done
 
 	); then
 		echo " # OK package installed" | tee -a "${LOG_FILE}"
