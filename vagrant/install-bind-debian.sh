@@ -169,7 +169,7 @@ function check-installation() {
 
 function get-current-name-server() {
 
-	echo "# ACTION found running name server"
+	echo "# ACTION find running name server"
 
 	NAME_SERVER_IN_USED=$(dig google.com | grep ';; SERVER' | awk '{print $3}' | grep -Po '\(\K[^)]*')
 
@@ -195,7 +195,7 @@ get-current-network-wide
 
 function create-user-and-group() {
 
-	echo "#INFO create user bind and group bind"
+	echo "# INFO create user bind and group bind"
 
 	# from here
 	# https://sources.debian.org/src/bind9/1:9.11.4+dfsg-3/debian/bind9.postinst/
