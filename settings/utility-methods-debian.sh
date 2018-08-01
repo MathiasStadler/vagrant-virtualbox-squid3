@@ -231,7 +231,7 @@ function install-packages() {
 		echo "# DEBUG exec sudo apt-get install -y --no-install-recommends ${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
 
 		for package in "${ARRAY_OF_INSTALL_PACKAGES[@]}"; do
-			sudo apt-get install -y --no-install-recommends $package | tee -a "${LOG_FILE}" >/dev/null
+			export DEBIAN_FRONTEND=noninteractive && sudo apt-get install -y --no-install-recommends $package | tee -a "${LOG_FILE}" >/dev/null
 		done
 
 	); then
