@@ -54,6 +54,9 @@ readonly BIND_DOWNLOAD_SITE="ftp://ftp.isc.org/isc/bind9/"
 # VARIABLES
 VERSION_NUMBER="0.0.0"
 
+# NAMED server in used before start own bind
+NAME_SERVER_IN_USED="0.0.0.0"
+
 #
 BIND_USER="bind"
 BIND_GROUP="bind"
@@ -84,6 +87,7 @@ BIND_VERSION_STRING=${BIND_VERSION//-//}
 #
 array_install_packages=(
 	"libcap-dev"
+	"ipcalc"
 )
 
 #call function
@@ -163,6 +167,27 @@ function check-installation() {
 
 # deactivate check-installation
 
+function get-current-name-server() {
+
+	echo "# ACTION found running name server"
+
+	NAME_SERVER_IN_USED=$(dig google.com | grep ';; SERVER' | awk '{print $3}' | grep -Po '\(\K[^)]*')
+
+	echo "# INFO get current name server $NAME_SERVER_IN_USED"
+
+}
+
+# call function
+get-current-name-server
+
+function get-current-network-wide() {
+
+	NETWORK_AND_WIDE="$(ipcalc 192.168.178.128 | grep Network: | awk '{print $2}')"
+
+	echo "# ACTION get network and wide $NETWORK_AND_WIDE"
+
+}
+
 function create-user-and-group() {
 
 	echo "#INFO create user bind and group bind"
@@ -174,6 +199,7 @@ function create-user-and-group() {
 
 }
 
+# call function
 create-user-and-group
 
 function create-home-directory() {
@@ -188,6 +214,7 @@ function create-home-directory() {
 
 }
 
+# call function
 create-home-directory
 
 function create-chroot-dir() {
@@ -221,6 +248,7 @@ function create-chroot-dir() {
 
 }
 
+# call function
 create-chroot-dir
 
 function create-etc-default-bind() {
@@ -243,6 +271,7 @@ EOF
 
 }
 
+# call function
 create-etc-default-bind
 
 function create-zone-file() {
@@ -271,6 +300,9 @@ EOF
 	options {
         directory "/var/cache/bind";
 
+
+		#ACL settings
+
         // If there is a firewall between you and nameservers you want
         // to talk to, you may need to fix the firewall to allow multiple
         // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
@@ -280,15 +312,20 @@ EOF
         // Uncomment the following block, and insert the addresses replacing
         // the all-0's placeholder.
 
-        // forwarders {
-        //      0.0.0.0;
-        // };
+		// forward to default named server
+        forwarders {
+              $NAME_SERVER_IN_USED;
+         };
 
         //========================================================================
         // If BIND logs error messages about the root key being expired,
         // you will need to update your keys.  See https://www.isc.org/bind-keys
         //========================================================================
-        dnssec-validation auto;
+        //dnssec-validation auto;
+
+		dnssec-enable yes;
+    	dnssec-validation yes;
+    	dnssec-lookaside auto;
 
         listen-on-v6 { any; };
 };
@@ -775,13 +812,17 @@ function set-acl-for-network() {
 	cat <<EOF >"$ETC_BIND_NAMES_ACL"
 acl "trusted" {
        127.0.0.1/8;
-       192.168.178.0/24;
+       $NETWORK_AND_WIDE;
 };
 EOF
 
 	echo "# ACTION add acl file to named.conf"
 
 	echo "include \"$ETC_BIND_NAMES_ACL\";" | sudo tee -a "/etc/bind/named.conf"
+
+	# allow-recursion { trusted; };
+	echo "# ACTION append entry in $ZONE_FILE_NAME_OPTIONS "
+	sed -i '/#ACL settings/a allow-recursion { trusted; };' $ZONE_FILE_NAME_OPTIONS
 
 }
 
