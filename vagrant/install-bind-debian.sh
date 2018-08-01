@@ -267,7 +267,7 @@ EOF
 
 	echo "# ACTION prepare file $ZONE_FILE_NAME_OPTIONS"
 
-	cat <<EOF >"$$ZONE_FILE_NAME_OPTIONS"
+	cat <<EOF >"$ZONE_FILE_NAME_OPTIONS"
 	options {
         directory "/var/cache/bind";
 
@@ -695,6 +695,9 @@ function prepare-init-and-services-file() {
 prepare-init-and-services-file
 
 function enable-logging() {
+
+	# info here
+	# https://kb.isc.org/article/AA-01526/0/BIND-Logging-some-basic-recommendations.html
 
 	echo "# INFO enabling logging"
 
