@@ -195,10 +195,11 @@ function create-chroot-dir() {
 	echo "# ACTION create chroot dir for bind/named"
 
 	if (
-		mkdir -p /var/lib/named/{etc,dev}
-		mkdir -p /var/lib/named/var/{cache,run}
+		mkdir -p /var/lib/named/{etc,dev,usr}
+		mkdir -p /var/lib/named/var/{cache,run,log}
 		mkdir -p /var/lib/named/var/cache/bind
 		mkdir -p /var/lib/named/var/run/bind/run
+		mkdir -p /var/lib/named/usr/share/dns
 
 		mknod /var/lib/named/dev/null c 1 3
 		mknod /var/lib/named/dev/urandom c 1 8
@@ -232,7 +233,8 @@ function create-etc-default-bind() {
 RESOLVCONF=yes
 
 # startup options for the server
-OPTIONS="-u bind -t /var/lib/named"
+# OPTIONS="-u bind -t /var/lib/named"
+OPTIONS="-u bind"
 
 EOF
 
@@ -425,6 +427,11 @@ function prepare-zones-files() {
 	# https://www.internic.net/domain/named.root
 	file-download-from-url "https://www.internic.net/domain/named.root" "root.hints" "/usr/share/dns/"
 
+	# for chroot
+	mkdir -p /var/lib/named/usr/share/dns
+	# https://www.internic.net/domain/named.root
+	file-download-from-url "https://www.internic.net/domain/named.root" "root.hints" "/var/lib/named/usr/share/dns"
+
 	# /etc/bind/named.conf
 	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
 
@@ -482,9 +489,11 @@ function enable-logging() {
 
 	echo "# ACTION append logging to "
 
-	touch /var/log/bind.log
-	chown bind:bind /var/log/bind.log
-	chmod 0664 /var/log/bind.log
+	BIND_LOG="/var/lib/named/var/log/bind.log"
+
+	touch $BIND_LOG
+	chown bind:bind $BIND_LOG
+	chmod 0664 $BIND_LOG
 
 	# append to file
 	cat <<EOF >>"/etc/bind/named.conf.options"
