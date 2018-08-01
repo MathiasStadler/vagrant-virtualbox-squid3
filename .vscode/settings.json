@@ -50,6 +50,7 @@
         "getent",
         "gost",
         "gssapi",
+        "heise",
         "ifconfig",
         "iscdlv",
         "keyout",

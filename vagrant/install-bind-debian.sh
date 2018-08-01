@@ -255,83 +255,318 @@ function create-zone-file() {
 	# http://roberts.bplaced.net/index.php/linux-guides/centos-6-guides/proxy-server/squid-transparent-proxy-http-https
 
 	cat <<EOF >"$ZONE_FILE_NAME"
-
-
-
 //
-// named.conf
+// If you are just adding zones, please do that in /etc/bind/named.conf.local
+
+include "/etc/bind/named.conf.options";
+include "/etc/bind/named.conf.local";
+include "/etc/bind/named.conf.default-zones";
+EOF
+
+	ZONE_FILE_NAME_OPTIONS="/etc/bind/named.conf.options"
+
+	echo "# ACTION prepare file $ZONE_FILE_NAME_OPTIONS"
+
+	cat <<EOF >"$$ZONE_FILE_NAME_OPTIONS"
+	options {
+        directory "/var/cache/bind";
+
+        // If there is a firewall between you and nameservers you want
+        // to talk to, you may need to fix the firewall to allow multiple
+        // ports to talk.  See http://www.kb.cert.org/vuls/id/800113
+
+        // If your ISP provided one or more IP addresses for stable
+        // nameservers, you probably want to use them as forwarders.
+        // Uncomment the following block, and insert the addresses replacing
+        // the all-0's placeholder.
+
+        // forwarders {
+        //      0.0.0.0;
+        // };
+
+        //========================================================================
+        // If BIND logs error messages about the root key being expired,
+        // you will need to update your keys.  See https://www.isc.org/bind-keys
+        //========================================================================
+        dnssec-validation auto;
+
+        listen-on-v6 { any; };
+};
+EOF
+
+	ZONE_FILE_NAME_LOCAL="/etc/bind/named.conf.local"
+
+	echo "# ACTION prepare file $ZONE_FILE_NAME_LOCAL"
+
+	cat <<EOF >"$ZONE_FILE_NAME_LOCAL"
 //
-// Provided by Red Hat bind package to configure the ISC BIND named(8) DNS
-// server as a caching only nameserver (as a localhost DNS resolver only).
-//
-// See /usr/share/doc/bind*/sample/ for example named configuration files.
+// Do any local configuration here
 //
 
-acl mynet {
-    192.168.201.0/24; # test network
-    127.0.0.1; # localhost
-    };
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+//include "/etc/bind/zones.rfc1918";
+EOF
 
-options {
-    listen-on {
-        mynet;
-        };
-    listen-on-v6 port 53 { ::1; };
-    directory     "/var/named";
-    dump-file     "/var/named/data/cache_dump.db";
-        statistics-file "/var/named/data/named_stats.txt";
-        memstatistics-file "/var/named/data/named_mem_stats.txt";
-    allow-query     { mynet; };
-    recursion yes;
+	ZONE_FILE_ROOT_HINTS="/etc/bind/root_hints"
 
-    forward only;
-    forwarders {
-        8.8.8.8;
-        };
+	echo "# ACTION prepare file $ZONE_FILE_ROOT_HINTS"
 
-    dnssec-enable yes;
-    dnssec-validation yes;
-    dnssec-lookaside auto;
+	cat <<EOF >"$ZONE_FILE_ROOT_HINTS"
+	;       This file holds the information on root name servers needed to
+;       initialize cache of Internet domain name servers
+;       (e.g. reference this file in the "cache  .  <file>"
+;       configuration file of BIND domain name servers).
+;
+;       This file is made available by InterNIC
+;       under anonymous FTP as
+;           file                /domain/named.cache
+;           on server           FTP.INTERNIC.NET
+;       -OR-                    RS.INTERNIC.NET
+;
+;       last update:     July 09, 2018
+;       related version of root zone:     2018070901
+;
+; FORMERLY NS.INTERNIC.NET
+;
+.                        3600000      NS    A.ROOT-SERVERS.NET.
+A.ROOT-SERVERS.NET.      3600000      A     198.41.0.4
+A.ROOT-SERVERS.NET.      3600000      AAAA  2001:503:ba3e::2:30
+;
+; FORMERLY NS1.ISI.EDU
+;
+.                        3600000      NS    B.ROOT-SERVERS.NET.
+B.ROOT-SERVERS.NET.      3600000      A     199.9.14.201
+B.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:200::b
+;
+; FORMERLY C.PSI.NET
+;
+.                        3600000      NS    C.ROOT-SERVERS.NET.
+C.ROOT-SERVERS.NET.      3600000      A     192.33.4.12
+C.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:2::c
+;
+; FORMERLY TERP.UMD.EDU
+;
+.                        3600000      NS    D.ROOT-SERVERS.NET.
+D.ROOT-SERVERS.NET.      3600000      A     199.7.91.13
+D.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:2d::d
+;
+; FORMERLY NS.NASA.GOV
+;
+.                        3600000      NS    E.ROOT-SERVERS.NET.
+E.ROOT-SERVERS.NET.      3600000      A     192.203.230.10
+E.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:a8::e
+;
+; FORMERLY NS.ISC.ORG
+;
+.                        3600000      NS    F.ROOT-SERVERS.NET.
+F.ROOT-SERVERS.NET.      3600000      A     192.5.5.241
+F.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:2f::f
+;
+; FORMERLY NS.NIC.DDN.MIL
+;
+.                        3600000      NS    G.ROOT-SERVERS.NET.
+G.ROOT-SERVERS.NET.      3600000      A     192.112.36.4
+G.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:12::d0d
+;
+; FORMERLY AOS.ARL.ARMY.MIL
+;
+.                        3600000      NS    H.ROOT-SERVERS.NET.
+H.ROOT-SERVERS.NET.      3600000      A     198.97.190.53
+H.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:1::53
+;
+; FORMERLY NIC.NORDU.NET
+;
+.                        3600000      NS    I.ROOT-SERVERS.NET.
+I.ROOT-SERVERS.NET.      3600000      A     192.36.148.17
+I.ROOT-SERVERS.NET.      3600000      AAAA  2001:7fe::53
+;
+; OPERATED BY VERISIGN, INC.
+;
+.                        3600000      NS    J.ROOT-SERVERS.NET.
+J.ROOT-SERVERS.NET.      3600000      A     192.58.128.30
+J.ROOT-SERVERS.NET.      3600000      AAAA  2001:503:c27::2:30
+;
+; OPERATED BY RIPE NCC
+;
+.                        3600000      NS    K.ROOT-SERVERS.NET.
+K.ROOT-SERVERS.NET.      3600000      A     193.0.14.129
+K.ROOT-SERVERS.NET.      3600000      AAAA  2001:7fd::1
+;
+; OPERATED BY ICANN
+;
+.                        3600000      NS    L.ROOT-SERVERS.NET.
+L.ROOT-SERVERS.NET.      3600000      A     199.7.83.42
+L.ROOT-SERVERS.NET.      3600000      AAAA  2001:500:9f::42
+;
+; OPERATED BY WIDE
+;
+.                        3600000      NS    M.ROOT-SERVERS.NET.
+M.ROOT-SERVERS.NET.      3600000      A     202.12.27.33
+M.ROOT-SERVERS.NET.      3600000      AAAA  2001:dc3::35
+; End of file
 
-    /* Path to ISC DLV key */
-    bindkeys-file "/etc/named.iscdlv.key";
+EOF
 
-    managed-keys-directory "/var/named/dynamic";
+	ZONE_FILE_DB_0="/etc/bind/db.0"
+
+	echo "# ACTION prepare file $ZONE_FILE_DB_0"
+
+	cat <<EOF >"$ZONE_FILE_DB_0"
+	;
+; BIND reverse data file for broadcast zone
+;
+$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+
+EOF
+
+	ZONE_FILE_DB_127="/etc/bind/db.127"
+
+	echo "# ACTION prepare file $ZONE_FILE_DB_127"
+
+	cat <<EOF >"$ZONE_FILE_DB_127"
+	$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+1.0.0   IN      PTR     localhost.
+
+EOF
+
+	ZONE_FILE_DB_255="/etc/bind/db.255"
+
+	echo "# ACTION prepare file $ZONE_FILE_DB_255"
+
+	cat <<EOF >"$ZONE_FILE_DB_255"
+	;
+; BIND reverse data file for broadcast zone
+;
+$TTL    604800
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+EOF
+
+	ZONE_FILE_DB_EMPTY="/etc/bind/db.empty"
+
+	echo "# ACTION prepare file $ZONE_FILE_DB_EMPTY"
+
+	cat <<EOF >"$ZONE_FILE_DB_EMPTY"
+; BIND reverse data file for empty rfc1918 zone
+;
+; DO NOT EDIT THIS FILE - it is used for multiple zones.
+; Instead, copy it, edit named.conf, and use that copy.
+;
+$TTL    86400
+@       IN      SOA     localhost. root.localhost. (
+                              1         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                          86400 )       ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+EOF
+
+	ZONE_FILE_ZONES_RFC_1918="/etc/bind/zones.rfc1918"
+
+	echo "# ACTION prepare file $ZONE_FILE_ZONES_RFC_1918"
+
+	cat <<EOF >"$ZONE_FILE_ZONES_RFC_1918"
+zone "10.in-addr.arpa"      { type master; file "/etc/bind/db.empty"; };
+
+zone "16.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "17.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "18.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "19.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "20.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "21.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "22.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "23.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "24.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "25.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "26.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "27.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "28.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "29.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "30.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+zone "31.172.in-addr.arpa"  { type master; file "/etc/bind/db.empty"; };
+
+zone "168.192.in-addr.arpa" { type master; file "/etc/bind/db.empty"; };
+EOF
+
+	ZONE_FILE_NAME_DEFAULTS_ZONES="/etc/bind/named.conf.default-zones"
+
+	echo "# ACTION prepare file $ZONE_FILE_NAME_DEFAULTS_ZONES"
+
+	cat <<EOF >"$ZONE_FILE_NAME_DEFAULTS_ZONES"
+// prime the server with knowledge of the root servers
+zone "." {
+        type hint;
+        file "$ZONE_FILE_ROOT_HINTS";
 };
 
-logging {
-        channel default_debug {
-                file "data/named.run";
-                severity dynamic;
-        };
+// be authoritative for the localhost forward and reverse zones, and for
+// broadcast zones as per RFC 1912
+
+zone "localhost" {
+        type master;
+        file "/etc/bind/db.local";
 };
 
-zone "." IN {
-    type hint;
-    file "named.ca";
+zone "127.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.127";
 };
 
-include "/etc/named.rfc1912.zones";
-include "/etc/named.root.key";
+zone "0.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.0";
+};
 
-#############################################
-#    home.lan
-#############################################
-
-zone "home.lan" IN {
-    type master;
-    file "/var/named/home.lan/db.home";
-    allow-query {
-    mynet;
-    };
-    };
-
+zone "255.in-addr.arpa" {
+        type master;
+        file "/etc/bind/db.255";
+};
 EOF
 
 }
 
 # call function
-# deactivate create-zone-file
+create-zone-file
+
+function check-named-conf() {
+
+	echo "# ACTION check /etc/bind/named.conf"
+
+	if (/usr/sbin/named-checkconf /etc/bind/named.conf); then
+		echo "# INFO /etc/named.conf valid"
+	else
+		echo "# ERROR /etc/named.conf raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+}
+
+check-named-conf
 
 function bind-prepare-home-zone() {
 
@@ -406,7 +641,7 @@ function prepare-zones-files() {
 
 	DEBIAN_BIND_SOURCE_REPO="https://sources.debian.org/data/main/b/bind9/1:9.11.4+dfsg-3/debian/extras/etc/"
 
-	DOWNLOAD_DNS_FILES=(
+	_DOWNLOAD_DNS_FILES=(
 		"db.0"
 		"db.127"
 		"db.255"
@@ -419,6 +654,8 @@ function prepare-zones-files() {
 		"zones.rfc1918"
 
 	)
+
+	DOWNLOAD_DNS_FILES=()
 
 	for dnsFile in "${DOWNLOAD_DNS_FILES[@]}"; do #  <-- Note: Added "" quotes.
 		echo "$dnsFile" # (i.e. do action / processing of $databaseName here...)
@@ -435,24 +672,10 @@ function prepare-zones-files() {
 	# https://www.internic.net/domain/named.root
 	file-download-from-url "https://www.internic.net/domain/named.root" "root.hints" "/var/lib/named/usr/share/dns"
 
-	# /etc/bind/named.conf
-	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf" "named.conf" "$ETC_BIND"
-
-	# /etc/bind/named.conf.options
-	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.options" "named.conf.options" "$ETC_BIND"
-
-	# named.conf.local
-	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.local" "named.conf.local" "$ETC_BIND"
-
-	# named.conf.default-zones
-	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}named.conf.default-zones" "named.conf.default-zones" "$ETC_BIND"
-
-	# zones.rfc1918
-	#file-download-from-url "${DEBIAN_BIND_SOURCE_REPO}zones.rfc1918" "zones.rfc1918" "$ETC_BIND"
-
 }
 
-prepare-zones-files
+# call function
+# TODO obsolete prepare-zones-files
 
 function prepare-init-and-services-file() {
 
@@ -470,21 +693,6 @@ function prepare-init-and-services-file() {
 }
 
 prepare-init-and-services-file
-
-function check-named-conf() {
-
-	echo "# ACTION check /etc/bind/named.conf"
-
-	if (/usr/sbin/named-checkconf /etc/bind/named.conf); then
-		echo "# INFO /etc/named.conf valid"
-	else
-		echo "# ERROR /etc/named.conf raise a error"
-		echo "# EXIT 1"
-		exit 1
-	fi
-}
-
-check-named-conf
 
 function enable-logging() {
 
@@ -544,7 +752,41 @@ EOF
 
 }
 
+# call function
 enable-logging
+
+# call function
+check-named-conf
+
+function set-acl-for-network() {
+
+	# from here
+	# https://bloggenswertes.de/eigene-zone-dns-betreiben/#101einwenigsicherheit
+
+	ETC_BIND_NAMES_ACL="/etc/bind/named.conf.acl"
+
+	echo "# ACTION create $ETC_BIND_NAMES_ACL "
+
+	#TODO detect network dynamics
+
+	cat <<EOF >"$ETC_BIND_NAMES_ACL"
+acl "trusted" {
+       127.0.0.1/8;
+       192.168.178.0/24;
+};
+EOF
+
+	echo "# ACTION add acl file to named.conf"
+
+	echo "include \"$ETC_BIND_NAMES_ACL\";" | sudo tee -a "/etc/bind/named.conf"
+
+}
+
+# call function
+set-acl-for-network
+
+# call function
+check-named-conf
 
 function run-bind9() {
 
@@ -561,6 +803,78 @@ function run-bind9() {
 
 }
 
+# call function
 run-bind9
 
+function check-function-bind-server() {
+
+	echo "# INFO BIND server check function"
+	if (dig heise.de @127.0.0.1); then
+		echo "# INFO server resolv address successful "
+	else
+		echo "# ERROR address lookup raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# ACTION stop server"
+
+	if (sudo service bind9 stop); then
+		echo "# INFO bind9 stop"
+	else
+		echo "# ERROR bind9 stop raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# INFO Fail test BIND server check function"
+	if ! (dig heise.de @127.0.0.1); then
+		echo "# INFO Ok server not resolv address successful "
+		echo "# INFO server should down"
+	else
+		echo "# ERROR address lookup works without running a server that is a error"
+		echo "# ERROR check which server resolv this address"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# ACTION start bind9 "
+
+	if (sudo service bind9 start); then
+		echo "# INFO bind9 started"
+	else
+		echo "# ERROR bind9 start raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+	echo "# INFO BIND server check function 2nd Pass"
+	if (dig heise.de @127.0.0.1); then
+		echo "# INFO server resolv address successful "
+	else
+		echo "# ERROR address lookup raise a error"
+		echo "# INFO Look at cat /var/log/syslog for hits and errors"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+check-function-bind-server
+
 # https://www.nowiasz.de/anleitungen/automatisierte-lets-encrypt-wildcardzertifikate-mit-lokalem-bind/
+
+function add-record-to-bind() {
+
+	echo "# INFO add record to bind"
+
+	# curl -X DELETE -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "hostname": "host.example.com"}' http://localhost:9999/dns
+	# curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "hostname": "host.example.com", "ip": "1.1.1.10" }' http://localhost:9999/dns
+	# curl -X POST -H 'Content-Type: application/json' -H 'X-Api-Key: secret' -d '{ "hostname": "host.example.com", "ip": "1.1.1.10", "ptr": "yes", "ttl": 86400}' http://localhost:9999/dns
+
+	# https://github.com/jvdiago/bind-restapi
+
+}
