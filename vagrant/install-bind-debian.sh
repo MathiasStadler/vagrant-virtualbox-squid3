@@ -328,9 +328,12 @@ EOF
         //========================================================================
         //dnssec-validation auto;
 
+
+		// explain show here
+		// http://www.zytrax.com/books/dns/info/dlv.html
 		dnssec-enable yes;
     	dnssec-validation yes;
-    	dnssec-lookaside auto;
+    	dnssec-lookaside no;
 
         listen-on-v6 { any; };
 };
@@ -812,11 +815,11 @@ function set-acl-for-network() {
 
 	echo "# ACTION create $ETC_BIND_NAMES_ACL "
 
-	#TODO detect network dynamics
+	# network for allow access the named server
 
 	cat <<EOF >"$ETC_BIND_NAMES_ACL"
 acl "trusted" {
-       127.0.0.1/8;
+       127.0.0.0/8;
        $NETWORK_AND_WIDE;
 };
 EOF
