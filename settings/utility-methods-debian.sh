@@ -102,7 +102,7 @@ function configure-package() {
 		# see SC2124
 		ARRAY_OF_AUTOCONF_OPTION=("$@")
 		echo "# INFO ARRAY of AUTOCONF option set to '${ARRAY_OF_AUTOCONF_OPTION[*]}'" | tee -a "${LOG_FILE}"
-		echo "# DEBUG receive n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}"
+		echo "# DEBUG receive n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}"
 	fi
 
 	echo "# INFO change to ${TARGET_DIR}"
@@ -215,9 +215,8 @@ function install-packages() {
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"
 		exit 1
 	else
-
-		ARRAY_OF_INSTALL_PACKAGES="$*"
-		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '$ARRAY_OF_INSTALL_PACKAGES'" | tee -a "${LOG_FILE}"
+		ARRAY_OF_INSTALL_PACKAGES=("$@")
+		echo "# INFO ARRAY of ARRAY OF INSTALL PACKAGES set to '${ARRAY_OF_INSTALL_PACKAGES[*]}'" | tee -a "${LOG_FILE}"
 
 	fi
 
@@ -230,7 +229,7 @@ function install-packages() {
 		# sudo apt-get autoremove -y | tee -a "${LOG_FILE}" >/dev/null
 
 		# shellcheck disable=1072,2046
-		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[@]}" | tee -a "${LOG_FILE}" >/dev/null
+		sudo apt-get install -y --no-install-recommends "${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
 
 	); then
 		echo "# OK package installed" | tee -a "${LOG_FILE}"
