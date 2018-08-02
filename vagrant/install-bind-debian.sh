@@ -630,7 +630,7 @@ function prepare-rndc-config-generation() {
 
 	ETC_BIND_RNDC_CONF="/etc/bind/rndc.conf"
 
-	RNDC_KEY_NAME="proxy-bind"
+	RNDC_KEY_NAME="proxy-key"
 
 	echo "# ACTION generate $ETC_BIND_RNDC_CONF"
 
