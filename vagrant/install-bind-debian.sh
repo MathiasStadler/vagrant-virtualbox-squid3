@@ -328,6 +328,15 @@ EOF
         //========================================================================
         //dnssec-validation auto;
 
+		# from here
+		# https://superuser.com/questions/1099215/bind9-dns-server-not-resolving-a-single-domain
+		# allow-query             {my-nets;};
+        # allow-recursion         {my-nets;};
+        # allow-query-cache       {my-nets;};
+        # blackhole               {bogus-nets;};
+        # allow-transfer          {none;};
+        empty-zones-enable      yes;
+        version                 "Version Redacted";
 
 		// explain show here
 		// http://www.zytrax.com/books/dns/info/dlv.html
