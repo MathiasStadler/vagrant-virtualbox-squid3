@@ -56,7 +56,7 @@ function delete-avaible-openssl() {
 	if (dpkg-query -l openssl); then
 		# installed remove it
 
-		if (export DEBIAN_FRONTEND=noninteractive && sudo apt-get purge openssl); then
+		if (export DEBIAN_FRONTEND=noninteractive && sudo apt-get purge -y openssl); then
 			echo "# INFO delete openssl"
 		else
 			echo "# ERROR delete openssl package raise a error"
