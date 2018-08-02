@@ -653,7 +653,7 @@ function parse-and-copy-rndc-key-to-bind-named-conf() {
 
 	# parse key
 	# version without key_name
-	sed '/#.*key.*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee $ETC_BIND_NAMED_CONF_KEY
+	sed '/#.*key.*".*".*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee $ETC_BIND_NAMED_CONF_KEY
 
 	# parse controls
 	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
