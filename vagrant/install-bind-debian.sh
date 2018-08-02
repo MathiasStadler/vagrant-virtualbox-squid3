@@ -631,11 +631,29 @@ function prepare-rndc-config-generation() {
 
 	echo "# ACTION generate $ETC_BIND_RNDC_CONF"
 
-	rndc-confgen >$ETC_BIND_RNDC_CONF
+	rndc-confgen -b "512" -k "proxy-bind" >$ETC_BIND_RNDC_CONF
 
 }
 
+# call function
 prepare-rndc-config-generation
+
+function parse-and-copy-rndc-key-to-bind-named-conf() {
+
+	ETC_BIND_NAMED_CONF_KEY="/etc/bind/named.conf.key"
+
+	echo "# ACTION parse key and controls from $ETC_BIND_RNDC_CONF"
+
+	sed '/#.*key.*"rndc-key".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
+
+	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' /etc/bind/rndc.conf | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
+
+	echo "include \"$ETC_BIND_NAMED_CONF_KEY\";" | sudo tee -a "/etc/bind/named.conf"
+
+}
+
+# call function
+parse-and-copy-rndc-key-to-bind-named-conf
 
 function prepare-db-home-zone() {
 
@@ -931,3 +949,36 @@ function add-record-to-bind() {
 	# https://github.com/jvdiago/bind-restapi
 
 }
+
+function parse-rndc-key-to-named-conf() {
+
+	# from here
+	# https://stackoverflow.com/questions/32588469/how-do-i-get-multi-line-string-between-two-braces-containing-a-specific-search-s
+
+	# sed '/{/{:1; /}/!{N; b1}; /event/p}; d' filepath
+
+	# /{/                    if current line contains{then execute next block
+	# {                       start block
+	#     :1;                 label for code to jump to
+	#     /}/!                if the line does not contain}then execute next block
+	#     {                   start block
+	#         N;              add next line to pattern space
+	#         b1              jump to label 1
+	#     };                  end block
+	#     /event/p            if the pattern space contains the search string, print it
+	#                         (at this point the pattern space contains a full block of lines
+	#                         from{to})
+	# };                      end block
+	# d                       delete pattern space
+
+	# 1st try
+	# sed '/#.*key.*"rndc-key".*{/{:1; /}/!{N; b1}; /secret/p}; d' /etc/bind/rndc.conf
+
+	# 2nd try
+	sed '/#.*key.*"rndc-key".*{/{:1; /}/!{N; b1}; /.*/p}; d' /etc/bind/rndc.conf | sed 's/^# //g'
+
+	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' /etc/bind/rndc.conf
+
+}
+
+parse-rndc-key-to-named-conf
