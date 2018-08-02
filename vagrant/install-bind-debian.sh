@@ -646,9 +646,16 @@ function parse-and-copy-rndc-key-to-bind-named-conf() {
 	ETC_BIND_NAMED_CONF_KEY="/etc/bind/named.conf.key"
 
 	echo "# ACTION parse key and controls from $ETC_BIND_RNDC_CONF"
+	echo "# INFO RNDC_KEY_NAME => $RNDC_KEY_NAME"
 
-	sed '/#.*key.*"$RNDC_KEY_NAME".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
+	# Version with key_name
+	#sed '/#.*key.*"$RNDC_KEY_NAME".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee $ETC_BIND_NAMED_CONF_KEY
 
+	# parse key
+	# version without key_name
+	sed '/#.*key.*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee $ETC_BIND_NAMED_CONF_KEY
+
+	# parse controls
 	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
 
 	echo "include \"$ETC_BIND_NAMED_CONF_KEY\";" | sudo tee -a "/etc/bind/named.conf"
