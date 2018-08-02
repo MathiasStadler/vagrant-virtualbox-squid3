@@ -462,6 +462,27 @@ M.ROOT-SERVERS.NET.      3600000      AAAA  2001:dc3::35
 
 EOF
 
+	ZONE_FILE_DB_LOCAL="/etc/bind/db.local"
+
+	echo "# ACTION prepare file $ZONE_FILE_DB_LOCAL"
+
+	cat <<EOF >"$ZONE_FILE_DB_LOCAL"
+;
+; BIND data file for local loopback interface
+;
+\$TTL	604800
+@	IN	SOA	localhost. root.localhost. (
+			      2		; Serial
+			 604800		; Refresh
+			  86400		; Retry
+			2419200		; Expire
+			 604800 )	; Negative Cache TTL
+;
+@	IN	NS	localhost.
+@	IN	A	127.0.0.1
+@	IN	AAAA	::1
+EOF
+
 	ZONE_FILE_DB_0="/etc/bind/db.0"
 
 	echo "# ACTION prepare file $ZONE_FILE_DB_0"
@@ -1023,5 +1044,12 @@ function rndc-create-zone() {
 	# and
 
 	# http://jon.netdork.net/2008/08/21/bind-dynamic-zones-and-updates/
+
+	# and
+
+	# https://jpmens.net/2010/10/04/dynamically-add-zones-to-bind-with-rndc-addzone/
+
+	# bind with couch
+	# https://jpmens.net/2010/10/06/serving-dns-replies-from-a-couchdb-database-with-the-bind-name-server/
 
 }
