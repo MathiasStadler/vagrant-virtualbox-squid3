@@ -862,7 +862,10 @@ EOF
 
 	# allow-recursion { trusted; };
 	echo "# ACTION append entry in $ZONE_FILE_NAME_OPTIONS "
-	sed -i '/#ACL settings/a allow-recursion { trusted; };' $ZONE_FILE_NAME_OPTIONS
+	#sed -i '/#ACL settings/a allow-recursion { trusted; };' $ZONE_FILE_NAME_OPTIONS
+
+	# options {
+	sed -i '/options {/a allow-recursion { trusted; };' $ZONE_FILE_NAME_OPTIONS
 
 }
 
