@@ -1053,3 +1053,10 @@ function rndc-create-zone() {
 	# https://jpmens.net/2010/10/06/serving-dns-replies-from-a-couchdb-database-with-the-bind-name-server/
 
 }
+
+function prgn-seeding() {
+
+	# openSSL FAQ
+	# https://www.openssl.org/docs/faq.html
+
+}

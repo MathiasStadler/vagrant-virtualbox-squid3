@@ -51,7 +51,15 @@ echo "# OK ${0##*/} loaded"
 # CONSTANTS
 readonly OPENSSL_DOWNLOAD_SITE="https://ftp.openssl.org/source/"
 
-function detect-last-bind-version() {
+function delete-avaible-openssl() {
+
+	sudo apt-get purge openssl
+
+}
+# call function
+delete-avaible-openssl
+
+function detect-last-openssl-version() {
 
 	readonly TEMP_FILE="/tmp/openssl-version.txt"
 
@@ -63,7 +71,7 @@ function detect-last-bind-version() {
 }
 
 # call function
-detect-last-bind-version
+detect-last-openssl-version
 
 echo "# INFO GLOBAL openssl tar last release is $OPENSSL_TAR"
 
