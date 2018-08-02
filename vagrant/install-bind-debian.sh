@@ -1033,6 +1033,7 @@ function parse-rndc-key-to-named-conf() {
 
 function rndc-create-zone() {
 
+	echo "# DOCUMENTATION"
 	# from here
 	# http://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-rg-de-4/s1-bind-rndc.html
 
@@ -1054,9 +1055,16 @@ function rndc-create-zone() {
 
 }
 
-function prgn-seeding() {
+function check-compiling-and-linking-with-same-openssl-version() {
+
+	echo "# ACTION check openssl compile and linking version"
+
+	# /usr/sbin/named -V
 
 	# openSSL FAQ
 	# https://www.openssl.org/docs/faq.html
 
 }
+
+# call function
+check-compiling-and-linking-with-same-openssl-version
