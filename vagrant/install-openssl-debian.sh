@@ -53,7 +53,19 @@ readonly OPENSSL_DOWNLOAD_SITE="https://ftp.openssl.org/source/"
 
 function delete-avaible-openssl() {
 
-	sudo apt-get purge openssl
+	if (dpkg-query -l openssl); then
+		# installed remove it
+
+		if (export DEBIAN_FRONTEND=noninteractive && sudo apt-get purge openssl); then
+			echo "# INFO delete openssl"
+		else
+			echo "# ERROR delete openssl package raise a error"
+			echo "# EXIT 1"
+			exit 1
+		fi
+	else
+		echo "# INFO no openssl packages installed"
+	fi
 
 }
 # call function
