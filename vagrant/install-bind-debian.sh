@@ -629,9 +629,11 @@ function prepare-rndc-config-generation() {
 
 	ETC_BIND_RNDC_CONF="/etc/bind/rndc.conf"
 
+	RNDC_KEY_NAME="proxy-bind"
+
 	echo "# ACTION generate $ETC_BIND_RNDC_CONF"
 
-	rndc-confgen -b "512" -k "proxy-bind" >$ETC_BIND_RNDC_CONF
+	rndc-confgen -b "512" -k $RNDC_KEY_NAME >$ETC_BIND_RNDC_CONF
 
 }
 
@@ -644,7 +646,7 @@ function parse-and-copy-rndc-key-to-bind-named-conf() {
 
 	echo "# ACTION parse key and controls from $ETC_BIND_RNDC_CONF"
 
-	sed '/#.*key.*"rndc-key".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
+	sed '/#.*key.*"$RNDC_KEY_NAME".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
 
 	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' /etc/bind/rndc.conf | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
 
