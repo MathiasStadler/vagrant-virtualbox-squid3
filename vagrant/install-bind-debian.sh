@@ -611,6 +611,7 @@ function check-named-conf() {
 	fi
 }
 
+# call function
 check-named-conf
 
 function bind-prepare-home-zone() {
@@ -648,7 +649,7 @@ function parse-and-copy-rndc-key-to-bind-named-conf() {
 
 	sed '/#.*key.*"$RNDC_KEY_NAME".*{/{:1; /}/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
 
-	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' /etc/bind/rndc.conf | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
+	sed '/#.*controls.*{/{:1; /#\W};/!{N; b1}; /.*/p}; d' $ETC_BIND_RNDC_CONF | sed 's/^# //g' | sudo tee -a $ETC_BIND_NAMED_CONF_KEY
 
 	echo "include \"$ETC_BIND_NAMED_CONF_KEY\";" | sudo tee -a "/etc/bind/named.conf"
 
@@ -656,6 +657,9 @@ function parse-and-copy-rndc-key-to-bind-named-conf() {
 
 # call function
 parse-and-copy-rndc-key-to-bind-named-conf
+
+# call function
+check-named-conf
 
 function prepare-db-home-zone() {
 
