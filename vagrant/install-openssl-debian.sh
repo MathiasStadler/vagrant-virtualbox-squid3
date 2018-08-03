@@ -68,8 +68,6 @@ function delete-avaible-openssl() {
 	fi
 
 }
-# call function
-delete-avaible-openssl
 
 function detect-last-openssl-version() {
 
@@ -103,6 +101,10 @@ install-packages "${array_install_packages[@]}"
 
 # call function
 download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$OPENSSL_TAR" "$BUILD_DIR"
+
+# call function
+# delete first if you had all packages downloaded
+delete-avaible-openssl
 
 # set prefix installation
 PREFIX="/usr"
