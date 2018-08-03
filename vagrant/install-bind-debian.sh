@@ -112,6 +112,8 @@ array_configure_options=(
 	"--with-libtool"
 	"--disable-static"
 	"--with-randomdev=/dev/urandom"
+	"--with-openssl=/usr/local/openssl"
+
 )
 
 #shellcheck disable=SC2034

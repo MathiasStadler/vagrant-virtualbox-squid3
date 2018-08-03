@@ -104,10 +104,12 @@ download-and-extract "$OPENSSL_DOWNLOAD_SITE" "$OPENSSL_TAR" "$BUILD_DIR"
 
 # call function
 # delete first if you had all packages downloaded
-delete-avaible-openssl
+# deactivate delete-avaible-openssl
 
 # set prefix installation
-PREFIX="/usr"
+# PREFIX="/usr"
+# parallel openssl installation
+PREFIX="/usr/local"
 
 # from here
 # http://www.linuxfromscratch.org/blfs/view/svn/server/bind.html
