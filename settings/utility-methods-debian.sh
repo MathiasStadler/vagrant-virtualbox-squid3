@@ -180,6 +180,7 @@ function configure-package-new-approach() {
 
 	# run configure
 	if (
+		export CPATH=/usr/local/include LIBRARY_PATH=/usr/local/lib LD_LIBRARY_PATH=/usr/local/lib
 		"./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null
 		test ${PIPESTATUS[0]} -eq 0
 	); then
