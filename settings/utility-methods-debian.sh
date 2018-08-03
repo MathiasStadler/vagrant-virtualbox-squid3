@@ -181,6 +181,7 @@ function configure-package-new-approach() {
 	# run configure
 	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 
+		echo "# DEBUG rr $?"
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
 		# print config.status -config
 		if [ -e "$TARGET_DIR"/config.status ]; then
