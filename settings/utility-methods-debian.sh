@@ -230,13 +230,13 @@ function install-packages() {
 
 		echo "# DEBUG exec sudo apt-get install -y --no-install-recommends ${ARRAY_OF_INSTALL_PACKAGES[*]}" | tee -a "${LOG_FILE}" >/dev/null
 
-		for package in "${ARRAY_OF_INSTALL_PACKAGES[@]}"; do
-			echo "# ACTION  install package $package"
-			export DEBIAN_FRONTEND=noninteractive && sudo apt-get install -y --no-install-recommends "$package" | tee -a "${LOG_FILE}" >/dev/null
+		for install_package in "${ARRAY_OF_INSTALL_PACKAGES[@]}"; do
+			echo "# ACTION  install package $install_package"
+			export DEBIAN_FRONTEND=noninteractive && sudo apt-get install -y --no-install-recommends "$install_package" | tee -a "${LOG_FILE}" >/dev/null
 		done
 
 	); then
-		echo "# OK package $package installed" | tee -a "${LOG_FILE}"
+		echo "# OK package ${ARRAY_OF_INSTALL_PACKAGES[*]} installed" | tee -a "${LOG_FILE}"
 	else
 		echo "# ERROR packages NOT installed" | tee -a "${LOG_FILE}"
 		echo "# EXIT 1" | tee -a "${LOG_FILE}"

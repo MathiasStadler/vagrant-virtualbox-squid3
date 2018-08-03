@@ -1030,8 +1030,8 @@ function parse-rndc-key-to-named-conf() {
 }
 
 # call function
-# Move to doku
-# only for doku parse-rndc-key-to-named-conf
+# Move to documentation
+# only for documentation parse-rndc-key-to-named-conf
 
 function rndc-create-zone() {
 
