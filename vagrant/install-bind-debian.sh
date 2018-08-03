@@ -1061,6 +1061,12 @@ function rndc-create-zone() {
 	# bind with couch
 	# https://jpmens.net/2010/10/06/serving-dns-replies-from-a-couchdb-database-with-the-bind-name-server/
 
+	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
+
+	nsupdate -y
+
+	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
+
 }
 
 function check-compiling-and-linking-with-same-openssl-version() {
