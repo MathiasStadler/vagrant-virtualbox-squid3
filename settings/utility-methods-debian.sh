@@ -179,7 +179,10 @@ function configure-package-new-approach() {
 	cd "${TARGET_DIR}"
 
 	# run configure
-	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
+	if (
+		"./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null
+		test ${PIPESTATUS[0]} -eq 0
+	); then
 
 		echo "# DEBUG rr $?"
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
