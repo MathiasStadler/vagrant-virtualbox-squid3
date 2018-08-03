@@ -179,19 +179,18 @@ function configure-package-new-approach() {
 	cd "${TARGET_DIR}"
 
 	# run configure
-	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" | grep 'error:' >/dev/null); then
+	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null); then
 
-		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} raise ERROR" | tee -a "${LOG_FILE}"
-		echo "# INFO see log $LOG_FILE" | tee -a "${LOG_FILE}"
-		echo "# EXIT 1" | tee -a "${LOG_FILE}"
-		exit 1
-	else
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
 		# print config.status -config
 		if [ -e "$TARGET_DIR"/config.status ]; then
 			"$TARGET_DIR"/config.status --config
 		fi
-
+	else
+		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} raise ERROR" | tee -a "${LOG_FILE}"
+		echo "# INFO see log $LOG_FILE" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
 	fi
 
 }
