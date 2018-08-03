@@ -138,7 +138,7 @@ function configure-package-new-approach() {
 	# ARG2 = name of config script e.g. configure, config
 	# ARG3 = ARRAY of AUTOCONF option
 
-	echo "# INFO call configure-package" | tee -a "${LOG_FILE}"
+	echo "# INFO call configure-package-new-approach" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
 		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
