@@ -131,6 +131,72 @@ function configure-package() {
 
 }
 
+##
+function configure-package-new-approach() {
+
+	# ARG1 = TARGET_DIR
+	# ARG2 = name of config script e.g. configure, config
+	# ARG3 = ARRAY of AUTOCONF option
+
+	echo "# INFO call configure-package" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		TARGET_DIR="$1"
+
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
+
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG2 = name of config script e.g. configure, config NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		NAME_OF_CONFIG_SCRIPT="$2"
+		echo "# INFO ARG2 = name of config script set to '$NAME_OF_CONFIG_SCRIPT'" | tee -a "${LOG_FILE}"
+	fi
+
+	if [ -z ${3+x} ]; then
+		echo "# ERROR ARG3 ARRAY of AUTOCONF option NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		# for first parameter
+		shift
+		# for second parameter
+		shift
+		# see SC2124
+		ARRAY_OF_AUTOCONF_OPTION=("$@")
+		echo "# INFO ARRAY of AUTOCONF option set to '${ARRAY_OF_AUTOCONF_OPTION[*]}'" | tee -a "${LOG_FILE}"
+		echo "# DEBUG receive n count of elements ${#ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}"
+	fi
+
+	echo "# INFO change to ${TARGET_DIR}"
+	cd "${TARGET_DIR}"
+
+	# run configure
+	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" | grep 'error:' >/dev/null); then
+
+		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} raise ERROR" | tee -a "${LOG_FILE}"
+		echo "# INFO see log $LOG_FILE" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
+		# print config.status -config
+		if [ -e "$TARGET_DIR"/config.status ]; then
+			"$TARGET_DIR"/config.status --config
+		fi
+
+	fi
+
+}
+##
+
 function make-package() {
 
 	# ARG1 = TARGET_DIR
