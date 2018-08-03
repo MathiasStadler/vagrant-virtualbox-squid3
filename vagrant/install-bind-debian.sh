@@ -1067,6 +1067,9 @@ function rndc-create-zone() {
 
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
 
+	# ESDSA
+	# https://www.cloudflare.com/dns/dnssec/ecdsa-and-dnssec/
+
 }
 
 function check-compiling-and-linking-with-same-openssl-version() {
