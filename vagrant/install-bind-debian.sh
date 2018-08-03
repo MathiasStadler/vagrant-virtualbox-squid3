@@ -152,7 +152,11 @@ echo "# DEBUG count of parameter ${#array_configure_options[@]} "
 # call function
 # configure-package "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
 
+# call function
 configure-package-new-approach "$BUILD_DIR/$BIND_VERSION" "configure" "${array_configure_options[@]}"
+
+# call function
+run-ldconfig
 
 # call function
 make-package "$BUILD_DIR/$BIND_VERSION"

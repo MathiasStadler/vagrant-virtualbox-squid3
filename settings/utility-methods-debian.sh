@@ -275,6 +275,23 @@ function make-install-package() {
 	echo "# INFO make-install-packages finished" | tee -a "${LOG_FILE}"
 }
 
+function run-ldconfig() {
+
+	# NO ARGS
+	echo "# INFO call run-ldconfig" | tee -a "${LOG_FILE}"
+
+	if (sudo ldconfig); then
+		echo "# INFO ldconfig run successful"
+	else
+		echo "# ERROR run  ldconfig raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+}
+
+# call function
+run-ldconfig
+
 function install-packages() {
 
 	# ARG1 = ARRAY OF INSTALL PACKAGES
