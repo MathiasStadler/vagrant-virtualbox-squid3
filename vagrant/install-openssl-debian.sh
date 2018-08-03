@@ -123,8 +123,8 @@ _array_configure_options=(
 )
 
 array_configure_options=(
-	"--prefix=/usr"
-	"--openssldir=/etc/ssl"
+	"--prefix=${PREFIX}"
+	"--openssldir=${PREFIX}/etc/ssl"
 	"--libdir=lib"
 	"shared"
 	"zlib-dynamic"
