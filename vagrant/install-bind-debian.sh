@@ -1075,6 +1075,12 @@ function rndc-create-zone() {
 	# ESDSA
 	# https://www.cloudflare.com/dns/dnssec/ecdsa-and-dnssec/
 
+	# view
+	# view
+	# view
+	# see here
+	# https://pupeno.com/2006/02/20/two-in-one-dns-server-with-bind9/
+
 }
 
 function check-compiling-and-linking-with-same-openssl-version() {
@@ -1118,16 +1124,72 @@ function test-nsupdate() {
 	#
 
 	TSIG_KEY_NAME="example.com."
-	ETC_BIND_EXAMPLE_ZONE="/etc/bind/example.zone"
-	tsig-keygen $TSIG_KEY_NAME | sudo tee $ETC_BIND_EXAMPLE_ZONE
+	ETC_BIND_TSIG_FILE="/etc/bind/tsig.key"
 
-	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE"
+	# create TSIG Key
+	tsig-keygen $TSIG_KEY_NAME | sudo tee $ETC_BIND_TSIG_FILE
+
+	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/etc/bind/example.com.conf"
+	ETC_BIND_EXAMPLE_ZONE_PATH="/etc/bind"
+	ETC_BIND_EXAMPLE_ZONE_FILE="example.com.zone"
+
+	# create zone file
+	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE"
+; example.com
+\$TTL    604800
+@       IN      SOA     ns1.example.com. root.example.com. (
+                     2006020201 ; Serial
+                         604800 ; Refresh
+                          86400 ; Retry
+                        2419200 ; Expire
+                         604800); Negative Cache TTL
+;
+@       IN      NS      ns1
+        IN      MX      10 mail
+        IN      A       192.0.2.1
+EOF
+
+	# create ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+
+	# 1st write key
+
+	cat "$ETC_BIND_TSIG_FILE" | tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+
+	# 2nd write zone config
+	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 zone "example.com" IN {
      type master;
-     file "example.com.zone";
+     file "$ETC_BIND_EXAMPLE_ZONE_FILE";
      allow-update{ key "$TSIG_KEY_NAME"; };
 };
 EOF
+
+	# call nsupdate
+
+	NSUPDATE_ADD_HOST_SCRIPT="$HOME/nsupdate_add_hopst.sh"
+
+	cat <<EOF >"$NSUPDATE_ADD_HOST_SCRIPT"
+#!/bin/bash
+#Defining Variables
+DNS_SERVER="localhost"
+DNS_ZONE="example.com."
+USERNAME="dd2.example.com."
+IP="192.168.1.7"
+TTL="60"
+RECORD=" $USER_NAME $TTL A $IP"
+echo "
+server $DNS_SERVER
+zone $DNS_ZONE
+debug
+update add $RECORD
+show
+send" | nsupdate -k Kexample.com.+157+55566.key
+EOF
+
+	# execute script NSUPDATE_ADD_HOST_SCRIPT
+
+	chown +x $HOME/nsupdate_add_hopst.sh
+	#$HOME/nsupdate_add_hopst.sh
 
 }
 
