@@ -1101,7 +1101,7 @@ function call-bind-version-via-dig() {
 # call version
 call-bind-version-via-dig
 
-function test-neupdate() {
+function test-nsupdate() {
 
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
@@ -1117,7 +1117,22 @@ function test-neupdate() {
 	# dnssec-keygen -a RSASHA1 -b 1024 test.me
 	#
 
+	TSIG_KEY_NAME="example.com."
+	ETC_BIND_EXAMPLE_ZONE="/etc/bind/example.zone"
+	tsig-keygen $TSIG_KEY_NAME | sudo tee $ETC_BIND_EXAMPLE_ZONE
+
+	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE"
+zone "example.com" IN {
+     type master;
+     file "example.com.zone";
+     allow-update{ key "$TSIG_KEY_NAME"; };
+};
+EOF
+
 }
+
+# call function
+test-nsupdate
 
 function check-dnssec-is-in-action() {
 

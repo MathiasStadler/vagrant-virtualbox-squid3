@@ -99,6 +99,7 @@
         "neupdate",
         "newkey",
         "noninteractive",
+        "nsupdate",
         "openssl",
         "openssldir",
         "passwd",
