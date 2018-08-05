@@ -1066,6 +1066,7 @@ function rndc-create-zone() {
 	# bind with couch
 	# https://jpmens.net/2010/10/06/serving-dns-replies-from-a-couchdb-database-with-the-bind-name-server/
 
+	#  master zone template
 	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
 
 	nsupdate -y
