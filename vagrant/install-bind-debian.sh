@@ -344,7 +344,12 @@ EOF
         # blackhole               {bogus-nets;};
         # allow-transfer          {none;};
         empty-zones-enable      yes;
+
+		# dont provide version,host or system info
         version                 "Version Redacted";
+		hostname 				none;
+		server-id				none;
+
 
 		// explain show here
 		// http://www.zytrax.com/books/dns/info/dlv.html
@@ -352,7 +357,7 @@ EOF
     	dnssec-validation yes;
     	dnssec-lookaside no;
 
-        listen-on-v6 { any; };
+        # listen-on-v6 { any; };
 };
 EOF
 
@@ -1085,3 +1090,41 @@ function check-compiling-and-linking-with-same-openssl-version() {
 
 # call function
 check-compiling-and-linking-with-same-openssl-version
+
+function call-bind-version-via-dig() {
+
+	BIND_VERSION=$(dig +short chaos txt version.bind @localhost)
+
+	echo "# INfO Bind version $BIND_VERSION"
+}
+
+# call version
+call-bind-version-via-dig
+
+function test-neupdate() {
+
+	# mainly from here
+	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
+
+	# https://ftp.isc.org/isc/dnssec-guide/dnssec-guide.pdf
+	# https://hitco.at/blog/wp-content/uploads/Sicherer-E-Mail-Dienste-Anbieter-DNSSecDANE-HowTo-2016-04-28.pdf
+
+	# create key for nsupdate
+
+	# Attention from dnssec-keygen
+	# In prior releases, HMAC algorithms could be generated for use as TSIG keys, but that feature has been removed as of
+	# BIND 9.13.0. Use tsig-keygen to generate TSIG keys.
+	# dnssec-keygen -a RSASHA1 -b 1024 test.me
+	#
+
+}
+
+function check-dnssec-is-in-action() {
+
+	# from here
+	# https://hitco.at/blog/wp-content/uploads/Sicherer-E-Mail-Dienste-Anbieter-DNSSecDANE-HowTo-2016-04-28.pdf
+	# kapitel 2.3.4
+
+	dig @localhost www.isc.org. A +dnssec +multiline
+
+}

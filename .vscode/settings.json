@@ -96,6 +96,7 @@
         "nameserver",
         "nameservers",
         "netfilter",
+        "neupdate",
         "newkey",
         "noninteractive",
         "openssl",
