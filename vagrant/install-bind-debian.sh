@@ -1316,9 +1316,13 @@ function add-zone-template() {
 
 	BIND_CHROOT="/var/lib/named"
 
-	ZONE_MASTER_TEMPLATE="/var/cache/bind/master/template.zone"
+	ZONE_MASTER_TEMPLATE_DIRECTORY="/var/cache/bind/master"
 
-	echo "# ACTION touch $BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+	mkdir -p "$ZONE_MASTER_TEMPLATE_DIRECTORY"
+
+	ZONE_MASTER_TEMPLATE="$ZONE_MASTER_TEMPLATE_DIRECTORY/template.zone"
+
+	echo "# ACTION touch $BIND_CHROOT$ZONE_MASTER_TEMPLATE"
 	touch "$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
 
 	# change user
