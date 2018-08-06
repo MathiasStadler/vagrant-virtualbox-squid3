@@ -47,6 +47,7 @@
         "coredumps",
         "cpuinfo",
         "datadir",
+        "ddns",
         "deaktivate",
         "dnssec",
         "dnstap",

@@ -1124,47 +1124,60 @@ function test-nsupdate() {
 	# dnssec-keygen -a RSASHA1 -b 1024 test.me
 	#
 
-	TSIG_KEY_NAME="example.com."
-	ETC_BIND_TSIG_FILE="/etc/bind/tsig.key"
-
-	# create TSIG Key
-	tsig-keygen $TSIG_KEY_NAME | sudo tee $ETC_BIND_TSIG_FILE
+	DDNS_KEY_NAME="example.com."
+	DDNS_TEST_ZONE="example.com"
+	ETC_BIND_DDNS_FILE="/etc/bind/ddns_${TEST_ZONE}.key"
+	ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${TEST_ZONE}_nsupdate.key"
 
 	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/example.com.conf"
-	ETC_BIND_EXAMPLE_ZONE_PATH="/etc/bind"
-	ETC_BIND_EXAMPLE_ZONE_FILE="example.com.zone"
+	ETC_BIND_EXAMPLE_ZONE_FILE="/etc/bind/example.com.zone"
+
+	# create TSIG Key
+	ddns-confgen -z $DDNS_TEST_ZONE -k $DDNS_KEY_NAME | sudo tee $ETC_BIND_DDNS_FILE
+
+	# parse key section
+	# and  write key to $ETC_BIND_TSIG_FILE
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+
+	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee $ETC_BIND_DDNS_NSUPDATE_FILE
 
 	# create zone file
 	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE"
-; example.com
+; $DDNS_TEST_ZONE
+\$ORGIN .
 \$TTL    604800
-@       IN      SOA     ns1.example.com. root.example.com. (
+@       IN      SOA     ns1.$DDNS_TEST_ZONE. root.$DDNS_TEST_ZONE. (
                      2006020201 ; Serial
                          604800 ; Refresh
                           86400 ; Retry
                         2419200 ; Expire
                          604800); Negative Cache TTL
 ;
-@       IN      NS      ns1
+				NS	ns.$DDNS_TEST_ZONE.
+ns1                     A       127.0.0.1
+;END OF ZONE FILE
 EOF
 
 	# create ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
 
-	# 1st write key
-
-	cat "$ETC_BIND_TSIG_FILE" | tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-
 	# 2nd write zone config
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-zone "example.com" IN {
+zone "$DDNS_TEST_ZONE" IN {
      type master;
      file "$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE";
-     allow-update{ key "$TSIG_KEY_NAME"; };
+EOF
+
+	# parse update-policy section
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+
+	# close zone
+	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 };
 EOF
 
 	# include named.conf
-	echo "include \"$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
+	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
 
 	# call nsupdate
 
@@ -1174,9 +1187,9 @@ EOF
 #!/bin/bash
 #Defining Variables
 DNS_SERVER="localhost"
-DNS_ZONE="example.com."
-USER_NAME="dd2.example.com."
-IP="192.168.1.7"
+DNS_ZONE="$DDNS_TEST_ZONE."
+USER_NAME="test.example.com."
+IP="192.168.178.100"
 TTL="60"
 RECORD=" \$USER_NAME \$TTL A \$IP"
 echo "
@@ -1185,11 +1198,19 @@ zone \$DNS_ZONE
 debug
 update add \$RECORD
 show
-send" | nsupdate -k /etc/bind/tsig.key
+send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
 
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
 	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
+
+	RNDC_EXEC="/usr/sbin/rndc"
+	# activate changes
+	$RNDC_EXEC reload
+	$RNDC_EXEC reload $DDNS_TEST_ZONE.
+	$RNDC_EXEC freeze $DDNS_TEST_ZONE.
+	$RNDC_EXEC reload $DDNS_TEST_ZONE.
+	$RNDC_EXEC thaw $DDNS_TEST_ZONE.
 
 }
 
