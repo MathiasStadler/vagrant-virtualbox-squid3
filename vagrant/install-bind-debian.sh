@@ -1223,9 +1223,10 @@ EOF
 	echo "# ACTION reload zone $DDNS_TEST_ZONE"
 	# activate changes
 
-	# give a error
-	# echo "# ACTION reload all zones"
-	# $RNDC_EXEC reload
+	echo "# ACTION sync zones with clean journals"
+	$RNDC_EXEC sync -clean
+	echo "# ACTION reload all zones"
+	$RNDC_EXEC reload
 	# echo "# ACTION reload zone $DDNS_TEST_ZONE"
 	# $RNDC_EXEC reload $DDNS_TEST_ZONE.
 	echo "# ACTION freeze $DDNS_TEST_ZONE"
