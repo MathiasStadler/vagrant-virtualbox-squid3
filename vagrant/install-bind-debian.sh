@@ -1172,7 +1172,7 @@ zone "$DDNS_TEST_ZONE" IN {
 EOF
 
 	# parse update-policy section
-	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_TSIG_FILE" | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# close zone
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
@@ -1209,15 +1209,6 @@ EOF
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
 	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
 
-	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
-	if ($NSUPDATE_ADD_HOST_SCRIPT); then
-		echo "# OK nsupdate of zone "
-	else
-		exit "# ERROR nsupdate of zone"
-		exit "# EXIT 1"
-		exit 1
-	fi
-
 	RNDC_EXEC="/usr/sbin/rndc"
 
 	echo "# ACTION reload zone $DDNS_TEST_ZONE"
@@ -1235,6 +1226,15 @@ EOF
 	echo "# ACTION thaw $DDNS_TEST_ZONE"
 	$RNDC_EXEC thaw $DDNS_TEST_ZONE.
 
+	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
+	if ($NSUPDATE_ADD_HOST_SCRIPT); then
+		echo "# OK nsupdate of zone "
+	else
+		echo "# ERROR nsupdate of zone"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
 }
 
 # call function
@@ -1250,5 +1250,14 @@ function check-dnssec-is-in-action() {
 	# Kapitel 2.3.4
 
 	dig @localhost www.isc.org. A +dnssec +multiline
+
+}
+
+function add-zone-template() {
+
+	#  master zone template
+	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
+
+	ZONE_TEAMPLATE="/var"
 
 }
