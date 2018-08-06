@@ -1162,7 +1162,7 @@ ns1                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
-	echo"# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# 2nd write zone config
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
