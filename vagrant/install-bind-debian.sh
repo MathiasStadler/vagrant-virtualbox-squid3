@@ -1199,15 +1199,16 @@ EOF
 #Defining Variables
 DNS_SERVER="localhost"
 DNS_ZONE="$DDNS_TEST_ZONE."
-USER_NAME="test.example.com."
+HOST="test.example.com."
 IP="192.168.178.100"
 TTL="60"
-RECORD=" \$USER_NAME \$TTL A \$IP"
+RECORD=" \$HOST \$TTL A \$IP"
 echo "
 server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update add \$RECORD
+update add \$IP.in-addr.arpa. \$TTL PTR $HOST.
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
@@ -1273,6 +1274,7 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update delete \$HOST A
+update delete \$IP.in-addr.arpa. PTR
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
