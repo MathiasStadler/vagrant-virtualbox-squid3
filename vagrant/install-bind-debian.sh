@@ -1120,7 +1120,9 @@ function test-nsupdate() {
 	# https://serverfault.com/questions/560326/ddns-bind-and-leftover-jnl-files
 	echo "# ACTION clean first all journals"
 
-	rndc sync -clean
+	RNDC_EXEC="/usr/sbin/rndc"
+
+	$RNDC_EXEC sync -clean
 
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
@@ -1217,8 +1219,6 @@ EOF
 	echo "# ACTION set execute for $NSUPDATE_ADD_HOST_SCRIPT"
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
 	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
-
-	RNDC_EXEC="/usr/sbin/rndc"
 
 	echo "# ACTION reload zone $DDNS_TEST_ZONE"
 	# activate changes
