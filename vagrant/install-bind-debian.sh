@@ -1146,8 +1146,6 @@ function test-nsupdate() {
                          604800); Negative Cache TTL
 ;
 @       IN      NS      ns1
-        IN      MX      10 mail
-        IN      A       192.0.2.1
 EOF
 
 	# create ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
@@ -1160,13 +1158,13 @@ EOF
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 zone "example.com" IN {
      type master;
-     file "$ETC_BIND_EXAMPLE_ZONE_FILE";
+     file "$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE";
      allow-update{ key "$TSIG_KEY_NAME"; };
 };
 EOF
 
 	# include named.conf
-	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
+	echo "include \"$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
 
 	# call nsupdate
 
@@ -1177,7 +1175,7 @@ EOF
 #Defining Variables
 DNS_SERVER="localhost"
 DNS_ZONE="example.com."
-USERNAME="dd2.example.com."
+USER_NAME="dd2.example.com."
 IP="192.168.1.7"
 TTL="60"
 RECORD=" \$USER_NAME \$TTL A \$IP"
