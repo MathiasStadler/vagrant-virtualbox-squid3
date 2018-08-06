@@ -1320,6 +1320,7 @@ function add-zone-template() {
 	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
 
 	ZONE_MASTER_ZONE="master-template.com"
+	DYNAMIC_ADD_ZONE="dynamic-zone.com"
 	BIND_CHROOT="/var/lib/named"
 
 	ZONE_MASTER_TEMPLATE_DIRECTORY="/var/cache/bind/master"
@@ -1356,12 +1357,82 @@ ns                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
-	if (rndc addzone exampleb.xx '{type master; file "master/template.zone"; allow-update{ key "proxy-key";};};'); then
+	if (rndc addzone $DYNAMIC_ADD_ZONE '{type master; file "master/template.zone"; allow-update{ key "proxy-key";};};'); then
 		echo "# INFO addzone successful"
 	else
 		echo "# ERROR addzone raise a error "
 	fi
 
+	# check template
+
+	if (named-checkzone $ZONE_MASTER_ZONE $BIND_CHROOT/$ZONE_MASTER_TEMPLATE); then
+		echo "# INFO check master template zone OK"
+	else
+		echo "# ERROR check master template file raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
 }
 
 add-zone-template
+
+function add-record-inside-dynamic-zone() {
+
+	echo "# INFO call add-record-inside-dynamic-zone"
+
+	NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT="$HOME$TEST_FOLDER/nsupdate_add_host_dynamic_zone.sh"
+
+	echo "# ACTION write $NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT to $HOME$TEST_FOLDER"
+
+	cat <<EOF >"$$NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT"
+#!/bin/bash
+#Defining Variables
+DNS_SERVER="localhost"
+DNS_ZONE="$DYNAMIC_ADD_ZONE."
+HOST="test.$DYNAMIC_ADD_ZONE"
+IP="192.168.178.123"
+TTL="60"
+RECORD=" \$HOST \$TTL A \$IP"
+echo "
+server \$DNS_SERVER
+zone \$DNS_ZONE
+debug
+update add \$RECORD
+show
+send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
+EOF
+
+	echo "# ACTION set execute for $NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT"
+	# execute script NSUPDATE_ADD_HOST_SCRIPT
+	chmod +x "$NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT"
+
+	echo "# ACTION reload zone $DYNAMIC_ADD_ZONE"
+	# activate changes
+
+	echo "# ACTION sync zones with clean journals"
+	$RNDC_EXEC sync -clean
+	echo "# ACTION reload all zones"
+	$RNDC_EXEC reload
+	# echo "# ACTION reload zone $DDNS_TEST_ZONE"
+	# $RNDC_EXEC reload $DDNS_TEST_ZONE.
+	echo "# ACTION freeze $DYNAMIC_ADD_ZONE"
+	$RNDC_EXEC freeze $DYNAMIC_ADD_ZONE.
+	echo "# ACTION reload $DYNAMIC_ADD_ZONE"
+	$RNDC_EXEC reload $DYNAMIC_ADD_ZONE.
+	echo "# ACTION thaw $DYNAMIC_ADD_ZONE"
+	$RNDC_EXEC thaw $DYNAMIC_ADD_ZONE.
+
+	echo "# ACTION execute nsupdate of zone $DYNAMIC_ADD_ZONE"
+	if ($NSUPDATE_ADD_HOST_SCRIPT); then
+		echo "# OK nsupdate of zone $DYNAMIC_ADD_ZONE "
+	else
+		echo "# ERROR nsupdate of zone $DYNAMIC_ADD_ZONE"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+# call function
+add-record-inside-dynamic-zone

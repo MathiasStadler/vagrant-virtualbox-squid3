@@ -40,6 +40,7 @@
         "cbdata",
         "ccache",
         "checkconf",
+        "checkzone",
         "chmod",
         "chown",
         "chroot",
