@@ -1108,9 +1108,19 @@ function call-bind-version-via-dig() {
 # call version
 call-bind-version-via-dig
 
+function delte-bind-journal() {
+
+}
+
 function test-nsupdate() {
 
 	echo "# INFO call test-nsupdate"
+
+	# from here
+	# https://serverfault.com/questions/560326/ddns-bind-and-leftover-jnl-files
+	echo "# ACTION clean first all journals"
+
+	rndc sync -clean
 
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
