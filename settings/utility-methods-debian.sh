@@ -3,8 +3,8 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-DRY_RUN=
-#DRY_RUN=echo
+#DRY_RUN=
+DRY_RUN="echo"
 
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
@@ -185,7 +185,7 @@ function configure-package-new-approach() {
 	if (
 		export CPATH=/usr/local/include LIBRARY_PATH=/usr/local/lib LD_LIBRARY_PATH=/usr/local/lib
 		$DRY_RUN "./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null
-		test ${PIPESTATUS[0]} -eq 0
+		test "${PIPESTATUS[0]}" -eq 0
 	); then
 
 		echo "# DEBUG rr $?"

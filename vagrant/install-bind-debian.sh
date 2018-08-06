@@ -1255,7 +1255,7 @@ function test-nsupdate-round-trip() {
 
 	TEST_FOLDER="/nsupdate_tests"
 
-	echo "#ACTION craete subfolder $TEST_FOLDER"
+	echo "#ACTION create sub folder $TEST_FOLDER"
 	mkdir -p "$HOME/$TEST_FOLDER"
 
 	# delete test record
