@@ -1353,6 +1353,12 @@ ns                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
+	if (rndc addzone exampleb.xx '{type master; file "master/template.zone"; allow-update{ key "proxy-key";};};'); then
+		echo "# INFO addzone successful"
+	else
+		echo "# ERROR addzone raise a error "
+	fi
+
 }
 
 add-zone-template
