@@ -1208,7 +1208,6 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update add \$RECORD
-update add \$IP.in-addr.arpa. \$TTL PTR \$HOST.
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
@@ -1251,6 +1250,9 @@ test-nsupdate
 check-named-conf
 
 function test-nsupdate-round-trip-delete-record() {
+
+	# PTR
+	# https://superuser.com/questions/977132/when-using-nsupdate-to-update-both-a-and-ptr-records-why-do-i-get-update-faile
 
 	echo "# INFO call test-nsupdate-round-trip"
 
