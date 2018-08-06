@@ -1274,7 +1274,6 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update delete \$HOST A
-update delete \$IP.in-addr.arpa. PTR
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
