@@ -1130,7 +1130,7 @@ function test-nsupdate() {
 	# create TSIG Key
 	tsig-keygen $TSIG_KEY_NAME | sudo tee $ETC_BIND_TSIG_FILE
 
-	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/etc/bind/example.com.conf"
+	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/example.com.conf"
 	ETC_BIND_EXAMPLE_ZONE_PATH="/etc/bind"
 	ETC_BIND_EXAMPLE_ZONE_FILE="example.com.zone"
 
