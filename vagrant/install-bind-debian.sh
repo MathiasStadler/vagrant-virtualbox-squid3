@@ -1273,7 +1273,6 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update delete \$HOST A
-update delete \$IP.in-addr.arpa. PTR
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
@@ -1288,8 +1287,11 @@ EOF
 		echo "# OK nsupdate delete host "
 	else
 		echo "# ERROR nsupdate delete host raise a error"
-		echo "# EXIT 1"
-		exit 1
+		echo "# INFO the return code was $?"
+		echo "# INFO return code => 1:	nsupdate calling error"
+		echo "# INFO return code => 2:	DDNS protocol error"
+		#echo "# EXIT 1"
+		#exit 1
 	fi
 
 }
