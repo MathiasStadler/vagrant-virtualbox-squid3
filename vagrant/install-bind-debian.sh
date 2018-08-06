@@ -846,7 +846,8 @@ logging {
         channel simple_log {
                 // 'file' relativ zu chroot()-Umgebung
                 file "/var/log/bind.log" versions 3 size 5m;
-                severity warning;
+                //severity warning;
+				severity info;
                 print-time yes;
                 print-severity yes;
                 print-category yes;
@@ -1318,6 +1319,7 @@ function add-zone-template() {
 	#  master zone template
 	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
 
+	ZONE_MASTER_ZONE="master-template.com"
 	BIND_CHROOT="/var/lib/named"
 
 	ZONE_MASTER_TEMPLATE_DIRECTORY="/var/cache/bind/master"
