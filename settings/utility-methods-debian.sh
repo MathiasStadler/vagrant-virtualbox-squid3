@@ -3,6 +3,9 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+#DRY_RUN=
+DRY_RUN=echo
+
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
 # message
@@ -54,11 +57,11 @@ function download-and-extract() {
 		echo "# INFO we used this"
 	else
 		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} missing => we must downloaded first"
-		curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
+		$DRY_RUN curl "$DOWNLOAD_URL/${DOWNLOAD_FILE}" -o "$TARGET_DIR/${DOWNLOAD_FILE}"
 	fi
 
 	echo "# INFO we extract $TARGET_DIR/${DOWNLOAD_FILE} to ${TARGET_DIR}"
-	tar xzf "$TARGET_DIR/${DOWNLOAD_FILE}" -C "${TARGET_DIR}"
+	$DRY_RUN tar xzf "$TARGET_DIR/${DOWNLOAD_FILE}" -C "${TARGET_DIR}"
 
 }
 
@@ -110,7 +113,7 @@ function configure-package() {
 
 	# run configure
 	# if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
-	if ("./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
+	if ($DRY_RUN "./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 
 		# if ("./$NAME_OF_CONFIG_SCRIPT" printf "%s" "${ARRAY_OF_AUTOCONF_OPTION[@]}" 2>&1 | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 
@@ -181,7 +184,7 @@ function configure-package-new-approach() {
 	# run configure
 	if (
 		export CPATH=/usr/local/include LIBRARY_PATH=/usr/local/lib LD_LIBRARY_PATH=/usr/local/lib
-		"./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null
+		$DRY_RUN "./$NAME_OF_CONFIG_SCRIPT" "${ARRAY_OF_AUTOCONF_OPTION[@]}" | tee -a "${LOG_FILE}" >/dev/null
 		test ${PIPESTATUS[0]} -eq 0
 	); then
 
@@ -189,7 +192,7 @@ function configure-package-new-approach() {
 		echo "# OK $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} run without error" | tee -a "${LOG_FILE}"
 		# print config.status -config
 		if [ -e "$TARGET_DIR"/config.status ]; then
-			"$TARGET_DIR"/config.status --config
+			$DRY_RUN "$TARGET_DIR"/config.status --config
 		fi
 	else
 		echo "# ERROR $TARGET_DIR/$NAME_OF_CONFIG_SCRIPT ${ARRAY_OF_AUTOCONF_OPTION[*]} raise ERROR" | tee -a "${LOG_FILE}"
@@ -225,7 +228,7 @@ function make-package() {
 	# make
 	echo "# ACTION start make with -j $((NB_CORES + 2)) -l ${NB_CORES}" | tee -a "${LOG_FILE}"
 
-	if (make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
+	if ($DRY_RUN make -j$((NB_CORES + 2)) -l"${NB_CORES}" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK make finished without error" | tee -a "${LOG_FILE}"
 	else
 		echo "# ERROR make raise a error" | tee -a "${LOG_FILE}"

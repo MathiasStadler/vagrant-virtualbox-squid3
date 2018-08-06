@@ -1249,6 +1249,55 @@ test-nsupdate
 # call function
 check-named-conf
 
+function test-nsupdate-round-trip() {
+
+	echo "# INFO call test-nsupdate-round-trip"
+
+	TEST_FOLDER="/nsupdate_tests"
+
+	echo "#ACTION craete subfolder $TEST_FOLDER"
+	mkdir -p "$HOME/$TEST_FOLDER"
+
+	# delete test record
+	NSUPDATE_DELETE_RECORD_SCRIPT="$HOME/$TEST_FOLDER/nsupdate-delete-record.sh"
+
+	cat <<EOF >"$NSUPDATE_DELETE_RECORD_SCRIPT"
+#!/bin/bash
+#Defining Variables
+DNS_SERVER="localhost"
+DNS_ZONE="$DDNS_TEST_ZONE."
+HOST="test.example.com."
+IP="192.168.178.100"
+echo "
+server \$DNS_SERVER
+zone \$DNS_ZONE
+debug
+# delete A record
+update delete \$USER_NAME A
+# delete PTR record
+update delete $IP.in-addr.arpa. PTR
+show
+send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
+EOF
+
+	# set execute
+	echo "#ACTION set execute $NSUPDATE_DELETE_RECORD_SCRIPT"
+
+	# execute $NSUPDATE_DELETE_RECORD_SCRIPT
+
+	if ($NSUPDATE_DELETE_RECORD_SCRIPT); then
+		echo "# OK nsupdate delete host "
+	else
+		echo "# ERROR nsupdate delete host raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
+# call function
+test-nsupdate-round-trip
+
 function check-dnssec-is-in-action() {
 
 	# from here
@@ -1268,10 +1317,19 @@ function add-zone-template() {
 
 	ZONE_MASTER_TEMPLATE="/var/cache/bind/master/template.zone"
 
+	echo "# ACTION touch $BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+	touch "$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+
+	# change user
+	chown bind:bind "$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+
+	# change file attribute
+	chmod 0666 "$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+
 	# TODO detect chroot
 
-	# create master zone template
-	cat <<EOF >"BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+	echo "# ACTION  create master zone template"
+	cat <<EOF >"$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
 ; $ZONE_MASTER_ZONE
 \$TTL    604800
 @       IN      SOA     ns1.$ZONE_MASTER_ZONE. root.$ZONE_MASTER_ZONE. (
@@ -1287,3 +1345,5 @@ ns                     A       127.0.0.1
 EOF
 
 }
+
+add-zone-template
