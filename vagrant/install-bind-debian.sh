@@ -1177,12 +1177,12 @@ DNS_ZONE="example.com."
 USERNAME="dd2.example.com."
 IP="192.168.1.7"
 TTL="60"
-RECORD=" $USER_NAME $TTL A $IP"
+RECORD=" \$USER_NAME \$TTL A $IP"
 echo "
-server $DNS_SERVER
-zone $DNS_ZONE
+server \$DNS_SERVER
+zone \$DNS_ZONE
 debug
-update add $RECORD
+update add \$RECORD
 show
 send" | nsupdate -k Kexample.com.+157+55566.key
 EOF
