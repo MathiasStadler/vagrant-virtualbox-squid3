@@ -645,7 +645,7 @@ function check-named-conf() {
 
 	echo "# ACTION check /etc/bind/named.conf"
 
-	if (/usr/sbin/named-checkconf /etc/bind/named.conf); then
+	if (/usr/sbin/named-checkconf -jzpx /etc/bind/named.conf); then
 		echo "# INFO /etc/named.conf valid"
 	else
 		echo "# ERROR /etc/named.conf raise a error"
@@ -1165,6 +1165,9 @@ zone "example.com" IN {
 };
 EOF
 
+	# include named.conf
+	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
+
 	# call nsupdate
 
 	NSUPDATE_ADD_HOST_SCRIPT="$HOME/nsupdate_add_host.sh"
@@ -1194,6 +1197,9 @@ EOF
 
 # call function
 test-nsupdate
+
+# call function
+check-named-conf
 
 function check-dnssec-is-in-action() {
 
