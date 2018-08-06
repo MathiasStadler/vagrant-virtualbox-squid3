@@ -1189,7 +1189,7 @@ EOF
 
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
 
-	chown +x $HOME/nsupdate_add_hopst.sh
+	chmod +x $HOME/nsupdate_add_hopst.sh
 	#$HOME/nsupdate_add_hopst.sh
 
 }
