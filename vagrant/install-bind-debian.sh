@@ -1199,7 +1199,7 @@ EOF
 #Defining Variables
 DNS_SERVER="localhost"
 DNS_ZONE="$DDNS_TEST_ZONE."
-HOST="test.example.com."
+HOST="test.example.com"
 IP="192.168.178.100"
 TTL="60"
 RECORD=" \$HOST \$TTL A \$IP"
