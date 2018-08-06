@@ -1249,7 +1249,7 @@ test-nsupdate
 # call function
 check-named-conf
 
-function test-nsupdate-round-trip() {
+function test-nsupdate-round-trip-delete-record() {
 
 	echo "# INFO call test-nsupdate-round-trip"
 
@@ -1273,9 +1273,9 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 # delete A record
-update delete \$USER_NAME A
+update delete \$HOST A
 # delete PTR record
-update delete $IP.in-addr.arpa. PTR
+update delete \$IP.in-addr.arpa. PTR
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
@@ -1297,7 +1297,7 @@ EOF
 }
 
 # call function
-test-nsupdate-round-trip
+test-nsupdate-round-trip-delete-record
 
 function check-dnssec-is-in-action() {
 
