@@ -1208,7 +1208,7 @@ server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update add \$RECORD
-update add \$IP.in-addr.arpa. \$TTL PTR $HOST.
+update add \$IP.in-addr.arpa. \$TTL PTR \$HOST.
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
