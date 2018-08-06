@@ -1110,6 +1110,8 @@ call-bind-version-via-dig
 
 function test-nsupdate() {
 
+	echo "# INFO call test-nsupdate"
+
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
 
@@ -1133,17 +1135,18 @@ function test-nsupdate() {
 	ETC_BIND_EXAMPLE_ZONE_FILE="/etc/bind/example.com.zone"
 
 	# create TSIG Key
-	ddns-confgen -z $DDNS_TEST_ZONE -k $DDNS_KEY_NAME | sudo tee $ETC_BIND_DDNS_FILE
+	ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | sudo tee "$ETC_BIND_DDNS_FILE"
 
 	# parse key section
 	# and  write key to $ETC_BIND_TSIG_FILE
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee $ETC_BIND_DDNS_NSUPDATE_FILE
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
 
+	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_FILE"
 	# create zone file
-	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE"
+	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_FILE"
 ; $DDNS_TEST_ZONE
 \$ORGIN .
 \$TTL    604800
@@ -1159,7 +1162,7 @@ ns1                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
-	# create ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+	echo"# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# 2nd write zone config
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
@@ -1169,7 +1172,7 @@ zone "$DDNS_TEST_ZONE" IN {
 EOF
 
 	# parse update-policy section
-	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' $ETC_BIND_TSIG_FILE | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_TSIG_FILE" | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# close zone
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
@@ -1177,11 +1180,12 @@ EOF
 EOF
 
 	# include named.conf
+	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in /etc/named.conf"
 	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
 
-	# call nsupdate
-
 	NSUPDATE_ADD_HOST_SCRIPT="$HOME/nsupdate_add_host.sh"
+
+	echo "# ACTION write $NSUPDATE_ADD_HOST_SCRIPT to $HOME"
 
 	cat <<EOF >"$NSUPDATE_ADD_HOST_SCRIPT"
 #!/bin/bash
@@ -1201,15 +1205,34 @@ show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 EOF
 
+	echo "# ACTION set execute for $NSUPDATE_ADD_HOST_SCRIPT"
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
 	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
 
+	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
+	if ($NSUPDATE_ADD_HOST_SCRIPT); then
+		echo "# OK nsupdate of zone "
+	else
+		exit "# ERROR nsupdate of zone"
+		exit "# EXIT 1"
+		exit 1
+	fi
+
 	RNDC_EXEC="/usr/sbin/rndc"
+
+	echo "# ACTION reload zone $DDNS_TEST_ZONE"
 	# activate changes
-	$RNDC_EXEC reload
-	$RNDC_EXEC reload $DDNS_TEST_ZONE.
+
+	# give a error
+	# echo "# ACTION reload all zones"
+	# $RNDC_EXEC reload
+	# echo "# ACTION reload zone $DDNS_TEST_ZONE"
+	# $RNDC_EXEC reload $DDNS_TEST_ZONE.
+	echo "# ACTION freeze $DDNS_TEST_ZONE"
 	$RNDC_EXEC freeze $DDNS_TEST_ZONE.
+	echo "# ACTION reload $DDNS_TEST_ZONE"
 	$RNDC_EXEC reload $DDNS_TEST_ZONE.
+	echo "# ACTION thaw $DDNS_TEST_ZONE"
 	$RNDC_EXEC thaw $DDNS_TEST_ZONE.
 
 }
