@@ -1131,7 +1131,7 @@ function test-nsupdate() {
 	ETC_BIND_DDNS_FILE="/etc/bind/ddns_${TEST_ZONE}.key"
 	ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${TEST_ZONE}_nsupdate.key"
 
-	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/example.com.conf"
+	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/etc/bind/example.com.conf"
 	ETC_BIND_EXAMPLE_ZONE_FILE="/etc/bind/example.com.zone"
 
 	# create TSIG Key
