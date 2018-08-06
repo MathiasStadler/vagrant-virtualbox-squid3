@@ -1167,7 +1167,7 @@ EOF
 
 	# call nsupdate
 
-	NSUPDATE_ADD_HOST_SCRIPT="$HOME/nsupdate_add_hopst.sh"
+	NSUPDATE_ADD_HOST_SCRIPT="$HOME/nsupdate_add_host.sh"
 
 	cat <<EOF >"$NSUPDATE_ADD_HOST_SCRIPT"
 #!/bin/bash
@@ -1177,20 +1177,18 @@ DNS_ZONE="example.com."
 USERNAME="dd2.example.com."
 IP="192.168.1.7"
 TTL="60"
-RECORD=" \$USER_NAME \$TTL A $IP"
+RECORD=" \$USER_NAME \$TTL A \$IP"
 echo "
 server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
 update add \$RECORD
 show
-send" | nsupdate -k Kexample.com.+157+55566.key
+send" | nsupdate -k /etc/bind/tsig.key
 EOF
 
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
-
-	chmod +x $HOME/nsupdate_add_hopst.sh
-	#$HOME/nsupdate_add_hopst.sh
+	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
 
 }
 
@@ -1201,7 +1199,7 @@ function check-dnssec-is-in-action() {
 
 	# from here
 	# https://hitco.at/blog/wp-content/uploads/Sicherer-E-Mail-Dienste-Anbieter-DNSSecDANE-HowTo-2016-04-28.pdf
-	# kapitel 2.3.4
+	# Kapitel 2.3.4
 
 	dig @localhost www.isc.org. A +dnssec +multiline
 
