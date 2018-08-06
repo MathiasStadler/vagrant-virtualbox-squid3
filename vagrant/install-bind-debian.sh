@@ -1259,7 +1259,7 @@ function test-nsupdate-round-trip-delete-record() {
 	mkdir -p "$HOME/$TEST_FOLDER"
 
 	# delete test record
-	NSUPDATE_DELETE_RECORD_SCRIPT="$HOME/$TEST_FOLDER/nsupdate-delete-record.sh"
+	NSUPDATE_DELETE_RECORD_SCRIPT="$HOME$TEST_FOLDER/nsupdate-delete-record.sh"
 
 	cat <<EOF >"$NSUPDATE_DELETE_RECORD_SCRIPT"
 #!/bin/bash
@@ -1272,9 +1272,7 @@ echo "
 server \$DNS_SERVER
 zone \$DNS_ZONE
 debug
-# delete A record
 update delete \$HOST A
-# delete PTR record
 update delete \$IP.in-addr.arpa. PTR
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
