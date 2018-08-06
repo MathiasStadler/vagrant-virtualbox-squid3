@@ -267,7 +267,7 @@ function make-install-package() {
 
 	echo "# ACTION make $MAKE_TARGET" | tee -a "${LOG_FILE}"
 
-	if (sudo make "$MAKE_TARGET" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
+	if ($DRY_RUN sudo make "$MAKE_TARGET" | tee -a "${LOG_FILE}" | grep -v 'error:' >/dev/null); then
 		echo "# OK make  $MAKE_TARGET finished without error" | tee -a "${LOG_FILE}"
 	else
 		echo "# ERROR make $MAKE_TARGET raise a error" | tee -a "${LOG_FILE}"
@@ -283,7 +283,7 @@ function run-ldconfig() {
 	# NO ARGS
 	echo "# INFO call run-ldconfig" | tee -a "${LOG_FILE}"
 
-	if (sudo ldconfig); then
+	if ($DRY_RUN sudo ldconfig); then
 		echo "# INFO ldconfig run successful"
 	else
 		echo "# ERROR run  ldconfig raise a error"
@@ -314,7 +314,7 @@ function install-packages() {
 	if (
 		export DEBIAN_FRONTEND=noninteractive &&
 			TERM=linux &&
-			sudo apt-get update | tee -a "${LOG_FILE}" >/dev/null
+			$DRY_RUN sudo apt-get update | tee -a "${LOG_FILE}" >/dev/null
 		# TODO check it is nesseccary at each run
 		# sudo apt-get upgrade -y | tee -a "${LOG_FILE}" >/dev/null
 		# sudo apt-get autoremove -y | tee -a "${LOG_FILE}" >/dev/null
@@ -323,7 +323,7 @@ function install-packages() {
 
 		for install_package in "${ARRAY_OF_INSTALL_PACKAGES[@]}"; do
 			echo "# ACTION  install package $install_package"
-			export DEBIAN_FRONTEND=noninteractive && sudo apt-get install -y --no-install-recommends "$install_package" | tee -a "${LOG_FILE}" >/dev/null
+			export DEBIAN_FRONTEND=noninteractive && $DRY_RUN sudo apt-get install -y --no-install-recommends "$install_package" | tee -a "${LOG_FILE}" >/dev/null
 		done
 
 	); then
@@ -382,7 +382,7 @@ function file-download-from-url() {
 		echo "# INFO we used this"
 	else
 		echo "# INFO file ${TARGET_DIR}/${DOWNLOAD_FILE} missing => we must downloaded first"
-		curl "$DOWNLOAD_URL" -o "$TEMP_DIR/${DOWNLOAD_FILE}"
+		$DRY_RUN curl "$DOWNLOAD_URL" -o "$TEMP_DIR/${DOWNLOAD_FILE}"
 
 		echo "# ACTION copy ${DOWNLOAD_FILE} to $TARGET_DIR"
 		sudo cp "$TEMP_DIR/${DOWNLOAD_FILE}" "$TARGET_DIR/${DOWNLOAD_FILE}"
