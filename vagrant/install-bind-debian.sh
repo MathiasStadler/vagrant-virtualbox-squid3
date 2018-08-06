@@ -344,6 +344,7 @@ EOF
         # blackhole               {bogus-nets;};
         # allow-transfer          {none;};
         empty-zones-enable      yes;
+		allow-new-zones yes;
 
 		# dont provide version,host or system info
         version                 "Version Redacted";
