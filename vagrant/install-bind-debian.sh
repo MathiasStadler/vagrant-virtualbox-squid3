@@ -1108,10 +1108,6 @@ function call-bind-version-via-dig() {
 # call version
 call-bind-version-via-dig
 
-function delte-bind-journal() {
-
-}
-
 function test-nsupdate() {
 
 	echo "# INFO call test-nsupdate"
