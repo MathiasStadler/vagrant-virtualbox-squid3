@@ -1148,7 +1148,6 @@ function test-nsupdate() {
 	# create zone file
 	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_FILE"
 ; $DDNS_TEST_ZONE
-\$ORGIN .
 \$TTL    604800
 @       IN      SOA     ns1.$DDNS_TEST_ZONE. root.$DDNS_TEST_ZONE. (
                      2006020201 ; Serial
@@ -1157,8 +1156,8 @@ function test-nsupdate() {
                         2419200 ; Expire
                          604800); Negative Cache TTL
 ;
-				NS	ns.$DDNS_TEST_ZONE.
-ns1                     A       127.0.0.1
+@				NS	ns.$DDNS_TEST_ZONE.
+ns                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
@@ -1258,6 +1257,26 @@ function add-zone-template() {
 	#  master zone template
 	# rndc addzone exampleb.xx in internal  '{type master; file "master/example.aa"; allow-update{ key "proxy-key";};};'
 
-	ZONE_TEAMPLATE="/var"
+	BIND_CHROOT="/var/lib/named"
+
+	ZONE_MASTER_TEMPLATE="/var/cache/bind/master/template.zone"
+
+	# TODO detect chroot
+
+	# create master zone template
+	cat <<EOF >"BIND_CHROOT/$ZONE_MASTER_TEMPLATE"
+; $ZONE_MASTER_ZONE
+\$TTL    604800
+@       IN      SOA     ns1.$ZONE_MASTER_ZONE. root.$ZONE_MASTER_ZONE. (
+                     2006020201 ; Serial
+                         604800 ; Refresh
+                          86400 ; Retry
+                        2419200 ; Expire
+                         604800); Negative Cache TTL
+;
+@				NS	ns.$ZONE_MASTER_ZONE.
+ns                     A       127.0.0.1
+;END OF ZONE FILE
+EOF
 
 }
