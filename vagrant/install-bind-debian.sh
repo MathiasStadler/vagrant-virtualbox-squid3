@@ -1128,17 +1128,17 @@ function test-nsupdate() {
 
 	DDNS_KEY_NAME="example.com."
 	DDNS_TEST_ZONE="example.com"
-	ETC_BIND_DDNS_FILE="/etc/bind/ddns_${TEST_ZONE}.key"
-	ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${TEST_ZONE}_nsupdate.key"
+	ETC_BIND_DDNS_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}.key"
+	ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}_nsupdate.key"
 
 	ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/etc/bind/example.com.conf"
 	ETC_BIND_EXAMPLE_ZONE_FILE="/etc/bind/example.com.zone"
 
-	# create TSIG Key
+	# create DDNS Key
 	ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | sudo tee "$ETC_BIND_DDNS_FILE"
 
 	# parse key section
-	# and  write key to $ETC_BIND_TSIG_FILE
+	# and  write key to $ETC_BIND_DDNS_FILE
 	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
@@ -1168,7 +1168,7 @@ EOF
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 zone "$DDNS_TEST_ZONE" IN {
      type master;
-     file "$ETC_BIND_EXAMPLE_ZONE_PATH/$ETC_BIND_EXAMPLE_ZONE_FILE";
+     file "$ETC_BIND_EXAMPLE_ZONE_FILE";
 EOF
 
 	# parse update-policy section
