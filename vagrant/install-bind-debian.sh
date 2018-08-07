@@ -820,10 +820,10 @@ function prepare-init-and-services-file() {
 
 ### BEGIN INIT INFO
 # Provides:          bind9
-# Required-Start:    $remote_fs
-# Required-Stop:     $remote_fs
-# Should-Start:      $network $syslog
-# Should-Stop:       $network $syslog
+# Required-Start:    \$remote_fs
+# Required-Stop:     \$remote_fs
+# Should-Start:      \$network \$syslog
+# Should-Stop:       \$network \$syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Start and stop bind9
@@ -846,19 +846,19 @@ test -x /usr/sbin/rndc || exit 0
 PIDFILE=/run/named/named.pid
 
 check_network() {
-    if [ -x /usr/bin/uname ] && [ "X$(/usr/bin/uname -o)" = XSolaris ]; then
+    if [ -x /usr/bin/uname ] && [ "X\$(/usr/bin/uname -o)" = XSolaris ]; then
 	IFCONFIG_OPTS="-au"
     else
 	IFCONFIG_OPTS=""
     fi
-    if [ -z "$(/sbin/ifconfig $IFCONFIG_OPTS)" ]; then
+    if [ -z "\$(/sbin/ifconfig \$IFCONFIG_OPTS)" ]; then
        #log_action_msg "No networks configured."
        return 1
     fi
     return 0
 }
 
-case "$1" in
+case "\$1" in
     start)
 	log_daemon_msg "Starting domain name service..." "bind9"
 
@@ -880,8 +880,8 @@ case "$1" in
 	fi
 
 	if start-stop-daemon --start --oknodo --quiet --exec /usr/sbin/named \
-		--pidfile ${PIDFILE} -- $OPTIONS; then
-	    if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
+		--pidfile \${PIDFILE} -- \$OPTIONS; then
+	    if [ "X\$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
 		echo "nameserver 127.0.0.1" | /sbin/resolvconf -a lo.named
 	    fi
 	    log_end_msg 0
@@ -897,31 +897,31 @@ case "$1" in
 	    log_end_msg 1
 	fi
 
-	if [ "X$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
+	if [ "X\$RESOLVCONF" != "Xno" ] && [ -x /sbin/resolvconf ] ; then
 	    /sbin/resolvconf -d lo.named
 	fi
-	pid=$(/usr/sbin/rndc stop -p | awk '/^pid:/ {print $2}') || true
-	if [ -z "$pid" ]; then		# no pid found, so either not running, or error
-	    pid=$(pgrep -f ^/usr/sbin/named) || true
+	pid=$(/usr/sbin/rndc stop -p | awk '/^pid:/ {print \$2}') || true
+	if [ -z "\$pid" ]; then		# no pid found, so either not running, or error
+	    pid=\$(pgrep -f ^/usr/sbin/named) || true
 	    start-stop-daemon --stop --oknodo --quiet --exec /usr/sbin/named \
-		    --pidfile ${PIDFILE} -- $OPTIONS
+		    --pidfile \${PIDFILE} -- \$OPTIONS
 	fi
-	if [ -n "$pid" ]; then
+	if [ -n "\$pid" ]; then
 	    sig=0
 	    n=1
-	    while kill -$sig $pid 2>/dev/null; do
-		if [ $n -eq 1 ]; then
-		    echo "waiting for pid $pid to die"
+	    while kill -\$sig \$pid 2>/dev/null; do
+		if [ \$n -eq 1 ]; then
+		    echo "waiting for pid \$pid to die"
 		fi
-		if [ $n -eq 11 ]; then
-		    echo "giving up on pid $pid with kill -0; trying -9"
+		if [ \$n -eq 11 ]; then
+		    echo "giving up on pid \$pid with kill -0; trying -9"
 		    sig=9
 		fi
-		if [ $n -gt 20 ]; then
-		    echo "giving up on pid $pid"
+		if [ \$n -gt 20 ]; then
+		    echo "giving up on pid \$pid"
 		    break
 		fi
-		n=$(($n + 1))
+		n=\$((\$n + 1))
 		sleep 1
 	    done
 	fi
@@ -944,14 +944,14 @@ case "$1" in
 	    exit 1
 	fi
 
-	$0 stop
-	$0 start
+	\$0 stop
+	\$0 start
     ;;
 
     status)
     	ret=0
-	status_of_proc -p ${PIDFILE} /usr/sbin/named bind9 2>/dev/null || ret=$?
-	exit $ret
+	status_of_proc -p \${PIDFILE} /usr/sbin/named bind9 2>/dev/null || ret=\$?
+	exit \$ret
 	;;
 
     *)
@@ -978,7 +978,7 @@ Before=nss-lookup.target
 [Service]
 Type=forking
 EnvironmentFile=/etc/default/bind9
-ExecStart=/usr/sbin/named $OPTIONS
+ExecStart=/usr/sbin/named \$OPTIONS
 ExecReload=/usr/sbin/rndc reload
 ExecStop=/usr/sbin/rndc stop
 
