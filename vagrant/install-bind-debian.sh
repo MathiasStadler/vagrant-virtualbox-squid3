@@ -1357,7 +1357,19 @@ ns                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
-	if (rndc addzone $DYNAMIC_ADD_ZONE "{type master; file "master/template.zone"; update-policy{ grant \"$DDNS_KEY_NAME\" zonesub ANY;};};"); then
+	TMP_ADDZONE_SCRIPT="/tmp/addzone.sh"
+
+	echo "# ACTION write addzone script"
+	cat <<EOF >"$TMP_ADDZONE_SCRIPT"
+#!/bin/bash
+rndc addzone $DYNAMIC_ADD_ZONE '{type master; file "master/template.zone"; update-policy{ grant "$DDNS_KEY_NAME" zonesub ANY;};};'
+EOF
+
+	echo "# ACTION addzone script set file attribute  execute"
+	chmod +x $TMP_ADDZONE_SCRIPT
+
+	echo "# ACTION addzone via script "
+	if ($TMP_ADDZONE_SCRIPT); then
 		echo "# INFO addzone successful"
 	else
 		echo "# ERROR addzone raise a error "
