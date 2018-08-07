@@ -1361,6 +1361,8 @@ EOF
 		echo "# INFO addzone successful"
 	else
 		echo "# ERROR addzone raise a error "
+		echo "# EXIT 1"
+		exit 1
 	fi
 
 	# check template
