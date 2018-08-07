@@ -3,8 +3,8 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-#DRY_RUN=
-DRY_RUN="echo"
+DRY_RUN=
+# DRY_RUN="echo"
 
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
