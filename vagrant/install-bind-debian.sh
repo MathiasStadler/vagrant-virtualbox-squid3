@@ -1424,7 +1424,7 @@ EOF
 	$RNDC_EXEC thaw $DYNAMIC_ADD_ZONE.
 
 	echo "# ACTION execute nsupdate of zone $DYNAMIC_ADD_ZONE"
-	if ($NSUPDATE_ADD_HOST_SCRIPT); then
+	if ($NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT); then
 		echo "# OK nsupdate of zone $DYNAMIC_ADD_ZONE "
 	else
 		echo "# ERROR nsupdate of zone $DYNAMIC_ADD_ZONE"
