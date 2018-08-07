@@ -1357,7 +1357,7 @@ ns                     A       127.0.0.1
 ;END OF ZONE FILE
 EOF
 
-	if (rndc addzone $DYNAMIC_ADD_ZONE '{type master; file "master/template.zone"; allow-update{ key "proxy-key";};};'); then
+	if (rndc addzone $DYNAMIC_ADD_ZONE '{type master; file "master/template.zone"; update-policy{ grant "$DDNS_KEY_NAME" zonesub ANY;};};'); then
 		echo "# INFO addzone successful"
 	else
 		echo "# ERROR addzone raise a error "
@@ -1431,6 +1431,9 @@ EOF
 		echo "# EXIT 1"
 		exit 1
 	fi
+
+	echo "# ACTION sync zones with clean journals"
+	$RNDC_EXEC sync -clean
 
 }
 
