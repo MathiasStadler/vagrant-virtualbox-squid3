@@ -112,6 +112,36 @@ function get-serial-number-of-zone() {
 	fi
 }
 
+function set-resolv-conf() {
+
+	# ARG1 = NAMESERVER_IP for resolv
+
+	echo "# INFO call set-resolv-conf" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1  NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		NAMESERVER_IP="$1"
+		echo "# INFO NAMESERVER_IP set to '$NAMESERVER_IP'" | tee -a "${LOG_FILE}"
+	fi
+
+	ETC_RESOLV_CONF="/etc/resolv.conf"
+	ETC_RESOLV_CONF_SAVE="/etc/resolv.conf_SAVE"
+
+	if [ -e $ETC_RESOLV_CONF ]; then
+		echo "# ACTION save current to $ETC_RESOLV_CONF_SAVE"
+		mv ETC_RESOLV_CONF ETC_RESOLV_CONF_SAVE
+	fi
+
+	cat <<EOF >"$ETC_RESOLV_CONF"
+nameserver $NAMESERVER_IP
+search fritz.box
+EOF
+
+}
+
 get-nameserver-of-url "heise.de"
 
 get-ip-of-url "heise.de"
