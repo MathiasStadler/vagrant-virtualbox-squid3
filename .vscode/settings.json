@@ -144,6 +144,7 @@
         "vboxguest",
         "virtualbox",
         "wais",
+        "zonesub",
         "zxvf"
     ],
     "cSpell.language": "en",
