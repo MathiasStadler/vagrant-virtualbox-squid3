@@ -1385,7 +1385,7 @@ function add-record-inside-dynamic-zone() {
 
 	echo "# ACTION write $NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT to $HOME$TEST_FOLDER"
 
-	cat <<EOF >"$$NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT"
+	cat <<EOF >"$NSUPDATE_ADD_HOST_DYNAMIC_ZONE_SCRIPT"
 #!/bin/bash
 #Defining Variables
 DNS_SERVER="localhost"
