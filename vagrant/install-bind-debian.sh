@@ -1271,7 +1271,7 @@ function test-nsupdate-round-trip-delete-record() {
 #Defining Variables
 DNS_SERVER="localhost"
 DNS_ZONE="$DDNS_TEST_ZONE."
-HOST="test.example.com."
+HOST="test.$DDNS_TEST_ZONE."
 IP="192.168.178.100"
 echo "
 server \$DNS_SERVER
@@ -1453,3 +1453,5 @@ EOF
 
 # call function
 add-record-inside-dynamic-zone
+
+# https://www.blogging-it.com/bind-dns-server-unter-raspbian-installieren-und-einrichten-howto-anleitung/raspberry-pi/betriebssysteme-und-software.html
