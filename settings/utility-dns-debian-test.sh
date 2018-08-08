@@ -24,6 +24,8 @@ fi
 
 check-name-server-avaible "127.0.0.1"
 
+exit 0
+
 get-nameserver-of-url "heise.de"
 
 get-ip-of-url "heise.de"
