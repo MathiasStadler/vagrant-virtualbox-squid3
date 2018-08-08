@@ -27,7 +27,7 @@ fi
 
 check-name-server-avaible "127.0.0.1"
 
-check-name-server-avaible "127.0.0..1"
+#check-name-server-avaible "127.0.0..1"
 
 echo "# ACTION  stop bind9"
 
