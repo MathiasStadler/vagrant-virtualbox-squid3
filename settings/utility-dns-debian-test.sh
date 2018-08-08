@@ -44,12 +44,16 @@ if [ -e "$SHELL_UNIT_2_PATH" ]; then
 
 	echo "# INFO run shellunit2 test"
 
-	# Load shUnit2
-	# shellcheck disable=SC1090
-	. "$SHELL_UNIT_2_PATH"
-
 else
 
 	echo "# HINT no shellunit2 script found"
 
 fi
+
+testEquality() {
+	assertEquals 1 1
+}
+
+# Load shUnit2
+# shellcheck disable=SC1090
+. "$SHELL_UNIT_2_PATH"
