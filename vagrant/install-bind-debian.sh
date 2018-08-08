@@ -39,6 +39,10 @@ fi
 # shellcheck disable=SC1090,SC1091
 source "$SETTINGS_DIR/utility-methods-debian.sh"
 
+# load utility-dns-debian
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS_DIR/utility-dns-debian.sh"
+
 # TEMP_DIR
 readonly TEMP_DIR="/tmp"
 
@@ -1623,6 +1627,13 @@ EOF
 
 	echo "# ACTION sync zones with clean journals"
 	$RNDC_EXEC sync -clean
+
+	if (get-ip-of-url test.$DYNAMIC_ADD_ZONE); then
+
+		echo "# OK"
+	else
+		echo "# ERROR"
+	fi
 
 }
 
