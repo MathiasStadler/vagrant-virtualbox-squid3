@@ -8,8 +8,9 @@ if [[ -z "${DRY_RUN}" ]]; then
 	echo "# INFO DRY_RUN not set"
 	DRY_RUN=
 else
-	echo "# INFO DRY_RUN=$DRY_RUN in action"
+
 	DRY_RUN="echo"
+	echo "# INFO DRY_RUN mode active DRY_RUN=$DRY_RUN"
 fi
 
 #DRY_RUN=
