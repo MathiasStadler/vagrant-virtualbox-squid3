@@ -3,6 +3,7 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+echo "# INFO check variable DRY_RUN "
 if [[ -z "${DRY_RUN}" ]]; then
 	echo "# INFO DRY_RUN not set"
 	DRY_RUN=
