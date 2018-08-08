@@ -228,7 +228,7 @@ function check-name-server-avaible() {
 		echo "# PLEASE give info to developer"
 	fi
 
-	if "$DIG_RETURN_CODE"; then
+	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
 		return 0
 	else
 		return 1
