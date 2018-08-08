@@ -4,9 +4,10 @@
 set -e
 
 if [[ -z "${DRY_RUN}" ]]; then
+	echo "# INFO DRY_RUN not set"
 	DRY_RUN=
 else
-	echo # INFO DRY_RUN=$DRY_RUN in action
+	echo "# INFO DRY_RUN=$DRY_RUN in action"
 	DRY_RUN="echo"
 fi
 
