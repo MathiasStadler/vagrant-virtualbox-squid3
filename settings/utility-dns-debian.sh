@@ -209,14 +209,16 @@ function check-name-server-avaible() {
 	# read an element
 	value=$(<$hash_table/1)
 
-	# call sub shell
+	# disable catch error we will catch them self
 	set +e
-	(dig @"$NAMESERVER_IP" 1>/dev/null 2>/dev/null)
+	# call sub shell
+	(dig @"$NAMESERVER_IP" +time=5 +tries=1 1>/dev/null 2>/dev/null)
 	# catch return value
 	DIG_RETURN_CODE=$?
+	# enable catch errors
 	set -e
 
-	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
+	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 
 	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
 		echo "$(<$hash_table/$DIG_RETURN_CODE)"
