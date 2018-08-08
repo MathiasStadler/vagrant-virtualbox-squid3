@@ -106,6 +106,7 @@
         "mkdir",
         "mkfs",
         "mknod",
+        "mktemp",
         "modprobe",
         "multiline",
         "multiling",
