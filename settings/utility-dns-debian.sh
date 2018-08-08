@@ -218,6 +218,7 @@ function check-name-server-avaible() {
 
 	DIG_RETURN_CODE=$(dig @$NAMESERVER_IP && echo "$?")
 
+	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
 		echo "# $(<$hash_table/$DIG_RETURN_CODE)"
 	else
@@ -226,7 +227,7 @@ function check-name-server-avaible() {
 		echo "# PLEASE give info to developer"
 	fi
 
-	if $DIG_RETURN_CODE; then
+	if "$DIG_RETURN_CODE"; then
 		return 0
 	else
 		return 1
