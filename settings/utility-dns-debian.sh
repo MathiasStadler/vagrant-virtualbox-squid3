@@ -202,16 +202,14 @@ function check-name-server-avaible() {
 
 	echo "# INFO OK Everything went well, including things like NXDOMAIN" >$hash_table/0
 	echo "# ERROR Usage error" >$hash_table/1
-	echo "# ERROR Couldn't open batch file"   >$hash_table/8
-	echo "# ERROR No reply from server " > >$hash_table/9
+	echo "# ERROR Couldn't open batch file" >$hash_table/8
+	echo "# ERROR No reply from server " >$hash_table/9
 	echo "# ERROR Internal error" >$hash_table/10
-
 
 	# read an element
 	value=$(<$hash_table/1)
 
 	echo "# DEBUG key 1 => $value"
-
 
 	DIG_RETRUN_CODE_USAGE_ERRROR=1
 	DIG_RETURN_CODE_COULDNNT_OPEN_BATCH_FILE=8
@@ -226,6 +224,8 @@ function check-name-server-avaible() {
 		echo "# ERROR no ip  found"
 		return 1
 	fi
+
+	rm -rf "$hash_table"
 
 }
 
