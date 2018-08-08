@@ -51,7 +51,7 @@ else
 fi
 
 testEquality() {
-	assertEquals 1 1
+	AssertEquals 1 1
 }
 
 # Load shUnit2
