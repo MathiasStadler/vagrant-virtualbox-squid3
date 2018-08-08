@@ -3,7 +3,14 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-DRY_RUN=
+if [[ -z "${DRY_RUN}" ]]; then
+	DRY_RUN=
+else
+	echo # INFO DRY_RUN=$DRY_RUN in action
+	DRY_RUN="echo"
+fi
+
+#DRY_RUN=
 # DRY_RUN="echo"
 
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
