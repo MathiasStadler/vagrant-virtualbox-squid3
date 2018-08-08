@@ -44,7 +44,7 @@ if [ -e "$SHELL_UNIT_2_PATH" ]; then
 
 	echo "# INFO run shellunit2 test"
 
-	f # Load shUnit2
+	# Load shUnit2
 	# shellcheck disable=SC1090
 	. "$SHELL_UNIT_2_PATH"
 
