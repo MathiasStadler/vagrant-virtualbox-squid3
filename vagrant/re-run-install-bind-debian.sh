@@ -26,3 +26,5 @@ $SUDO rm -rf /etc/init/bind9
 $SUDO rm -rf /etc/systemd/system/bind9
 
 $SUDO rm -rf /etc/bind/*
+
+$SUDO ./install-bind-debian.sh
