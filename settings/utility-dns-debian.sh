@@ -74,7 +74,7 @@ function get-ip-of-url() {
 
 		# array to string
 		IP_SERVER=${IP_OF_SERVER_OUTPUT[*]}
-		echo "# INFO ip address for $URL_RESOLVE is e.g. (first one) ${IP_SERVER}"
+		echo "# INFO ip address for $URL_RESOLVE is e.g. (first match) ${IP_SERVER}"
 		return 0
 	else
 
@@ -164,6 +164,63 @@ function get-current-name-server() {
 	CURRENT_NAME_SERVER_IN_USED=$(dig | grep ';; SERVER' | awk '{print $3}' | grep -Po '\(\K[^)]*')
 
 	echo "# INFO get current name server $CURRENT_NAME_SERVER_IN_USED"
+
+}
+
+function check-name-server-avaible() {
+
+	# ARG1 = NAMESERVER_IP for resolv
+
+	echo "# INFO call check-name-server-avaible" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1  NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		NAMESERVER_IP="$1"
+		echo "# INFO NAMESERVER_IP set to '$NAMESERVER_IP'" | tee -a "${LOG_FILE}"
+	fi
+
+	# from man page
+	# Dig return codes are:
+
+	#     0: Everything went well, including things like NXDOMAIN
+	#     1: Usage error
+	#     8: Couldn't open batch file
+	#     9: No reply from server
+	#     10: Internal error
+
+	# from here
+	# https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash
+	# Just use directory
+
+	# hash table creation
+	hash_table=$(mktemp -d)
+
+	# Add an elements
+
+	echo "# INFO OK Everything went well, including things like NXDOMAIN" >$hashtable/1
+
+	# read an element
+	value=$(<$hashtable/1)
+
+	echo "# DEBUG key 1 => $value"
+
+	DIG_RETURN_CODE_OK=0
+	DIG_RETRUN_CODE_USAGE_ERRROR=1
+	DIG_RETURN_CODE_COULDNNT_OPEN_BATCH_FILE=8
+	DIG_RETURN_CODE_NO_REPLAY_FROM_SERVER=9
+	DIG_RETURN_CODE_INTERNAL_ERROR=10
+
+	if DIG_RETRUN_CODE=$(dig @$NAME_SERVER | echo $$); then
+
+		return 0
+	else
+
+		echo "# ERROR no ip  found"
+		return 1
+	fi
 
 }
 
