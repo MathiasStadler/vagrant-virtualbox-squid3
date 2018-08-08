@@ -48,13 +48,6 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 		assertEquals 1 1
 	}
 
-	# testCheckNameServer() {
-
-	# 	(check-name-server-avaible "127.0.0.1")
-	# 	local rtrn=$?
-	# 	assertTrue "unexpected error; ${rtrn}" ${rtrn}
-	# }
-
 	# Load shUnit2
 	# shellcheck disable=SC1090
 	. "$SHELL_UNIT_2_PATH"
