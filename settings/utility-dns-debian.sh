@@ -216,7 +216,8 @@ function check-name-server-avaible() {
 	DIG_RETURN_CODE_NO_REPLAY_FROM_SERVER=9
 	DIG_RETURN_CODE_INTERNAL_ERROR=10
 
-	DIG_RETURN_CODE=$(dig @$NAMESERVER_IP && echo "$?")
+	# shellcheck disable=SC2216
+	DIG_RETURN_CODE=$(dig @$NAMESERVER_IP | echo "$?")
 
 	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
