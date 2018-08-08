@@ -52,6 +52,11 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 		assertEquals 1 1
 	}
 
+	testCheckNameServer() {
+
+		assertEquals check-name-server-avaible "127.0.0.1" 1
+	}
+
 else
 
 	echo "# HINT no shellunit2 script found"
