@@ -132,6 +132,7 @@
         "resolvconf",
         "rndc",
         "rsyslog",
+        "rtrn",
         "runall",
         "sbin",
         "selftest",

@@ -54,7 +54,9 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 
 	testCheckNameServer() {
 
-		assertEquals check-name-server-avaible "127.0.0.1" 1
+		(check-name-server-avaible "127.0.0.1")
+		local rtrn=$?
+		assertTrue "unexpected date error; ${rtrn}" ${rtrn}
 	}
 
 else
