@@ -210,9 +210,11 @@ function check-name-server-avaible() {
 	value=$(<$hash_table/1)
 
 	# call sub shell
+	set +e
 	(dig @"$NAMESERVER_IP")
 	# catch return value
 	DIG_RETURN_CODE=$?
+	set -e
 
 	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 
