@@ -40,13 +40,13 @@ $SUDO service bind9 start
 
 SHELL_UNIT_2_PATH="$HOME/shunit2/shunit2"
 
-if [ -e SHELL_UNIT_2_PATH ]; then
+if [ -e $SHELL_UNIT_2_PATH ]; then
 
 	echo "# INFO run shellunit2 test"
 
 	# Load shUnit2
 	# shellcheck disable=SC1090
-	. "$HOME/shunit2/shunit2"
+	. "$SHELL_UNIT_2_PATH"
 
 	testEquality() {
 		assertEquals 1 1
