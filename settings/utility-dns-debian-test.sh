@@ -44,10 +44,6 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 
 	echo "# INFO run shellunit2 test"
 
-	# Load shUnit2
-	# shellcheck disable=SC1090
-	. "$SHELL_UNIT_2_PATH"
-
 	testEquality() {
 		assertEquals 1 1
 	}
@@ -58,6 +54,10 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 	# 	local rtrn=$?
 	# 	assertTrue "unexpected error; ${rtrn}" ${rtrn}
 	# }
+
+	# Load shUnit2
+	# shellcheck disable=SC1090
+	. "$SHELL_UNIT_2_PATH"
 
 else
 
