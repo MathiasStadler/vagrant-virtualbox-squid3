@@ -70,7 +70,7 @@ function get-ip-of-url() {
 	echo "# INFO we used NAME_SERVER => '$NAME_SERVER'" | tee -a "${LOG_FILE}"
 
 	# we will only one not all
-	if IP_OF_SERVER_OUTPUT=$(dig +short "$1" | head -1); then
+	if IP_OF_SERVER_OUTPUT=$(dig +short "$1" @$NAME_SERVER | head -1); then
 
 		# array to string
 		IP_SERVER=${IP_OF_SERVER_OUTPUT[*]}
