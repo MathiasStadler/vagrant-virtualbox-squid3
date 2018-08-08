@@ -17,7 +17,11 @@ ensure_sudo() {
 
 ensure_sudo
 
+set +e
+
 $SUDO rndc delzone dynamic-zone.com
+
+set -e
 
 $SUDO service bind9 stop
 
