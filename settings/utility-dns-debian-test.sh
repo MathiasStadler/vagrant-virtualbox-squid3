@@ -31,9 +31,9 @@ check-name-server-avaible "127.0.0.1"
 
 echo "# ACTION  stop bind9"
 
-$SUDO service stop bind9
+$SUDO service bind9 stop
 
 check-name-server-avaible "127.0.0.1"
 
 echo "# ACTION start bind9"
-$SUDO service start bind9
+$SUDO service bind9 start
