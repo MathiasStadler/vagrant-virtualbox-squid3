@@ -200,14 +200,19 @@ function check-name-server-avaible() {
 
 	# Add an elements
 
-	echo "# INFO OK Everything went well, including things like NXDOMAIN" >$hashtable/1
+	echo "# INFO OK Everything went well, including things like NXDOMAIN" >$hash_table/0
+	echo "# ERROR Usage error" >$hash_table/1
+	echo "# ERROR Couldn't open batch file"   >$hash_table/8
+	echo "# ERROR No reply from server " > >$hash_table/9
+	echo "# ERROR Internal error" >$hash_table/10
+
 
 	# read an element
-	value=$(<$hashtable/1)
+	value=$(<$hash_table/1)
 
 	echo "# DEBUG key 1 => $value"
 
-	DIG_RETURN_CODE_OK=0
+
 	DIG_RETRUN_CODE_USAGE_ERRROR=1
 	DIG_RETURN_CODE_COULDNNT_OPEN_BATCH_FILE=8
 	DIG_RETURN_CODE_NO_REPLAY_FROM_SERVER=9
