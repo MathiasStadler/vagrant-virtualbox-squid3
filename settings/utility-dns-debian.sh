@@ -231,9 +231,3 @@ function check-name-server-avaible() {
 	rm -rf "$hash_table"
 
 }
-
-get-nameserver-of-url "heise.de"
-
-get-ip-of-url "heise.de"
-
-get-serial-number-of-zone "heise.de"

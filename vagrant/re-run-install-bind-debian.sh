@@ -21,8 +21,8 @@ ensure_sudo
 # git check update
 # from here
 # https://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
-if [ "$(git rev-parse HEAD)" = "$(git ls-remote "$(git rev-parse --abbrev-ref "@{u}" |
-	sed 's/\// /g')" | cut -f1)" ]; then
+if [ $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} |
+	sed 's/\// /g') | cut -f1) ]; then
 	echo "# INFO git is  up to date"
 else
 	echo "# HINT git not up to date"
