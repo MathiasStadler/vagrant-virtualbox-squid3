@@ -211,7 +211,7 @@ function check-name-server-avaible() {
 
 	# call sub shell
 	set +e
-	(dig @"$NAMESERVER_IP")
+	(dig @"$NAMESERVER_IP" 1>/dev/null 2>/dev/null)
 	# catch return value
 	DIG_RETURN_CODE=$?
 	set -e
