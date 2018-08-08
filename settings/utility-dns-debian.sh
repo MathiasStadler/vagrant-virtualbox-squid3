@@ -221,7 +221,7 @@ function check-name-server-avaible() {
 
 	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
-		echo "# $(<$hash_table/$DIG_RETURN_CODE)"
+		echo "$(<$hash_table/$DIG_RETURN_CODE)"
 	else
 
 		echo "# ERROR return code unknown"
@@ -229,9 +229,11 @@ function check-name-server-avaible() {
 	fi
 
 	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
+		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
 		return 0
 	else
-		return 1
+		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
+		return $DIG_RETURN_CODE
 	fi
 
 	# delete key/value directory
