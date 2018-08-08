@@ -216,18 +216,23 @@ function check-name-server-avaible() {
 	DIG_RETURN_CODE_NO_REPLAY_FROM_SERVER=9
 	DIG_RETURN_CODE_INTERNAL_ERROR=10
 
-	if DIG_RETURN_CODE=$(dig @$NAMESERVER_IP | echo $$); then
+	DIG_RETURN_CODE=$(dig @$NAMESERVER_IP && echo "$?")
 
+	if (-e $hash_table/$DIG_RETURN_CODE); then
 		echo "# $(<$hash_table/$DIG_RETURN_CODE)"
-
-		return 0
 	else
 
-		echo "# ERROR no ip  found"
-		echo "# $(<$hash_table/$DIG_RETURN_CODE)"
+		echo "# ERROR return code unknown"
+		echo "# PLEASE give info to developer"
+	fi
+
+	if $DIG_RETURN_CODE; then
+		return 0
+	else
 		return 1
 	fi
 
+	# delete key/value directory
 	rm -rf "$hash_table"
 
 }
