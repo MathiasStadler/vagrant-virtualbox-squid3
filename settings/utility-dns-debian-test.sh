@@ -48,10 +48,6 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 	# shellcheck disable=SC1090
 	. "$SHELL_UNIT_2_PATH"
 
-	testEquality() {
-		assertEquals 1 1
-	}
-
 	testCheckNameServer() {
 
 		(check-name-server-avaible "127.0.0.1")
