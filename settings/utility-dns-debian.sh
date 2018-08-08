@@ -209,18 +209,13 @@ function check-name-server-avaible() {
 	# read an element
 	value=$(<$hash_table/1)
 
-	echo "# DEBUG key 1 => $value"
-
-	DIG_RETRUN_CODE_USAGE_ERRROR=1
-	DIG_RETURN_CODE_COULDNNT_OPEN_BATCH_FILE=8
-	DIG_RETURN_CODE_NO_REPLAY_FROM_SERVER=9
-	DIG_RETURN_CODE_INTERNAL_ERROR=10
-
-	# shellcheck disable=SC2216
-	dig @"$NAMESERVER_IP"
+	# call sub shell
+	(dig @"$NAMESERVER_IP")
+	# catch return value
 	DIG_RETURN_CODE=$?
 
 	echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
+
 	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
 		echo "$(<$hash_table/$DIG_RETURN_CODE)"
 	else
