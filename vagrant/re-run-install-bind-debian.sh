@@ -15,6 +15,7 @@ ensure_sudo() {
 	fi
 }
 
+# call function
 ensure_sudo
 
 # git check update
