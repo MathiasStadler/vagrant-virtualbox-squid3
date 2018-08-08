@@ -1,5 +1,7 @@
 #!/usr/bin/env bats
 
+load ./utility-dns-debian.sh
+
 @test "addition using bc" {
   result="$(echo 2+2 | bc)"
   [ "$result" -eq 4 ]
