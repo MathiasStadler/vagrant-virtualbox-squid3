@@ -179,16 +179,6 @@ function check-installation() {
 
 # deactivate check-installation
 
-function get-current-name-server() {
-
-	echo "# ACTION find running name server"
-
-	NAME_SERVER_IN_USED=$(dig google.com | grep ';; SERVER' | awk '{print $3}' | grep -Po '\(\K[^)]*')
-
-	echo "# INFO get current name server $NAME_SERVER_IN_USED"
-
-}
-
 # call function
 get-current-name-server
 
@@ -1628,7 +1618,7 @@ EOF
 	echo "# ACTION sync zones with clean journals"
 	$RNDC_EXEC sync -clean
 
-	if (get-ip-of-url test.$DYNAMIC_ADD_ZONE); then
+	if (get-ip-of-url test.$DYNAMIC_ADD_ZONE "127.0.0.1"); then
 
 		echo "# OK"
 	else

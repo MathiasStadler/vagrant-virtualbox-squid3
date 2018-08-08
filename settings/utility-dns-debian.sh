@@ -42,6 +42,7 @@ function get-nameserver-of-url() {
 function get-ip-of-url() {
 
 	# ARG1 = URL to resolve
+	# ARG2 = NAME_SERVER
 
 	echo "# INFO call get-ip-of-url" | tee -a "${LOG_FILE}"
 
@@ -53,6 +54,20 @@ function get-ip-of-url() {
 		URL_RESOLVE="$1"
 		echo "# INFO URL to resolve set to '$URL_RESOLVE'" | tee -a "${LOG_FILE}"
 	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# HINT ARG2 NAME_SERVER NOT set" | tee -a "${LOG_FILE}"
+		# detect current-name-server
+		get-current-name-server
+
+		echo "# INFO we will use the system wide nameserver $CURRENT_NAME_SERVER_IN_USED"
+		NAME_SERVER=$CURRENT_NAME_SERVER_IN_USED
+	else
+		NAME_SERVER="$2"
+		echo "# INFO URL to NAME_SERVER set to '$NAME_SERVER'" | tee -a "${LOG_FILE}"
+	fi
+
+	echo "# INFO we used NAME_SERVER => '$NAME_SERVER'" | tee -a "${LOG_FILE}"
 
 	# we will only one not all
 	if IP_OF_SERVER_OUTPUT=$(dig +short "$1" | head -1); then
@@ -139,6 +154,16 @@ function set-resolv-conf() {
 nameserver $NAMESERVER_IP
 search fritz.box
 EOF
+
+}
+
+function get-current-name-server() {
+
+	echo "# ACTION find running name server"
+
+	CURRENT_NAME_SERVER_IN_USED=$(dig | grep ';; SERVER' | awk '{print $3}' | grep -Po '\(\K[^)]*')
+
+	echo "# INFO get current name server $CURRENT_NAME_SERVER_IN_USED"
 
 }
 
