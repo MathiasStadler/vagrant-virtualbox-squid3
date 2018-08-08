@@ -56,7 +56,7 @@ if [ -e $SHELL_UNIT_2_PATH ]; then
 
 		(check-name-server-avaible "127.0.0.1")
 		local rtrn=$?
-		assertTrue "unexpected date error; ${rtrn}" ${rtrn}
+		assertTrue "unexpected error; ${rtrn}" ${rtrn}
 	}
 
 else
