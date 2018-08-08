@@ -25,18 +25,18 @@ else
 
 fi
 
-check-name-server-avaible "127.0.0.1"
+# check-name-server-avaible "127.0.0.1"
 
-#check-name-server-avaible "127.0.0..1"
+# check-name-server-avaible "127.0.0..1"
 
-echo "# ACTION  stop bind9"
+# echo "# ACTION  stop bind9"
 
-$SUDO service bind9 stop
+# $SUDO service bind9 stop
 
-check-name-server-avaible "127.0.0.1"
+# check-name-server-avaible "127.0.0.1"
 
-echo "# ACTION start bind9"
-$SUDO service bind9 start
+# echo "# ACTION start bind9"
+# $SUDO service bind9 start
 
 SHELL_UNIT_2_PATH="$HOME/shunit2/shunit2"
 
