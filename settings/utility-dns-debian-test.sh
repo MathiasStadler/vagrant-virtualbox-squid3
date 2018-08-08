@@ -28,3 +28,9 @@ fi
 check-name-server-avaible "127.0.0.1"
 
 check-name-server-avaible "127.0.0..1"
+
+$SUDO service stop bind9
+
+check-name-server-avaible "127.0.0.1"
+
+$SUDO service start bind9
