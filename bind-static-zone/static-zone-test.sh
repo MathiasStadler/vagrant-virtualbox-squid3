@@ -75,6 +75,7 @@ COMMAND="get-ip-of-url $DDNS_TEST_HOST $DDNS_TEST_NAME_SERVER"
 EXPECTED_RESULT=$EXPECTED_RESULT_OK
 # call function
 test_function "$COMMAND" "$EXPECTED_RESULT"
+echo "# INFO IP_OF_SERVER => $IP_OF_SERVER"
 
 function test-nsupdate-round-trip-delete-record() {
 
