@@ -4,6 +4,12 @@
 set -e
 
 # shellcheck disable=SC1091
+source ../setting/utility-bash.sh
+
+# call function
+ensure-sudo
+
+# shellcheck disable=SC1091
 source ./static-zone-parameter.sh
 
 function crete-static-test-zone() {
@@ -25,11 +31,11 @@ function crete-static-test-zone() {
 	#
 
 	# create DDNS Key
-	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | sudo tee "$ETC_BIND_DDNS_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_FILE"
 
 	# parse key section
 	# and  write key to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE at first entry
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
@@ -41,7 +47,7 @@ zone "$DDNS_TEST_ZONE" IN {
 EOF
 
 	# parse update-policy section and write to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
-	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# close $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
 	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
@@ -50,7 +56,7 @@ EOF
 
 	# parse key section
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | sudo tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
 
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_FILE"
 
@@ -72,7 +78,7 @@ EOF
 
 	# include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE to /etc/bind/named.conf
 	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in /etc/named.conf"
-	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | sudo tee -a "/etc/bind/named.conf"
+	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | $SUDO tee -a "/etc/bind/named.conf"
 
 	# reload zone
 	# call function
