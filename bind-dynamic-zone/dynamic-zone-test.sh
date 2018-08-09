@@ -3,7 +3,8 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-source ./dynamic-zone-parameter.sh
+# shellcheck disable=SC1091
+dynamic-zone-parameter.sh
 
 function add-record-inside-dynamic-zone() {
 
@@ -56,7 +57,7 @@ EOF
 	# call function
 	clean-and-sync-all-zone-journals
 
-	if (get-ip-of-url test.$DYNAMIC_ADD_ZONE "127.0.0.1"); then
+	if (get-ip-of-url test."$DYNAMIC_ADD_ZONE" "127.0.0.1"); then
 
 		echo "# OK"
 	else

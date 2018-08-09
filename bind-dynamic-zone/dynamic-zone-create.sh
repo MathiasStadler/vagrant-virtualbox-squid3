@@ -2,7 +2,7 @@
 
 # Exit immediately if a command returns a non-zero status
 set -e
-
+# shellcheck disable=SC1091
 source ./dynamic-zone-parameter.sh
 
 function add-dynamic-zone-template() {
@@ -70,7 +70,7 @@ EOF
 
 	# check template
 
-	if (named-checkzone $ZONE_MASTER_ZONE $BIND_CHROOT/$ZONE_MASTER_TEMPLATE); then
+	if (named-checkzone "$ZONE_MASTER_ZONE" "$BIND_CHROOT/$ZONE_MASTER_TEMPLATE"); then
 		echo "# INFO check master template zone OK"
 	else
 		echo "# ERROR check master template file raise a error"
