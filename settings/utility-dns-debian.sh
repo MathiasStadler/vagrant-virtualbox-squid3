@@ -233,10 +233,10 @@ function check-name-server-avaible() {
 
 	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
 		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
-		return 0
+		# return 0
 	else
 		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
-		return $DIG_RETURN_CODE
+		# return $DIG_RETURN_CODE
 	fi
 
 }
