@@ -249,7 +249,7 @@ function get-ip-of-url() {
 	# ARG1 = URL for resolv
 	# ARG2 = NAMESERVER_IP for resolv
 
-	echo "# INFO call check-name-server-avaible" | tee -a "${LOG_FILE}"
+	echo "# INFO call get-ip-of-url" | tee -a "${LOG_FILE}"
 
 	if [ -z ${1+x} ]; then
 		echo "# ERROR ARG1  URL NOT set" | tee -a "${LOG_FILE}"
@@ -304,6 +304,8 @@ function get-ip-of-url() {
 	DIG_RETURN_CODE=$?
 	# enable catch errors
 	set -e
+
+	echo "# DEBUG output IP_OF_SERVER_OUTPUT $IP_OF_SERVER_OUTPUT"
 
 	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
 
