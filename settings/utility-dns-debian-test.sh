@@ -34,13 +34,13 @@ fi
 COMMAND="check-name-server-avaible 127.0.0.1"
 echo "# ACTION test command => $COMMAND"
 
-COMMAND_RESULT=(${COMMAND})
+COMMAND_RESULT=("${COMMAND}")
 COMMAND_RETURN_CODE=$?
 
 echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
-echo "########## start ########## " | tee -a "${LOG_FILE}"
-echo "$COMMAND_RESULT " | tee -a "${LOG_FILE}"
-echo "########## end  ########## " | tee -a "${LOG_FILE}"
+echo "# START OUTPUT ########## " | tee -a "${LOG_FILE}"
+echo "${COMMAND_RESULT[*]} " | tee -a "${LOG_FILE}"
+echo "# FINISHED OUTPUT ########## " | tee -a "${LOG_FILE}"
 
 RETURN_OK=0
 
