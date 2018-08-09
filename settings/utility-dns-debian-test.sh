@@ -82,7 +82,7 @@ function test_function() {
 }
 
 COMMAND="check-name-server-avaible 127.0.0.1"
-# call funtion
+# call function
 test_function "$COMMAND" 0
 
 #check-name-server-avaible "127.0.0..1"
