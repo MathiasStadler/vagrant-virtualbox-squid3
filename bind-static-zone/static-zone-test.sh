@@ -16,7 +16,7 @@ source ./static-zone-parameter.sh
 source ../settings/utility-dns-debian.sh
 
 # shellcheck disable=SC1091
-source ../utility-dns-debian-test.sh
+source ../settings/utility-dns-debian-test.sh
 
 function test-nsupdate-round-trip-add-record() {
 
