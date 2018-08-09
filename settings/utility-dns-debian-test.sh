@@ -34,7 +34,7 @@ fi
 COMMAND="check-name-server-avaible 127.0.0.1"
 echo "# ACTION test command => $COMMAND"
 
-COMMAND_RESULT=("${COMMAND}")
+COMMAND_RESULT=($COMMAND)
 COMMAND_RETURN_CODE=$?
 
 echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
