@@ -3,9 +3,6 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
-# Exit immediately if a command returns a non-zero status
-set -e
-
 # shellcheck disable=SC1091
 source ../settings/utility-bash.sh
 
@@ -48,6 +45,20 @@ function delete-static-test-zone() {
 		echo "# HINT see /var/log/syslog or /var/log/bind.log"
 		echo "# EXIT 1"
 		exit 1
+
+	fi
+
+	# double check of successful remove
+	# check first entry available already
+	if (grep "$NAMED_CONF_NEW_ZONE_INCLUDED" "$ETC_BIND_NAMED_CONF"); then
+
+		echo "# ERROR $NAMED_CONF_NEW_ZONE_INCLUDED should not contain in $ETC_BIND_NAMED_CONF"
+		echo "# EXIT 1
+        exit 1
+
+	else
+
+        echo " # OK line deleted"
 
 	fi
 
