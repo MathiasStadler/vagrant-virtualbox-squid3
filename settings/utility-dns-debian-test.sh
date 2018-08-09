@@ -25,35 +25,33 @@ else
 
 fi
 
-# check-name-server-avaible "127.0.0.1"
+#check-name-server-avaible "127.0.0.1"
 
-# check-name-server-avaible "127.0.0..1"
+#check-name-server-avaible "127.0.0..1"
 
 # echo "# ACTION  stop bind9"
 
-# $SUDO service bind9 stop
+#$SUDO service bind9 stop
 
 # check-name-server-avaible "127.0.0.1"
 
 # echo "# ACTION start bind9"
+
 # $SUDO service bind9 start
 
-SHELL_UNIT_2_PATH="$HOME/shunit2/shunit2"
-
-if [ -e "$SHELL_UNIT_2_PATH" ]; then
-
-	echo "# INFO run shellunit2 test"
-
-else
-
-	echo "# HINT no shellunit2 script found"
-
-fi
-
 testEquality() {
-	AssertEquals 1 1
+	assertEquals 1 1
 }
 
-# Load shUnit2
-# shellcheck disable=SC1090
-. "$SHELL_UNIT_2_PATH"
+testPartyLikeItIs1999() {
+	year=$(date '+%Y')
+	assertEquals "It's not 1999 :-(" '1999' "${year}"
+}
+
+oneTimeSetUp() {
+	# Load include to test.
+	. ./utility-dns-debian.sh
+}
+
+# Load and run shUnit2.
+. $HOME/shunit2/shunit2
