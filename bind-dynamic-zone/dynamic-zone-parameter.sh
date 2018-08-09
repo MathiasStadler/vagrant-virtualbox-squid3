@@ -3,6 +3,11 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+# message
+echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
+#echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
+printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
+
 ZONE_MASTER_ZONE="master-template.com"
 DYNAMIC_ADD_ZONE="dynamic-zone.com"
 BIND_CHROOT="/var/lib/named"
