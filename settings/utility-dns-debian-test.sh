@@ -25,7 +25,9 @@ else
 
 fi
 
-COMMAND_RESULT=(check-name-server-avaible "127.0.0.1")
+COMMAND="check-name-server-avaible 127.0.0.1"
+
+COMMAND_RESULT=(${COMMAND})
 COMMAND_RETURN_CODE=$?
 
 RETURN_OK=0
