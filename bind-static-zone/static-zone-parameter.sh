@@ -3,8 +3,10 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+# shellcheck disable=SC1091
+source ../settings/bind-parameter.sh
+
 # CONSTANTS for static zone
-BIND_BINARY_DEFAULT_PATH="/usr/sbin"
 
 DDNS_KEY_NAME="example.com."
 DDNS_TEST_ZONE="example.com"
