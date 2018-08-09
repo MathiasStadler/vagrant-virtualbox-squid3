@@ -38,7 +38,7 @@ function delete-static-test-zone() {
 
 	NAMED_CONF_NEW_ZONE_INCLUDED="include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";"
 
-	if ($SUDO sed -i "/$NAMED_CONF_NEW_ZONE_INCLUDED/d" "$ETC_BIND_NAMED_CONF"); then
+	if ($SUDO sed -i "/$DDNS_TEST_ZONE/d" "$ETC_BIND_NAMED_CONF"); then
 
 		echo "# INFO deleted line $NAMED_CONF_NEW_ZONE_INCLUDED successful"
 
