@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# message
+echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
+#echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
+printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
+
 BIND_BINARY_DEFAULT_PATH="/usr/sbin"
 
 ETC_BIND_NAMED_CONF="/etc/bind/named.conf"
