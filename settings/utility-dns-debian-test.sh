@@ -52,7 +52,7 @@ function test_function() {
 		echo "# EXIT 1"
 		exit 1
 	else
-		COMMAND="$2"
+		EXPECTED_RESULT="$2"
 		echo "# INFO EXPECTED_RESULT set to '$EXPECTED_RESULT'" | tee -a "${LOG_FILE}"
 	fi
 
