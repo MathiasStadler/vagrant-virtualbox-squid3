@@ -85,7 +85,22 @@ EOF
 
 	# include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE to /etc/bind/named.conf
 	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in /etc/named.conf"
-	echo "include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";" | $SUDO tee -a "/etc/bind/named.conf"
+
+	NAMED_CONF_NEW_ZONE_INCLUDED="include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";"
+
+	# check first entry available already
+	if (grep $NAMED_CONF_NEW_ZONE_INCLUDED $ETC_BIND_NAMED_CONF); then
+
+		echo "# INFO include already inside $ETC_BIND_NAMED_CONF"
+		echo "# INFO do nothing"
+
+	else
+
+		echo "# ACTION add  $NAMED_CONF_NEW_ZONE_INCLUDED to $ETC_BIND_NAMED_CONF"
+
+		echo $NAMED_CONF_NEW_ZONE_INCLUDED | $SUDO tee -a "/etc/bind/named.conf"
+
+	fi
 
 	# reload zone
 	# call function
