@@ -40,7 +40,7 @@ function crete-static-test-zone() {
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# 2nd write zone config
-	cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	$SUDO cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 zone "$DDNS_TEST_ZONE" IN {
      type master;
      file "$ETC_BIND_EXAMPLE_ZONE_FILE";
@@ -61,7 +61,7 @@ EOF
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_FILE"
 
 	# create $ETC_BIND_EXAMPLE_ZONE_FILE file
-	cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_FILE"
+	$SUDO cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_FILE"
 ; $DDNS_TEST_ZONE
 \$TTL    604800
 @       IN      SOA     ns1.$DDNS_TEST_ZONE. root.$DDNS_TEST_ZONE. (
