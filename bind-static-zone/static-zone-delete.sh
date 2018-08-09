@@ -70,6 +70,22 @@ function delete-static-test-zone() {
 
 	$SUDO rm -rf $ETC_BIND_EXAMPLE_ZONE_FILE
 
+	# reload bind
+
+	# delzone via rndc
+	if ($BIND_BINARY_DEFAULT_PATH/rndc reload); then
+
+		echo "# INFO bind reload successfully "
+
+	else
+
+		echo "# ERROR try to reload bind raise an error"
+		echo "# HINT see at /var/log/syslog or /var/log/bind.log"
+		echo "# EXIT 1"
+		exit 1
+
+	fi
+
 }
 
 # call function
