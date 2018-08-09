@@ -1,12 +1,13 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091
-source ./bind-parameter.sh
-
 # message
 echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
 #echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
 printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
+
+echop $dirname
+# shellcheck disable=SC1091
+source ./bind-parameter.sh
 
 # ensure_sudo
 ensure-sudo() {
