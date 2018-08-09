@@ -310,6 +310,7 @@ function get-ip-of-url() {
 
 	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
 
+	echo "# DEBUG n => $IP_OF_SERVER_OUTPUT_LENGTH answer from dig"
 	if [ "$IP_OF_SERVER_OUTPUT_LENGTH" -gt "0" ]; then
 		# array to string
 		IP_SERVER=${IP_OF_SERVER_OUTPUT[0]}
