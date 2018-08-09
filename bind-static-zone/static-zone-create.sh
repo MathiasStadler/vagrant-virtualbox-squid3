@@ -4,7 +4,7 @@
 set -e
 
 # shellcheck disable=SC1091
-source ../setting/utility-bash.sh
+source ../settings/utility-bash.sh
 
 # call function
 ensure-sudo
