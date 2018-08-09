@@ -15,6 +15,9 @@ source ./static-zone-parameter.sh
 # shellcheck disable=SC1091
 source ../settings/utility-dns-debian.sh
 
+# shellcheck disable=SC1091
+source ../utility-dns-debian-test.sh
+
 function test-nsupdate-round-trip-add-record() {
 
 	TEST_FOLDER="/nsupdate_tests"
@@ -30,10 +33,10 @@ function test-nsupdate-round-trip-add-record() {
 	$SUDO tee -a "$NSUPDATE_ADD_HOST_SCRIPT" <<EOF
 #!/bin/bash
 #Defining Variables
-DNS_SERVER="localhost"
+DNS_SERVER="$DDNS_TEST_NAME_SERVER"
 DNS_ZONE="$DDNS_TEST_ZONE."
-HOST="test.example.com"
-IP="192.168.178.100"
+HOST="$DDNS_TEST_HOST"
+IP="$DDNS_TEST_IP"
 TTL="60"
 RECORD=" \$HOST \$TTL A \$IP"
 echo "
@@ -65,6 +68,13 @@ EOF
 
 # call function
 test-nsupdate-round-trip-add-record
+
+# test entry
+EXPECTED_RESULT_OK=0
+COMMAND="get-ip-of-url $DDNS_TEST_HOST $DDNS_TEST_NAME_SERVER"
+EXPECTED_RESULT=$EXPECTED_RESULT_OK
+# call function
+test_function "$COMMAND" "$EXPECTED_RESULT"
 
 function test-nsupdate-round-trip-delete-record() {
 
@@ -118,3 +128,10 @@ EOF
 
 # call function
 test-nsupdate-round-trip-delete-record
+
+# test entry
+EXPECTED_RESULT_NO_IP_ADDRESS=9
+COMMAND="get-ip-of-url $DDNS_TEST_HOST $DDNS_TEST_NAME_SERVER"
+EXPECTED_RESULT=$EXPECTED_RESULT_OK
+# call function
+test_function "$COMMAND" "$EXPECTED_RESULT_NO_IP_ADDRESS"

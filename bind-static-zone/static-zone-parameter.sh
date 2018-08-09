@@ -15,6 +15,9 @@ source ../settings/bind-parameter.sh
 
 DDNS_KEY_NAME="example.com."
 DDNS_TEST_ZONE="example.com"
+DDNS_TEST_HOST="test.$DDNS_TEST_ZONE"
+DDNS_TEST_IP="192.168.178.100"
+DDNS_TEST_NAME_SERVER="127.0.0.1"
 
 ETC_BIND_DDNS_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}.key"
 ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}_nsupdate.key"
@@ -25,6 +28,9 @@ echo "# INFO used parameter BIND_BINARY_DEFAULT_PATH => $BIND_BINARY_DEFAULT_PAT
 
 echo "# INFO used parameter DDNS_KEY_NAME => $DDNS_KEY_NAME"
 echo "# INFO used parameter DDNS_TEST_ZONE => $DDNS_TEST_ZONE"
+echo "# INFO used parameter DDNS_TEST_HOST => $DDNS_TEST_HOST"
+echo "# INFO used parameter DDNS_TEST_IP => $DDNS_TEST_IP"
+echo "# INFO used parameter DDNS_TEST_NAME_SERVER => $DDNS_TEST_NAME_SERVER"
 
 echo "# INFO used parameter ETC_BIND_DDNS_FILE => $ETC_BIND_DDNS_FILE"
 echo "# INFO used parameter ETC_BIND_DDNS_NSUPDATE_FILE => $ETC_BIND_DDNS_NSUPDATE_FILE"
