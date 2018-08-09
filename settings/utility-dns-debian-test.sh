@@ -81,9 +81,12 @@ function test_function() {
 
 }
 
+EXPECTED_RESULT_OK=0
+
 COMMAND="check-name-server-avaible 127.0.0.1"
+EXPECTED_RESULT=$EXPECTED_RESULT_OK
 # call function
-test_function "$COMMAND" 0
+test_function "$COMMAND" "$EXPECTED_RESULT"
 
 #check-name-server-avaible "127.0.0..1"
 
