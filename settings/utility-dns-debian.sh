@@ -299,14 +299,14 @@ function get-ip-of-url() {
 	# disable catch error we will catch them self
 	set +e
 	# call sub shell
-	IP_OF_SERVER_OUTPUT=(dig "$URL" @"$NAMESERVER_IP" +short +time=5 +tries=1)
+	IP_OF_SERVER_OUTPUT=$(dig "$URL" @"$NAMESERVER_IP" +short +time=5 +tries=1)
 	# catch return value
 	DIG_RETURN_CODE=$?
 	# enable catch errors
 	set -e
 
 	echo "# DEBUG output DIG_RETURN_CODE $DIG_RETURN_CODE"
-	echo "# DEBUG output IP_OF_SERVER_OUTPUT $IP_OF_SERVER_OUTPUT"
+	echo "# DEBUG output IP_OF_SERVER_OUTPUT ${IP_OF_SERVER_OUTPUT[*]}"
 
 	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
 
