@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-set -e
+# set -e
 
 # log file
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
@@ -35,10 +35,10 @@ COMMAND="check-name-server-avaible 127.0.0.1"
 echo "# ACTION test command => $COMMAND"
 
 # call function
-set +e
+# set +e
 ${COMMAND[@]}
 COMMAND_RETURN_CODE=$?
-set -e
+# set -e
 echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
 echo "# START OUTPUT ########## " | tee -a "${LOG_FILE}"
 echo "${COMMAND_RESULT[*]} " | tee -a "${LOG_FILE}"
