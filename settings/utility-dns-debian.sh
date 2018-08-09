@@ -305,6 +305,7 @@ function get-ip-of-url() {
 	# enable catch errors
 	set -e
 
+	echo "# DEBUG output DIG_RETURN_CODE $DIG_RETURN_CODE"
 	echo "# DEBUG output IP_OF_SERVER_OUTPUT $IP_OF_SERVER_OUTPUT"
 
 	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
@@ -314,7 +315,7 @@ function get-ip-of-url() {
 		IP_SERVER=${IP_OF_SERVER_OUTPUT[0]}
 		echo "# INFO ip address for $URL_RESOLVE is e.g. (first match) ${IP_SERVER}"
 	else
-		echo "# ERROR no ip  found"
+		echo "# ERROR no ip found"
 	fi
 
 	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
@@ -332,10 +333,8 @@ function get-ip-of-url() {
 
 	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
 		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
-		# return 0
 	else
 		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
-		# return $DIG_RETURN_CODE
 	fi
 
 	FUNCTION_RESULT=$DIG_RETURN_CODE
