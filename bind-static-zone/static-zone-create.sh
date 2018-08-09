@@ -25,7 +25,7 @@ function crete-static-test-zone() {
 	#
 
 	# create DDNS Key
-	ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | sudo tee "$ETC_BIND_DDNS_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | sudo tee "$ETC_BIND_DDNS_FILE"
 
 	# parse key section
 	# and  write key to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE at first entry
