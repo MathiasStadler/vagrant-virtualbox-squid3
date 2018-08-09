@@ -37,7 +37,7 @@ echo "# ACTION test command => $COMMAND"
 # call function
 # set +e
 ${COMMAND[@]}
-COMMAND_RETURN_CODE=$?
+COMMAND_RETURN_CODE=$FUNCTION_RESULT
 # set -e
 echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
 echo "# START OUTPUT ########## " | tee -a "${LOG_FILE}"

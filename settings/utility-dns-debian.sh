@@ -239,4 +239,7 @@ function check-name-server-avaible() {
 		# return $DIG_RETURN_CODE
 	fi
 
+	FUNCTION_RESULT=$DIG_RETURN_CODE
+	echo "# INFO function result = $FUNCTION_RESULT"
+
 }
