@@ -12,6 +12,9 @@ ensure-sudo
 # shellcheck disable=SC1091
 source ./static-zone-parameter.sh
 
+# shellcheck disable=SC1091
+source ../settings/utility-dns-debian.sh
+
 function crete-static-test-zone() {
 
 	echo "# INFO call create-static-test-zone"
