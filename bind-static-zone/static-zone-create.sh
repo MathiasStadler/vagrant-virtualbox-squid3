@@ -30,17 +30,19 @@ function crete-static-test-zone() {
 	# dnssec-keygen -a RSASHA1 -b 1024 test.me
 	#
 
+	echo "# ACTION create key $DDNS_KEY_NAME"
 	# create DDNS Key
 	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_FILE"
+
+	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# parse key section
 	# and  write key to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE at first entry
 	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
-	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-
 	# 2nd write zone config
-	$SUDO cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	# TODO old check delete $SUDO cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	$SUDO tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE" <<EOF
 zone "$DDNS_TEST_ZONE" IN {
      type master;
      file "$ETC_BIND_EXAMPLE_ZONE_FILE";
