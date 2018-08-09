@@ -33,8 +33,9 @@ else
 	response=${response,,} # convert answer to lower letter
 	if [[ $response =~ ^(yes|y| ) ]] || [[ -z $response ]]; then
 		git pull
+		echo "# PLEASE restart script"
+		exit 0
 	fi
-
 fi
 
 set +e
