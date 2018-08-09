@@ -15,7 +15,10 @@ source $SCRIPT_PATH/bind-parameter.sh
 ensure-sudo() {
 	if [ "$(id -u)" != "0" ]; then
 		SUDO="sudo" # Modified as suggested below.
+		echo "# INFO script start with user $(id), so  need sudo set to $SUDO"
+	else
 
+		echo "# INFO script run with user root => $(id)"
 	fi
 }
 
