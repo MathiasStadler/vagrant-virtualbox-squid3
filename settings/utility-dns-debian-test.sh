@@ -25,13 +25,14 @@ else
 
 fi
 
-(check-name-server-avaible "127.0.0.1")
+COMMAND_RESULT=(check-name-server-avaible "127.0.0.1")
+COMMAND_RETURN_CODE=$?
 
 RETURN_OK=0
-RETURN_CODE=$?
-EXPECT_CODE=$RETURN_OK
 
-if [ "$RETURN_CODE" -eq "$EXPECT_CODE" ]; then
+COMMAND_EXPECT_CODE=$RETURN_OK
+
+if [ "$COMMAND_RETURN_CODE" -eq "$COMMAND_EXPECT_CODE" ]; then
 
 	echo "# OK"
 else
