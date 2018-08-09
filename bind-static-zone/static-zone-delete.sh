@@ -18,9 +18,9 @@ source ../settings/utility-dns-debian.sh
 function delete-static-test-zone() {
 
 	# delzone via rndc
-	if ($BIND_BINARY_DEFAULT_PATH/rndc delzone "$DDNS_TEST_ZONE"); then
+	if ("$BIND_BINARY_DEFAULT_PATH"/rndc delzone "$DDNS_TEST_ZONE"); then
 
-		echo "# INFO zone $DDNS_TEST_ZONE successfuled delete (inactive)"
+		echo "# INFO zone $DDNS_TEST_ZONE successful delete (inactive)"
 
 	else
 
@@ -64,16 +64,16 @@ function delete-static-test-zone() {
 
 	# delete conf file
 
-	$SUDO rm -rf $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+	$SUDO rm -rf "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
 	# delete zone file
 
-	$SUDO rm -rf $ETC_BIND_EXAMPLE_ZONE_FILE
+	$SUDO rm -rf "$ETC_BIND_EXAMPLE_ZONE_FILE"
 
 	# reload bind
 
 	# delzone via rndc
-	if ($BIND_BINARY_DEFAULT_PATH/rndc reload); then
+	if ("$BIND_BINARY_DEFAULT_PATH"/rndc reload); then
 
 		echo "# INFO bind reload successfully "
 

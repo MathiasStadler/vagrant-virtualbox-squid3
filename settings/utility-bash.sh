@@ -8,8 +8,8 @@ printf " # INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
 # get install path of script
 SCRIPT_PATH="$(dirname "${BASH_SOURCE[0]}")"
 
-# shellcheck disable=SC1091
-source $SCRIPT_PATH/bind-parameter.sh
+# shellcheck disable=SC1090
+source "$SCRIPT_PATH"/bind-parameter.sh
 
 # ensure_sudo
 ensure-sudo() {

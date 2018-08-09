@@ -18,7 +18,7 @@ function test-nsupdate-round-trip-add-record() {
 
 	echo "# ACTION write $NSUPDATE_ADD_HOST_SCRIPT to $HOME$TEST_FOLDER"
 
-	cat <<EOF >"$NSUPDATE_ADD_HOST_SCRIPT"
+	$SUDO tail -a "$NSUPDATE_ADD_HOST_SCRIPT" <<EOF
 #!/bin/bash
 #Defining Variables
 DNS_SERVER="localhost"
@@ -38,13 +38,13 @@ EOF
 
 	echo "# ACTION set execute for $NSUPDATE_ADD_HOST_SCRIPT"
 	# execute script NSUPDATE_ADD_HOST_SCRIPT
-	chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
+	$SUDO chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
 
 	echo "# ACTION reload zone $DDNS_TEST_ZONE"
 	# activate changes
 
 	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
-	if ($NSUPDATE_ADD_HOST_SCRIPT); then
+	if ("$SUDO" "$NSUPDATE_ADD_HOST_SCRIPT"); then
 		echo "# OK nsupdate of zone "
 	else
 		echo "# ERROR nsupdate of zone"
