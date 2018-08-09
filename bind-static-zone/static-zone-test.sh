@@ -20,14 +20,14 @@ function test-nsupdate-round-trip-add-record() {
 	TEST_FOLDER="/nsupdate_tests"
 
 	echo "#ACTION create sub folder $TEST_FOLDER"
-	mkdir -p "$HOME/$TEST_FOLDER"
+	mkdir -p "$HOME$TEST_FOLDER"
 
 	# create NSUPDATE_ADD_HOST_SCRIPT
 	NSUPDATE_ADD_HOST_SCRIPT="$HOME$TEST_FOLDER/nsupdate_add_host.sh"
 
 	echo "# ACTION write $NSUPDATE_ADD_HOST_SCRIPT to $HOME$TEST_FOLDER"
 
-	$SUDO tail -a "$NSUPDATE_ADD_HOST_SCRIPT" <<EOF
+	$SUDO tee -a "$NSUPDATE_ADD_HOST_SCRIPT" <<EOF
 #!/bin/bash
 #Defining Variables
 DNS_SERVER="localhost"
