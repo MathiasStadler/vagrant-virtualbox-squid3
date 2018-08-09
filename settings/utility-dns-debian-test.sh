@@ -31,29 +31,59 @@ else
 
 fi
 
+function test_function() {
+
+	# ARG1 = COMMAND for test
+	# ARG2 = EXPECTED_RESULT as integer value
+
+	echo "# INFO call test-function" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1  COMMAND NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		COMMAND="$1"
+		echo "# INFO COMMAND set to '$COMMAND'" | tee -a "${LOG_FILE}"
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG1  EXPECTED_RESULT NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		COMMAND="$2"
+		echo "# INFO EXPECTED_RESULT set to '$EXPECTED_RESULT'" | tee -a "${LOG_FILE}"
+	fi
+
+	echo "# ACTION test command => $COMMAND with EXPECTED_RESULT => $EXPECTED_RESULT"
+
+	# call function
+	# set +e
+	# shellcheck disable=SC2068
+	${COMMAND[@]}
+	COMMAND_RETURN_CODE=$FUNCTION_RESULT
+	# set -e
+
+	# echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
+	# echo "# START OUTPUT ########## " | tee -a "${LOG_FILE}"
+	# echo "${COMMAND_RESULT[*]} " | tee -a "${LOG_FILE}"
+	# echo "# FINISHED OUTPUT ########## " | tee -a "${LOG_FILE}"
+
+	if [ "$COMMAND_RETURN_CODE" -eq "$EXPECTED_RESULT" ]; then
+
+		echo "# OK COMMAND_RETURN_CODE = EXPECTED_RESULT ($COMMAND_RETURN_CODE = $EXPECTED_RESULT )"
+	else
+		echo "# ERROR "
+		echo "# EXIT 1"
+		exit 1
+	fi
+
+}
+
 COMMAND="check-name-server-avaible 127.0.0.1"
-echo "# ACTION test command => $COMMAND"
 
-# call function
-# set +e
-${COMMAND[@]}
-COMMAND_RETURN_CODE=$FUNCTION_RESULT
-# set -e
-echo "# INFO command result of command => $COMMAND " | tee -a "${LOG_FILE}"
-echo "# START OUTPUT ########## " | tee -a "${LOG_FILE}"
-echo "${COMMAND_RESULT[*]} " | tee -a "${LOG_FILE}"
-echo "# FINISHED OUTPUT ########## " | tee -a "${LOG_FILE}"
-
-RETURN_OK=0
-
-COMMAND_EXPECT_CODE=$RETURN_OK
-
-if [ "$COMMAND_RETURN_CODE" -eq "$COMMAND_EXPECT_CODE" ]; then
-
-	echo "# OK"
-else
-	echo "# ERROR "
-fi
+test_function "$COMMAND" 0
 
 #check-name-server-avaible "127.0.0..1"
 
