@@ -25,7 +25,18 @@ else
 
 fi
 
-#check-name-server-avaible "127.0.0.1"
+(check-name-server-avaible "127.0.0.1")
+
+RETURN_OK=0
+RETURN_CODE=$?
+EXPECT_CODE=$RETURN_OK
+
+if [ "$RETURN_CODE" -eq "$EXPECT_CODE" ]; then
+
+	echo "# OK"
+else
+	echo "# ERROR "
+fi
 
 #check-name-server-avaible "127.0.0..1"
 
@@ -38,20 +49,3 @@ fi
 # echo "# ACTION start bind9"
 
 # $SUDO service bind9 start
-
-testEquality() {
-	assertEquals 1 1
-}
-
-testPartyLikeItIs1999() {
-	year=$(date '+%Y')
-	assertEquals "It's not 1999 :-(" '1999' "${year}"
-}
-
-oneTimeSetUp() {
-	# Load include to test.
-	. ./utility-dns-debian.sh
-}
-
-# Load and run shUnit2.
-. $HOME/shunit2/shunit2
