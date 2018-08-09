@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-set -e
+# set -e
 
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
@@ -228,6 +228,9 @@ function check-name-server-avaible() {
 		echo "# PLEASE give info to developer"
 	fi
 
+	# delete key/value directory
+	rm -rf "$hash_table"
+
 	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
 		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
 		return 0
@@ -235,8 +238,5 @@ function check-name-server-avaible() {
 		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
 		return $DIG_RETURN_CODE
 	fi
-
-	# delete key/value directory
-	rm -rf "$hash_table"
 
 }
