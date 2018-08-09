@@ -39,7 +39,7 @@ function get-nameserver-of-url() {
 	fi
 }
 
-function get-ip-of-url() {
+function old_get-ip-of-url() {
 
 	# ARG1 = URL to resolve
 	# ARG2 = NAME_SERVER
@@ -217,6 +217,103 @@ function check-name-server-avaible() {
 	DIG_RETURN_CODE=$?
 	# enable catch errors
 	set -e
+
+	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
+
+	if [ -e "$hash_table/$DIG_RETURN_CODE" ]; then
+		echo "$(<"$hash_table/$DIG_RETURN_CODE")"
+	else
+
+		echo "# ERROR return code unknown"
+		echo "# PLEASE give info to developer"
+	fi
+
+	# delete key/value directory
+	rm -rf "$hash_table"
+
+	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
+		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
+		# return 0
+	else
+		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
+		# return $DIG_RETURN_CODE
+	fi
+
+	FUNCTION_RESULT=$DIG_RETURN_CODE
+	echo "# INFO function result = $FUNCTION_RESULT"
+
+}
+
+function get-ip-of-url() {
+
+	# ARG1 = URL for resolv
+	# ARG2 = NAMESERVER_IP for resolv
+
+	echo "# INFO call check-name-server-avaible" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1  URL NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		URL="$1"
+		echo "# INFO URL set to '$URL'" | tee -a "${LOG_FILE}"
+	fi
+
+	if [ -z ${2+x} ]; then
+		echo "# ERROR ARG1  NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		NAMESERVER_IP="$2"
+		echo "# INFO NAMESERVER_IP set to '$NAMESERVER_IP'" | tee -a "${LOG_FILE}"
+	fi
+
+	# from man page
+	# Dig return codes are:
+
+	#     0: Everything went well, including things like NXDOMAIN
+	#     1: Usage error
+	#     8: Couldn't open batch file
+	#     9: No reply from server
+	#     10: Internal error
+
+	# from here
+	# https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash
+	# Just use directory
+
+	# hash table creation
+	hash_table=$(mktemp -d)
+
+	# Add an elements
+
+	echo "# INFO OK Everything went well, including things like NXDOMAIN" >"$hash_table/0"
+	echo "# ERROR Usage error" >"$hash_table/1"
+	echo "# ERROR Couldn't open batch file" >"$hash_table/8"
+	echo "# ERROR No reply from server " >"$hash_table/9"
+	echo "# ERROR Internal error" >"$hash_table/10"
+
+	# read an element
+	# TODO old check value=$(<$hash_table/1)
+
+	# disable catch error we will catch them self
+	set +e
+	# call sub shell
+	IP_OF_SERVER_OUTPUT=$(dig "$URL" @"$NAMESERVER_IP" +short +time=5 +tries=1)
+	# catch return value
+	DIG_RETURN_CODE=$?
+	# enable catch errors
+	set -e
+
+	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
+
+	if [ "$IP_OF_SERVER_OUTPUT_LENGTH" -gt "0" ]; then
+		# array to string
+		IP_SERVER=${IP_OF_SERVER_OUTPUT[0]}
+		echo "# INFO ip address for $URL_RESOLVE is e.g. (first match) ${IP_SERVER}"
+	else
+		echo "# ERROR no ip  found"
+	fi
 
 	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 
