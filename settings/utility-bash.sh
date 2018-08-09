@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# shellcheck disable=SC1091
+source ./bind-parameter.sh
+
 # message
 echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
 #echo "${BASH_SOURCE[${#BASH_SOURCE[@]} - 1]}"
