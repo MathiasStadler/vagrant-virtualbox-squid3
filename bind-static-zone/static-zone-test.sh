@@ -4,7 +4,16 @@
 set -e
 
 # shellcheck disable=SC1091
+source ../settings/utility-bash.sh
+
+# call function
+ensure-sudo
+
+# shellcheck disable=SC1091
 source ./static-zone-parameter.sh
+
+# shellcheck disable=SC1091
+source ../settings/utility-dns-debian.sh
 
 function test-nsupdate-round-trip-add-record() {
 
