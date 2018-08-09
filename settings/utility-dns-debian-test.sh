@@ -6,11 +6,12 @@
 # log file
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
-SETTINGS_DIR="."
+# get install path of script
+SCRIPT_PATH="$(dirname "${BASH_SOURCE[0]}")"
 
 # load utility-dns-debian
 # shellcheck disable=SC1090,SC1091
-source "$SETTINGS_DIR/utility-dns-debian.sh"
+source "$SCRIPT_PATH"/utility-dns-debian.sh
 
 # git check update
 # from here
