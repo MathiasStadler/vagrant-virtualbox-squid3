@@ -21,7 +21,7 @@ source ../settings/utility-dns-debian.sh
 function delete-static-test-zone() {
 
 	# delzone via rndc
-	if ($BIND_BINARY_DEFAULT_PATH/rndc "$DDNS_TEST_ZONE"); then
+	if ($BIND_BINARY_DEFAULT_PATH/rndc delzone "$DDNS_TEST_ZONE"); then
 
 		echo "# INFO zone $DDNS_TEST_ZONE successfuled delete (inactive)"
 

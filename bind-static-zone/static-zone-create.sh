@@ -91,7 +91,7 @@ EOF
 	# check first entry available already
 	if (grep "$NAMED_CONF_NEW_ZONE_INCLUDED" "$ETC_BIND_NAMED_CONF"); then
 
-		echo "# INFO include already inside $ETC_BIND_NAMED_CONF"
+		echo "# INFO include $NAMED_CONF_NEW_ZONE_INCLUDED already inside $ETC_BIND_NAMED_CONF"
 		echo "# INFO do nothing"
 
 	else
