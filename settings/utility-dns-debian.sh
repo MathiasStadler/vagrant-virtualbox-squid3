@@ -70,7 +70,7 @@ function get-ip-of-url() {
 	echo "# INFO we used NAME_SERVER => '$NAME_SERVER'" | tee -a "${LOG_FILE}"
 
 	# we will only one not all
-	if IP_OF_SERVER_OUTPUT=$(dig +short "$1" @$NAME_SERVER | head -1); then
+	if IP_OF_SERVER_OUTPUT=$(dig +short "$1" @"$NAME_SERVER" | head -1); then
 
 		# array to string
 		IP_SERVER=${IP_OF_SERVER_OUTPUT[*]}
@@ -200,14 +200,14 @@ function check-name-server-avaible() {
 
 	# Add an elements
 
-	echo "# INFO OK Everything went well, including things like NXDOMAIN" >$hash_table/0
-	echo "# ERROR Usage error" >$hash_table/1
-	echo "# ERROR Couldn't open batch file" >$hash_table/8
-	echo "# ERROR No reply from server " >$hash_table/9
-	echo "# ERROR Internal error" >$hash_table/10
+	echo "# INFO OK Everything went well, including things like NXDOMAIN" >"$hash_table/0"
+	echo "# ERROR Usage error" >"$hash_table/1"
+	echo "# ERROR Couldn't open batch file" >"$hash_table/8"
+	echo "# ERROR No reply from server " >"$hash_table/9"
+	echo "# ERROR Internal error" >"$hash_table/10"
 
 	# read an element
-	value=$(<$hash_table/1)
+	# TODO old check value=$(<$hash_table/1)
 
 	# disable catch error we will catch them self
 	set +e
@@ -220,8 +220,8 @@ function check-name-server-avaible() {
 
 	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
 
-	if [ -e $hash_table/$DIG_RETURN_CODE ]; then
-		echo "$(<$hash_table/$DIG_RETURN_CODE)"
+	if [ -e "$hash_table/$DIG_RETURN_CODE" ]; then
+		echo "$(<"$hash_table/$DIG_RETURN_CODE")"
 	else
 
 		echo "# ERROR return code unknown"
@@ -242,4 +242,67 @@ function check-name-server-avaible() {
 	FUNCTION_RESULT=$DIG_RETURN_CODE
 	echo "# INFO function result = $FUNCTION_RESULT"
 
+}
+
+function check-named-conf() {
+
+	echo "# ACTION check /etc/bind/named.conf"
+
+	if (/usr/sbin/named-checkconf -jzpx /etc/bind/named.conf); then
+		echo "# INFO /etc/named.conf valid"
+	else
+		echo "# ERROR /etc/named.conf raise a error"
+		echo "# EXIT 1"
+		exit 1
+	fi
+}
+
+function call-bind-version-via-dig() {
+
+	BIND_VERSION=$(dig +short chaos txt version.bind @localhost)
+
+	echo "# INfO Bind version $BIND_VERSION"
+}
+
+# call version
+# call-bind-version-via-dig
+
+function clean-and-sync-all-zone-journals() {
+
+	# from here
+	# https://serverfault.com/questions/560326/ddns-bind-and-leftover-jnl-files
+	echo "# ACTION clean first all journals"
+
+	# default path
+	RNDC_EXEC="/usr/sbin/rndc"
+
+	$RNDC_EXEC sync -clean
+
+}
+
+function reload-dynamic-zone() {
+
+	# ARG1 = DYNAMIC_ZONE_NAME for resolv
+
+	echo "# INFO reload-dynamic-zone" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1 DYNAMIC_ZONE_NAME NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		DYNAMIC_ZONE_NAME="$1"
+		echo "# INFO DYNAMIC_ZONE_NAME set to '$DYNAMIC_ZONE_NAME'" | tee -a "${LOG_FILE}"
+	fi
+
+	echo "# ACTION reload all zones"
+	$RNDC_EXEC reload
+	# echo "# ACTION reload zone $DDNS_TEST_ZONE"
+	# $RNDC_EXEC reload $DDNS_TEST_ZONE.
+	echo "# ACTION freeze $DYNAMIC_ZONE_NAME"
+	"$RNDC_EXEC" freeze "$DYNAMIC_ZONE_NAME."
+	echo "# ACTION reload $DYNAMIC_ZONE_NAME"
+	"$RNDC_EXEC" reload "$DYNAMIC_ZONE_NAME."
+	echo "# ACTION thaw $DYNAMIC_ZONE_NAME"
+	"$RNDC_EXEC" thaw "$DYNAMIC_ZONE_NAME."
 }
