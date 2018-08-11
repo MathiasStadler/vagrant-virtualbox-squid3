@@ -395,7 +395,7 @@ function file-download-from-url() {
 		$DRY_RUN curl "$DOWNLOAD_URL" -o "$TEMP_DIR/${DOWNLOAD_FILE}"
 
 		echo "# ACTION copy ${DOWNLOAD_FILE} to $TARGET_DIR"
-		if [ "$TEMP_DIR/${DOWNLOAD_FILE}" == "$TARGET_DIR/${DOWNLOAD_FILE}" ]; then
+		if [ "$TEMP_DIR/${DOWNLOAD_FILE}" != "$TARGET_DIR/${DOWNLOAD_FILE}" ]; then
 			sudo cp "$TEMP_DIR/${DOWNLOAD_FILE}" "$TARGET_DIR/${DOWNLOAD_FILE}"
 		fi
 	fi
