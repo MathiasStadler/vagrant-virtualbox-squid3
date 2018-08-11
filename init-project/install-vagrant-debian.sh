@@ -3,8 +3,10 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+SETTINGS_DIR="../settings"
+
 # shellcheck disable=SC1091
-source ../settings/utility-bash.sh
+source "$SETTINGS_DIR/utility-bash.sh"
 
 # call function
 ensure-sudo
