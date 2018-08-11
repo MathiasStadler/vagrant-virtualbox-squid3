@@ -19,7 +19,7 @@ TEMP_DIR="/tmp"
 
 # DOCUMENTATION curl https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb -O
 
-file-download-from-url https://releases.hashicorp.com/vagrant/2.1.2/ vagrant_2.1.2_x86_64.deb $TEMP_DIR
+file-download-from-url https://releases.hashicorp.com/vagrant/2.1.2/vagrant_2.1.2_x86_64.deb vagrant_2.1.2_x86_64.deb $TEMP_DIR
 
 $SUDO dpkg -i $TEMP_DIR/vagrant_2.1.2_x86_64.deb
 
