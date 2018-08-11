@@ -5,7 +5,7 @@ set -e
 
 SETTINGS_DIR="../settings"
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090
 source "$SETTINGS_DIR/utility-bash.sh"
 
 # call function
