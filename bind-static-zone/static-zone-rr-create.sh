@@ -17,24 +17,38 @@ echo "# INFO call add-record" | tee -a "${LOG_FILE}"
 
 # ARG1 = DDNS_NAME_SERVER"
 # ARG2 = DDNS_ZONE
-# ARG3 = DDNS_HOST
-# ARG4 = DDNS_IP
+# ARG3 = RR_HOST_ADDRESS
+# ARG4 = RR_IP_OF_HOST
 # ARG5 = TTL
+
+TRUE=0
+FALSE=1
+# Attention parameter count start at 0
+# varName varMessage varNesseccary varDefaultValue
+param0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
+param1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+param2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
+param3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
+param4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
 # ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
 
 args=("$@")
 for ((i=0; i < $#; i++))
 {
-    echo "argument $((i+1)): ${args[$i]} ${variable[$i]}"
 
-declare ${variable[$i]}=${args[$i]}
-
-current_n_param_number=(($i-1))
-
+# TODO how is that work as one liner
+# string substitution
 n_param="param$i"
+
+
+echo " DEBUG complete array is '${n_param[*]}'"
+
+# declare variable
 declare ${n_param[0]}=${args[$i]}
-echo all ${n_param[*]}
+
+echo "# INFO set ${n_param[0]} "
+
 echo zweite ${n_param[1]}
 echo dritte ${n_param[2]}
 
