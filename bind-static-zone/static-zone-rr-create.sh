@@ -41,7 +41,7 @@ for ((i=0; i < $#; i++))
 # string substitution
 n_param="param$i"
 
-
+echo " DEBUG complete array is '${param0[*]}'"
 echo " DEBUG complete array is '${n_param[*]}'"
 
 # declare variable
@@ -53,6 +53,8 @@ echo zweite ${n_param[1]}
 echo dritte ${n_param[2]}
 
 }
+
+exit 1
 
 	echo "#ACTION check and create execute directory $EXECUTE_FOLDER"
 	mkdir -p "$EXECUTE_FOLDER"
