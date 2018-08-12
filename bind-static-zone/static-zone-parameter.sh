@@ -12,6 +12,8 @@ printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
 source ../settings/bind-parameter.sh
 
 # CONSTANTS for static zone
+TEMP_FOLDER="/tmp"
+TEST_FOLDER="$TEMP_FOLDER/nsupdate_tests"
 
 DDNS_KEY_NAME="example.com."
 DDNS_TEST_ZONE="example.com"
@@ -23,6 +25,9 @@ ETC_BIND_DDNS_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}.key"
 ETC_BIND_DDNS_NSUPDATE_FILE="/etc/bind/ddns_${DDNS_TEST_ZONE}_nsupdate.key"
 ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE="/etc/bind/example.com.conf"
 ETC_BIND_EXAMPLE_ZONE_FILE="/etc/bind/example.com.zone"
+
+echo "# INFO used parameter TEMP_FOLDER => $TEMP_FOLDER"
+echo "# INFO used parameter TEST_FOLDER => $TEST_FOLDER"
 
 echo "# INFO used parameter BIND_BINARY_DEFAULT_PATH => $BIND_BINARY_DEFAULT_PATH"
 

@@ -122,6 +122,7 @@
         "netfilter",
         "neupdate",
         "newkey",
+        "nocompatible",
         "noninteractive",
         "nsupdate",
         "oknodo",

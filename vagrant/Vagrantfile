@@ -397,7 +397,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # disable for vagrant-persistent-storage test
     shell_scripts = [
-      "found-bridge-adapter.sh",
+  "install-vim-debian.sh",
+  "found-bridge-adapter.sh",
   "install-disk-on-box-debian.sh",
   "install-git-debian.sh",
   "install-ccache-debian.sh",
