@@ -44,7 +44,7 @@ for ((i=0; i < $#; i++))
 # https://unix.stackexchange.com/questions/60584/how-to-use-a-variable-as-part-of-an-array-name
 # string substitution
 n_param="param$i"
-declare -a $n_param
+declare $n_param
 
 # TODO how is that work as one liner
 
