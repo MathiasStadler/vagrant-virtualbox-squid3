@@ -37,12 +37,19 @@ args=("$@")
 for ((i=0; i < $#; i++))
 {
 
-# TODO how is that work as one liner
+
+
+
+# from here declare dynamic array name
+# https://unix.stackexchange.com/questions/60584/how-to-use-a-variable-as-part-of-an-array-name
 # string substitution
-n_param="param$i"
+declare -p n_param="param$i"
+
+# TODO how is that work as one liner
+
 echo " DEBUG n_param '${n_param}'"
 echo " DEBUG complete array is '${param0[*]}'"
-echo " DEBUG complete array is '${${n_param}[*]}'"
+echo " DEBUG complete array is '${n_param[*]}'"
 
 # declare variable
 declare ${n_param[0]}=${args[$i]}
