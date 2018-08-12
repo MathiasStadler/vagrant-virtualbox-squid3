@@ -60,6 +60,8 @@ echo "# INFO set ${n_param[0]} "
 echo zweite ${n_param[1]}
 echo dritte ${n_param[2]}
 
+break
+
 }
 
 exit 1
