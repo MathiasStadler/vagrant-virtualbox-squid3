@@ -45,14 +45,14 @@ for ((i=0; i < $#; i++))
 # string substitution
 # and
 # http://www.ludvikjerabek.com/2015/08/24/getting-bashed-by-dynamic-arrays/
-n_param="param$i"
-declare -p $n_param
+declare n_param="param$i"
+# declare -p $n_param
 
 # TODO how is that work as one liner
 
 echo " DEBUG n_param '${n_param}'"
 echo " DEBUG complete array is '${param0[*]}'"
-eval echo " DEBUG complete array is '${n_param[@]}'"
+echo " DEBUG complete array is '${!n_param[@]}'"
 
 #${${1}[@]}
 
