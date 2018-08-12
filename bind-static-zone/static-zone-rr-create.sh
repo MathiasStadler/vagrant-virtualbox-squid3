@@ -50,7 +50,7 @@ declare -p $n_param
 
 echo " DEBUG n_param '${n_param}'"
 echo " DEBUG complete array is '${param0[*]}'"
-eval echo " DEBUG complete array is '${${n_param}[@]}'"
+eval echo " DEBUG complete array is '${n_param[@]}'"
 
 #${${1}[@]}
 
