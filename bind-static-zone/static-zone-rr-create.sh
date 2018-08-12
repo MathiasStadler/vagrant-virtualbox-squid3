@@ -43,7 +43,8 @@ for ((i=0; i < $#; i++))
 # from here declare dynamic array name
 # https://unix.stackexchange.com/questions/60584/how-to-use-a-variable-as-part-of-an-array-name
 # string substitution
-declare -p n_param="param$i"
+n_param="param$i"
+declare -p $n_param
 
 # TODO how is that work as one liner
 
