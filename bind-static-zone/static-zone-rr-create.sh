@@ -21,12 +21,23 @@ echo "# INFO call add-record" | tee -a "${LOG_FILE}"
 # ARG4 = DDNS_IP
 # ARG5 = TTL
 
-ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
+# ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
 
 args=("$@")
 for ((i=0; i < $#; i++))
 {
-    echo "argument $((i+1)): ${args[$i]}"
+    echo "argument $((i+1)): ${args[$i]} ${variable[$i]}"
+
+declare ${variable[$i]}=${args[$i]}
+
+current_n_param_number=(($i-1))
+
+n_param="param$i"
+declare ${n_param[0]}=${args[$i]}
+echo all ${n_param[*]}
+echo zweite ${n_param[1]}
+echo dritte ${n_param[2]}
+
 }
 
 	echo "#ACTION check and create execute directory $EXECUTE_FOLDER"
