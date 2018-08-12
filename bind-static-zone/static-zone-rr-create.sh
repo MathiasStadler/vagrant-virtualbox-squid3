@@ -102,3 +102,6 @@ send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 	fi
 
 }
+
+
+add-record "127.0.0.1" "example.org" "test-host" "192.168.178.213" "600"
