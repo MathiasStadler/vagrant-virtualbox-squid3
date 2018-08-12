@@ -40,9 +40,9 @@ for ((i=0; i < $#; i++))
 # TODO how is that work as one liner
 # string substitution
 n_param="param$i"
-
+echo " DEBUG n_param '${n_param}'"
 echo " DEBUG complete array is '${param0[*]}'"
-echo " DEBUG complete array is '${$(n_param)[*]}'"
+echo " DEBUG complete array is '${${n_param}[*]}'"
 
 # declare variable
 declare ${n_param[0]}=${args[$i]}
