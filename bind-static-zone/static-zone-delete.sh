@@ -59,55 +59,43 @@ function delete-static-zone() {
 	provide-dynamic-function-argument "$@"
 
 	# delzone via rndc
+	echo "# ACTION delete zone $DDNS_ZONE"
 	if ("$RNDC_EXEC" delzone "$DDNS_ZONE"); then
-
 		echo "# INFO zone $DDNS_ZONE successful delete (inactive)"
-
 	else
-
 		echo "# ERROR try to delete zone $DDNS_ZONE raise a error"
 		echo "# HINT see /var/log/syslog or /var/log/bind.log"
 		echo "# EXIT 1"
 		exit 1
-
 	fi
 
 	# remove include from /etc/bind/named.conf
-
-	NAMED_CONF_NEW_ZONE_INCLUDED="include \"$ETC_BIND_CONFIG_FILE\";"
-
 	if ($SUDO sed -i "/include.*$DDNS_TEST_ZONE/d" "$ETC_BIND_NAMED_CONF"); then
-
 		echo "# INFO deleted line $NAMED_CONF_NEW_ZONE_INCLUDED successful"
-
 	else
-
 		echo "# ERROR try to delete line $NAMED_CONF_NEW_ZONE_INCLUDED in $ETC_BIND_NAMED_CON file raise a error"
 		echo "# HINT see /var/log/syslog or /var/log/bind.log"
 		echo "# EXIT 1"
 		exit 1
-
 	fi
 
 	# double check of successful remove
 	# check first entry available already
-	if (grep "$NAMED_CONF_NEW_ZONE_INCLUDED" "$ETC_BIND_NAMED_CONF"); then
+	if (grep "$DDNS_ZONE" "$ETC_BIND_NAMED_CONF"); then
 
-		echo "# ERROR $NAMED_CONF_NEW_ZONE_INCLUDED should not contain in $ETC_BIND_NAMED_CONF"
+		echo "# ERROR entry with $DDNS_ZONE should not contain in $ETC_BIND_NAMED_CONF"
+		echo "# PLEASE fix by hand"
 		echo "# EXIT 1
         exit 1
-
 	else
-
-        echo " # OK line deleted"
-
+        echo " # OK entry $DDNS_ZONE deleted"
 	fi
 
 	# delete all file of the zone protect thr named.conf
-	if (find /etc/bind/ -type f -exec grep -l $DDNS_ZONE {} \; | grep -v $ETC_BIND_NAMED_CONF); then
+	if (find /etc/bind/ -type f -exec grep -l "$DDNS_ZONE" {} \; | grep -v $ETC_BIND_NAMED_CONF); then
 		echo "# INFO deleted file of zone  $DDNS_ZONE successful"
 	else
-		echo "# ERROR delete zone files of zone  $DDNS_ZONE "
+		echo "# ERROR delete zone files of zone  $DDNS_ZONE"
 		echo "# EXIT 1"
 		exit 1
 	fi
