@@ -19,9 +19,13 @@ err_report() {
 
 trap err_report ERR
 
+SETTINGS="../settings"
 
 # shellcheck disable=SC1091
-source ../settings/utility-bash.sh
+source "$SETTINGS/utility-bash.sh"
+
+# shellcheck disable=SC1091
+source "$SETTINGS/utility-dns-debian.sh"
 
 # call function
 ensure-sudo
