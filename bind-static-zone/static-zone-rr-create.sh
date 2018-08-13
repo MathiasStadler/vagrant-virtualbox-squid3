@@ -65,7 +65,7 @@ for ((i=0; i < $#; i++))
 # check array is declare
 echo "# CHECK array for argument$i is defined (used set-e)"
 #declare -a |grep "argument$i" >/dev/null 2>/dev/null
-declare -a |grep "argument$i"
+declare -a
 echo "OK "
 
 # n for current argumant
