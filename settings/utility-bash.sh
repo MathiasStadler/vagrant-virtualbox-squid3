@@ -20,11 +20,9 @@ ensure-sudo() {
 
 		echo "# INFO script run with user root => $(id)"
 		echo "# INFO set SUDO to empty string"
-		SUDO=" "
+		SUDO=""
 	fi
 }
-
-echo "# INFO sudo set to $SUDO"
 
 # :usage
 # $SUDO command
