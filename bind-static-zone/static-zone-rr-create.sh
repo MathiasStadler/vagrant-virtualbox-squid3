@@ -5,8 +5,8 @@
 # Exit immediately if a command returns a non-zero status
 # set -e
 # from here https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
-# set -Eeuxo pipefail
-set -Eeuo pipefail
+set -Eeuxo pipefail
+# set -Eeuo pipefail
 
 err_report() {
   echo "unexpected error on line $(caller) script exit" >&2
@@ -79,9 +79,9 @@ echo "# CHECK argument array $n_array has all data "
 echo "OK"
 
 
-echo " DEBUG n_param '${n_argument}'"
-echo " DEBUG complete array is '${argument0[*]}'"
-echo " DEBUG complete array is '${n_array[*]}'"
+echo "# DEBUG n_param '${n_argument}'"
+echo "# DEBUG complete array is '${argument0[*]}'"
+echo "# DEBUG complete array is '${n_array[*]}'"
 
 
 
