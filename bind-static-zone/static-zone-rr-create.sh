@@ -53,20 +53,10 @@ for ((i=0; i < $#; i++))
 
 # chek array is declare
 
-declare -a
+declare -a |grep "argument$i"
 
+declare -a |grep "argument10"
 
-
-if [ -z ${argument$i[@]+x} ]; then
-		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
-		echo "# EXIT 1" | tee -a "${LOG_FILE}"
-		exit 1
-	else
-		TARGET_DIR="$1"
-
-		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
-
-	fi
 
 exit
 
