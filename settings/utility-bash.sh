@@ -19,6 +19,8 @@ ensure-sudo() {
 	else
 
 		echo "# INFO script run with user root => $(id)"
+		echo "# INFO set SUDO to empty string"
+		SUDO=""
 	fi
 }
 
