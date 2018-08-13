@@ -89,6 +89,7 @@ echo " DEBUG complete array is '${n_array[*]}'"
 declare ${n_array[0]}=${args[$i]}
 
 echo "# INFO set ${n_array[0]} "
+echo "# DEBUG DDNS_NAME_SERVER => $DDNS_NAME_SERVER"
 
 echo zweite ${n_array[1]}
 echo dritte ${n_array[2]}
@@ -96,6 +97,9 @@ echo dritte ${n_array[2]}
 break
 
 }
+
+
+
 
 exit 1
 
