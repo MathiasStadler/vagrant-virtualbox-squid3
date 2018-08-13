@@ -17,6 +17,9 @@ trap err_report ERR
 SETTINGS="../settings"
 
 # shellcheck disable=SC1090,SC1091
+source "$SETTINGS/bind_parameter.sh"
+
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-bash.sh"
 
 # shellcheck disable=SC1090,SC1091
@@ -100,22 +103,18 @@ ns                     A       127.0.0.1
 EOF
 
 	# include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE to /etc/bind/named.conf
-	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in /etc/named.conf"
+	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in $ETC_BIND_NAMED_CONF"
 
 	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\"" ";")
 
 	# check first entry available already
 	if (grep "${NAMED_CONF_NEW_ZONE_INCLUDED[@]}" "$ETC_BIND_NAMED_CONF"); then
-
 		echo "# INFO include ${NAMED_CONF_NEW_ZONE_INCLUDED[*]} already inside $ETC_BIND_NAMED_CONF"
-		echo "# INFO do nothing"
-
+		echo "# INFO nothing to do in this case"
 	else
-
+		echo "# INFO include not found in $ETC_BIND_NAMED_CONF"
 		echo "# ACTION add  ${NAMED_CONF_NEW_ZONE_INCLUDED[*]} to $ETC_BIND_NAMED_CONF"
-
 		echo "${NAMED_CONF_NEW_ZONE_INCLUDED[*]}" | $SUDO tee -a "/etc/bind/named.conf"
-
 	fi
 
 	# reload zone
