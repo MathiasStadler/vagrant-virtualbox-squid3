@@ -56,8 +56,6 @@ function add-record() {
 	# shellcheck disable=SC2034
 	argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
-	echo "# ACTION create record $DDNS_NAME_SERVER to $DDNS_ZONE"
-
 	if (
 		echo "
 server $NAME_SERVER
