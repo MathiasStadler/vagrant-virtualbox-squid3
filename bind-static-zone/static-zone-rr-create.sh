@@ -37,10 +37,10 @@ ARGUMENT_ARRAY_LENGTH=4
 # Attention parameter count start at 0
 # varName varMessage varNesseccary varDefaultValue
 argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
-argumant1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
-argumant2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
-argumant3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
-argumant4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
+argument1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+argument2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
+argument3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
+argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
 # ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
 
@@ -64,8 +64,7 @@ for ((i=0; i < $#; i++))
 
 # check array is declare
 echo "# CHECK array for argument$i is defined (used set-e)"
-#declare -a |grep "argument$i" >/dev/null 2>/dev/null
-declare -a
+declare -a |grep "argument$i" >/dev/null 2>/dev/null
 echo "OK "
 
 # n for current argumant
