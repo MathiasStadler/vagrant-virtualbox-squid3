@@ -68,7 +68,7 @@ function provide-dynamic-function-argument() {
 		echo "# INFO set dynamic argument '$i' to variable '${n_array[0]}'"
 
 		# declare dynamic variable
-		declare "${n_array[0]}"="${args[$i]}"
+		declare -g "${n_array[0]}"="${args[$i]}"
 
 		echo "# DEBUG '${n_array[0]}' => '${!n_array[0]}'"
 		echo "# DEBUG description of argument '${n_array[0]}' => '${n_array[1]}'"
