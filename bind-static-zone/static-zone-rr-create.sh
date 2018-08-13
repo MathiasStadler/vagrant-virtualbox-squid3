@@ -74,7 +74,7 @@ n_argument="argument$i[@]"
 n_array=("${!n_argument}")
 
 # array length valid
-echo "argument array has all data "
+echo "# CHECK argument array $n_array has all data "
 [ "${#n_array[@]}" = "$ARGUMENT_ARRAY_LENGTH" ]
 echo "OK"
 
