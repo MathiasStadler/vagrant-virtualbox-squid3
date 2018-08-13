@@ -92,9 +92,9 @@ declare ${n_array[0]}=${args[$i]}
 
 
 echo "# DEBUG ${n_array[0]} => ${!n_array[0]}"
-echo "# DEBUG description of argumant ${n_array[0]} => ${!n_array[1]}"
-echo "# DEBUG is ${n_array[0]} nesseccary ${!n_array[2]}"
-echo "# DEBUG default value ${n_array[0]} ${!n_array[3]}"
+echo "# DEBUG description of argumant ${n_array[0]} => ${n_array[1]}"
+echo "# DEBUG is ${n_array[0]} nesseccary ${n_array[2]}"
+echo "# DEBUG default value ${n_array[0]} ${n_array[3]}"
 }
 
 
