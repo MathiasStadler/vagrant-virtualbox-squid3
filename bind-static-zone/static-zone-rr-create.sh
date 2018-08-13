@@ -63,7 +63,7 @@ for ((i=0; i < $#; i++))
 
 # chek array is declare
 
-declare -a |grep "argument$i"
+declare -a |grep "argument$i" >/dev/null 2>/dev/null
 
 declare -a |grep "argument10"
 #echo hello | grep foo
