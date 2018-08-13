@@ -84,6 +84,7 @@ send"
 
 	# dynamic parameter end
 	set -u
+	echo "# TEST $test_var"
 
 }
 

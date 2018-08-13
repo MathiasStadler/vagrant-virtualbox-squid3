@@ -76,4 +76,6 @@ function provide-dynamic-function-argument() {
 		echo "# DEBUG default value ${n_array[0]} ${n_array[3]}"
 	done
 
+	test_var="hallo"
+	echo "# TEST $test_var"
 }
