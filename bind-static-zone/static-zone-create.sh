@@ -8,6 +8,12 @@
 # without print command
 set -Eeuo pipefail
 
+err_report() {
+	echo "unexpected error on line $(caller) script exit" >&2
+}
+
+trap err_report ERR
+
 SETTINGS="../settings"
 
 # shellcheck disable=SC1090,SC1091
