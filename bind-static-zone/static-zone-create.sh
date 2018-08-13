@@ -1,19 +1,29 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-set -e
+#set -e
+# with print command
+# set -Eeuxo pipefail
 
-# shellcheck disable=SC1091
-source ../settings/utility-bash.sh
+# without print command
+set -Eeuo pipefail
+
+SETTINGS="../settings"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-bash.sh"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-dns-debian.sh"
 
 # call function
 ensure-sudo
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source ./static-zone-parameter.sh
 
 # shellcheck disable=SC1091
-source ../settings/utility-dns-debian.sh
+source "$SETTINGS/utility-dns-debian.sh"
 
 function crete-static-test-zone() {
 

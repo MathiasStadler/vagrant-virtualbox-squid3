@@ -10,7 +10,6 @@
 # set -Eeuxo pipefail
 
 # without print command
-
 set -Eeuo pipefail
 
 err_report() {
@@ -21,10 +20,10 @@ trap err_report ERR
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-bash.sh"
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-dns-debian.sh"
 
 # call function
