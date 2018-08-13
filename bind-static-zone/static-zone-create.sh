@@ -36,6 +36,13 @@ source "$SETTINGS/utility-dns-debian.sh"
 
 function crete-static-zone() {
 
+	# check first zone file exists
+	if [ -e $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE ]; then
+		echo "# STOP $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE already avaible please delete first"
+		echo "# EXIT 1"
+		exit 1
+	fi
+
 	echo "# INFO call create-static-test-zone"
 
 	# mainly from here
@@ -53,18 +60,18 @@ function crete-static-zone() {
 	#
 
 	echo "# ACTION create key $DDNS_KEY_NAME"
-	# create DDNS Key
+	# Step 1st create DDNS Key
 	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_FILE"
 
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
-	# parse key section
+	# Ste 2nd parse key section
 	# and  write key to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE at first entry
 	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
 
-	# 2nd write zone config
+	# step 3rd  write zone config
 	# TODO old check delete $SUDO cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-	$SUDO tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE" <<EOF
+	$SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE" <<EOF
 zone "$DDNS_TEST_ZONE" IN {
      type master;
      file "$ETC_BIND_EXAMPLE_ZONE_FILE";
@@ -82,6 +89,12 @@ EOF
 	# parse key section
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
 	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
+
+	if [ -e $ETC_BIND_EXAMPLE_ZONE_FILE ]; then
+		echo "# STOP $ETC_BIND_EXAMPLE_ZONE_FILE always avaible please delete first"
+		echo "# EXIT 1"
+		exit 1
+	fi
 
 	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_FILE"
 

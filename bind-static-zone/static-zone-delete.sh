@@ -36,14 +36,36 @@ source "$SETTINGS/utility-dns-debian.sh"
 
 function delete-static-zone() {
 
-	# delzone via rndc
-	if ("$BIND_BINARY_DEFAULT_PATH"/rndc delzone "$DDNS_TEST_ZONE"); then
+	echo "# INFO call add-record" | tee -a "${LOG_FILE}"
 
-		echo "# INFO zone $DDNS_TEST_ZONE successful delete (inactive)"
+	# ARG1 = DDNS_NAME_SERVER"
+	# ARG2 = DDNS_ZONE
+
+	TRUE=0
+	FALSE=1
+
+	# Attention parameter count start at 0
+	# varName varMessage varNesseccary varDefaultValue
+	# bound dynamic
+	# shellcheck disable=SC2034
+	argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
+	# shellcheck disable=SC2034
+	argument1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+
+	# dynamic parameter start couldn't bound
+	set +u
+
+	# call function
+	provide-dynamic-function-argument "$@"
+
+	# delzone via rndc
+	if ("$RNDC_EXEC" delzone "$DDNS_ZONE"); then
+
+		echo "# INFO zone $DDNS_ZONE successful delete (inactive)"
 
 	else
 
-		echo "# ERROR try to delete zone $DDNS_TEST_ZONE raise a error"
+		echo "# ERROR try to delete zone $DDNS_ZONE raise a error"
 		echo "# HINT see /var/log/syslog or /var/log/bind.log"
 		echo "# EXIT 1"
 		exit 1
@@ -52,7 +74,7 @@ function delete-static-zone() {
 
 	# remove include from /etc/bind/named.conf
 
-	NAMED_CONF_NEW_ZONE_INCLUDED="include \"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\";"
+	NAMED_CONF_NEW_ZONE_INCLUDED="include \"$ETC_BIND_CONFIG_FILE\";"
 
 	if ($SUDO sed -i "/include.*$DDNS_TEST_ZONE/d" "$ETC_BIND_NAMED_CONF"); then
 
@@ -81,31 +103,29 @@ function delete-static-zone() {
 
 	fi
 
-	# delete conf file
-
-	$SUDO rm -rf "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-
-	# delete zone file
-
-	$SUDO rm -rf "$ETC_BIND_EXAMPLE_ZONE_FILE"
+	# delete all file of the zone protect thr named.conf
+	if (find /etc/bind/ -type f -exec grep -l $DDNS_ZONE {} \; | grep -v $ETC_BIND_NAMED_CONF); then
+		echo "# INFO deleted file of zone  $DDNS_ZONE successful"
+	else
+		echo "# ERROR delete zone files of zone  $DDNS_ZONE "
+		echo "# EXIT 1"
+		exit 1
+	fi
 
 	# reload bind
-
-	# delzone via rndc
-	if ("$BIND_BINARY_DEFAULT_PATH"/rndc reload); then
-
-		echo "# INFO bind reload successfully "
-
+	if ("$RNDC_EXEC" reload); then
+		echo " # INFO bind reload successfully "
 	else
-
 		echo "# ERROR try to reload bind raise an error"
 		echo "# HINT see at /var/log/syslog or /var/log/bind.log"
 		echo "# EXIT 1"
 		exit 1
-
 	fi
+
+	# dynamic parameter end
+	set -u
 
 }
 
 # call function
-delete-static-test-zone
+delete-static-zone "127.0.0.1" "example.org"
