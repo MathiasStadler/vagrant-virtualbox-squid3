@@ -56,6 +56,8 @@ function add-record() {
 	# shellcheck disable=SC2034
 	argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
+	provide-dynamic-function-argument "$@"
+
 	echo "DDNS_NAME_SERVER $DDNS_NAME_SERVER"
 
 	if (
