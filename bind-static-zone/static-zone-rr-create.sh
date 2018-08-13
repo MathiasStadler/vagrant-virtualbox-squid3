@@ -55,7 +55,7 @@ for ((i=0; i < $#; i++))
 
 declare -a
 
-exit
+
 
 if [ -z ${argument$i[@]+x} ]; then
 		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
@@ -68,6 +68,7 @@ if [ -z ${argument$i[@]+x} ]; then
 
 	fi
 
+exit
 
 # n for current argumant
 n_argumant="argument$i[@]"
