@@ -17,7 +17,7 @@ trap err_report ERR
 SETTINGS="../settings"
 
 # shellcheck disable=SC1090,SC1091
-source "$SETTINGS/bind_parameter.sh"
+source "$SETTINGS/bind-parameter.sh"
 
 # shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-bash.sh"
