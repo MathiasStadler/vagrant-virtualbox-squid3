@@ -5,6 +5,12 @@
 # Exit immediately if a command returns a non-zero status
 set -e
 
+err_report() {
+    echo "Error on line $1"
+}
+
+trap 'err_report $LINENO' ERR
+
 # shellcheck disable=SC1091
 source ../settings/utility-bash.sh
 
@@ -55,7 +61,7 @@ for ((i=0; i < $#; i++))
 
 declare -a |grep "argument$i"
 
-declare -a |grep "argument10"
+
 
 
 exit
