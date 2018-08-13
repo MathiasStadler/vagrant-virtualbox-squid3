@@ -61,7 +61,7 @@ for ((i=0; i < $#; i++))
 
 declare -a |grep "argument$i"
 
-
+declare -a |grep "argument10"
 
 
 exit
