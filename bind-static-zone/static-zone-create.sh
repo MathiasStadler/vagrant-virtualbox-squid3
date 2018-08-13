@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-#set -e
+
 # with print command
 set -Eeuxo pipefail
 
@@ -31,10 +31,10 @@ ensure-sudo
 # shellcheck disable=SC1090,SC1091
 source ./static-zone-parameter.sh
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-dns-debian.sh"
 
-function crete-static-test-zone() {
+function crete-static-zone() {
 
 	echo "# INFO call create-static-test-zone"
 
@@ -117,6 +117,9 @@ EOF
 		echo "${NAMED_CONF_NEW_ZONE_INCLUDED[*]}" | $SUDO tee -a "/etc/bind/named.conf"
 	fi
 
+	# call function
+	check-named-conf
+
 	# reload zone
 	# call function
 	clean-and-sync-all-zone-journals
@@ -130,4 +133,4 @@ EOF
 }
 
 # call function
-crete-static-test-zone
+crete-static-zone

@@ -1,21 +1,40 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-set -e
 
-# shellcheck disable=SC1091
-source ../settings/utility-bash.sh
+# with print command
+set -Eeuxo pipefail
+
+# without print command
+# set -Eeuo pipefail
+
+err_report() {
+	echo "unexpected error on line $(caller) script exit" >&2
+}
+
+trap err_report ERR
+
+SETTINGS="../settings"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/bind-parameter.sh"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-bash.sh"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-dns-debian.sh"
 
 # call function
 ensure-sudo
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source ./static-zone-parameter.sh
 
-# shellcheck disable=SC1091
-source ../settings/utility-dns-debian.sh
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-dns-debian.sh"
 
-function delete-static-test-zone() {
+function delete-static-zone() {
 
 	# delzone via rndc
 	if ("$BIND_BINARY_DEFAULT_PATH"/rndc delzone "$DDNS_TEST_ZONE"); then
