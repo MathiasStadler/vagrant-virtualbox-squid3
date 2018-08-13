@@ -60,10 +60,10 @@ function add-record() {
 
 	if (
 		echo "
-server $NAME_SERVER
-zone $DNS_ZONE
+server $DDNS_NAME_SERVER
+zone $DDNS_ZONE
 debug
-update add $HOST $TTL A $IP
+update add $RR_HOST_ADDRESS $TTL A $RR_IP_OF_HOST
 show
 send" | nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
 	); then
