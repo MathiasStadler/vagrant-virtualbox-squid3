@@ -33,6 +33,7 @@ echo "# INFO call add-record" | tee -a "${LOG_FILE}"
 
 TRUE=0
 FALSE=1
+ARGUMENT_ARRAY_LENGTH=4
 # Attention parameter count start at 0
 # varName varMessage varNesseccary varDefaultValue
 argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
@@ -61,19 +62,26 @@ for ((i=0; i < $#; i++))
 
 # check is argument array define
 
-# chek array is declare
-
+# check array is declare
+echo "# CHECK array for argument$i is defined (used set-e)"
 declare -a |grep "argument$i" >/dev/null 2>/dev/null
+echo "OK "
 
-declare -a |grep "argument10"
-#echo hello | grep foo
 
-exit
+
 
 # n for current argumant
 n_argumant="argument$i[@]"
+
 # n_arr for value array for the current parameter
 n_array=("${!n_param}")
+
+
+# array length valid
+echo "argument array has all data "
+[ "${#n_array[@]}" = "$ARGUMENT_ARRAY_LENGTH" ]
+echo "OK"
+
 
 
 # TODO how is that work as one liner
