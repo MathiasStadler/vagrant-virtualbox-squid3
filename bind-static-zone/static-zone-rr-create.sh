@@ -5,8 +5,13 @@
 # Exit immediately if a command returns a non-zero status
 # set -e
 # from here https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
-set -Eeuxo pipefail
-# set -Eeuo pipefail
+
+# with print command
+# set -Eeuxo pipefail
+
+# without print command
+
+set -Eeuo pipefail
 
 err_report() {
   echo "unexpected error on line $(caller) script exit" >&2
@@ -36,13 +41,19 @@ FALSE=1
 ARGUMENT_ARRAY_LENGTH=4
 # Attention parameter count start at 0
 # varName varMessage varNesseccary varDefaultValue
+# bound dynamic
+# shellcheck disable=SC2034
 argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
+# shellcheck disable=SC2034
 argument1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+# shellcheck disable=SC2034
 argument2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
+# shellcheck disable=SC2034
 argument3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
+# shellcheck disable=SC2034
 argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
-# ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
+
 
 # get all arguments
 args=("$@")
@@ -67,23 +78,20 @@ echo "# CHECK array for argument$i is defined (used set-e)"
 declare -a |grep "argument$i" >/dev/null 2>/dev/null
 echo "OK "
 
-# n for current argumant
+# build array name for dynamic binding
+# shellcheck disable=SC1087
 n_argument="argument$i[@]"
 
 # n_arr for value array for the current parameter
 n_array=("${!n_argument}")
 
 # array length valid
-echo "# CHECK argument array $n_array has all data "
+echo "# CHECK argument array ${n_array[*]} has all data "
 [ "${#n_array[@]}" = "$ARGUMENT_ARRAY_LENGTH" ]
 echo "OK"
 
-
 echo "# DEBUG n_param '${n_argument}'"
-echo "# DEBUG complete array is '${argument0[*]}'"
 echo "# DEBUG complete array is '${n_array[*]}'"
-
-
 
 echo "# INFO set dynamic argument $i to variable ${n_array[0]} "
 
@@ -97,34 +105,14 @@ echo "# DEBUG is ${n_array[0]} nesseccary ${n_array[2]}"
 echo "# DEBUG default value ${n_array[0]} ${n_array[3]}"
 }
 
-
-
-
-exit 1
-
-	echo "#ACTION check and create execute directory $EXECUTE_FOLDER"
-	mkdir -p "$EXECUTE_FOLDER"
-
-	# set name NSUPDATE_ADD_HOST_SCRIPT
-	EXECUTE_SCRIPT="$EXECUTE_FOLDER/static-zone-add-rr.sh"
-
-	echo "# ACTION write script $EXECUTE_SCRIPT to $EXECUTE_FOLDER"
-
-	#!/bin/bash
-	#Defining Variables
-	DNS_SERVER="$DDNS_NAME_SERVER"
-	DNS_ZONE="$DDNS_ZONE."
-	HOST="$DDNS_HOST"
-	IP="$DDNS_IP"
-	TTL="$TTL"
-	RECORD=" \$HOST \$TTL A \$IP"
+echo "# ACTION create record $DDNS_NAME_SERVER to $DDNS_ZONE"
 
 	if (
 		echo "
-server \$DNS_SERVER
-zone \$DNS_ZONE
+server $NAME_SERVER
+zone $DNS_ZONE
 debug
-update add \$RECORD
+update add $HOST $TTL A $IP
 show
 send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 	); then
@@ -133,22 +121,9 @@ send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
 		echo "# ERROR"
 	fi
 
-	echo "# ACTION set execute for $EXECUTE_SCRIPT"
-	# execute script NSUPDATE_ADD_HOST_SCRIPT
-	$SUDO chmod +x "$EXECUTE_SCRIPT"
 
-	echo "# ACTION reload zone $DDNS_TEST_ZONE"
-
-	# exec script
-	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
-	if ("$SUDO" "$EXECUTE_SCRIPT"); then
-		echo "# OK nsupdate of zone "
-	else
-		echo "# ERROR nsupdate of zone"
-		echo "# EXIT 1"
-		exit 1
-	fi
-
+	echo "# ACTION reload zone $DDNS_ZONE"
+	reload-dynamic-zone $DDNS_ZONE
 }
 
 
