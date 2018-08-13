@@ -3,7 +3,9 @@
 # https://de.wikipedia.org/wiki/Resource_Record
 
 # Exit immediately if a command returns a non-zero status
-set -e
+# set -e
+# from here https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuxo pipefail
 
 err_report() {
   echo "unexpected error and script exit on line $(caller)" >&2
