@@ -3,7 +3,7 @@
 # https://de.wikipedia.org/wiki/Resource_Record
 
 # Exit immediately if a command returns a non-zero status
-set -e
+# set -e
 
 err_report() {
     echo "Error on line $1"
