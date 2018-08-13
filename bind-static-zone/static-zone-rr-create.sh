@@ -3,13 +3,14 @@
 # https://de.wikipedia.org/wiki/Resource_Record
 
 # Exit immediately if a command returns a non-zero status
-# set -e
+set -e
 
 err_report() {
-    echo "Error on line $1"
+  echo "unexpected error and script exit on line $(caller)" >&2
 }
 
-trap 'err_report $LINENO' ERR
+trap err_report ERR
+
 
 # shellcheck disable=SC1091
 source ../settings/utility-bash.sh
