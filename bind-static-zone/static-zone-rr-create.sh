@@ -8,7 +8,7 @@
 set -Eeuxo pipefail
 
 err_report() {
-  echo "unexpected error and script exit on line $(caller)" >&2
+  echo "unexpected error on line $(caller) script exit" >&2
 }
 
 trap err_report ERR
@@ -64,8 +64,8 @@ for ((i=0; i < $#; i++))
 
 declare -a |grep "argument$i"
 
-# declare -a |grep "argument10"
-echo hello | grep foo
+declare -a |grep "argument10"
+#echo hello | grep foo
 
 exit
 
