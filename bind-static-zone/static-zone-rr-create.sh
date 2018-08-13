@@ -65,7 +65,8 @@ zone $DDNS_ZONE
 debug
 update add $RR_HOST_ADDRESS $TTL A $RR_IP_OF_HOST
 show
-send" | nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
+send"
+		#| nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
 	); then
 		echo "# OK"
 	else
