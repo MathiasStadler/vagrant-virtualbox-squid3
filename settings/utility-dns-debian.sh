@@ -1,9 +1,13 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-# set -e
+set -e
 
-LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
+# get install path of script
+SCRIPT_PATH="$(dirname "${BASH_SOURCE[0]}")"
+
+# shellcheck disable=SC1090
+source "$SCRIPT_PATH"/bind-parameter.sh
 
 # message
 echo "# OK ${0##*/} loaded" | tee -a "${LOG_FILE}"
@@ -371,9 +375,6 @@ function clean-and-sync-all-zone-journals() {
 	# from here
 	# https://serverfault.com/questions/560326/ddns-bind-and-leftover-jnl-files
 	echo "# ACTION clean first all journals"
-
-	# default path
-	RNDC_EXEC="/usr/sbin/rndc"
 
 	$RNDC_EXEC sync -clean
 
