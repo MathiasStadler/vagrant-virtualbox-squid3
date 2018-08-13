@@ -56,6 +56,8 @@ function add-record() {
 	# shellcheck disable=SC2034
 	argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
+	declare -a
+
 	if (
 		echo "
 server $NAME_SERVER
@@ -63,7 +65,7 @@ zone $DNS_ZONE
 debug
 update add $HOST $TTL A $IP
 show
-send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
+send" | nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
 	); then
 		echo "# OK"
 	else
