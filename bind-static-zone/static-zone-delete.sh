@@ -58,6 +58,12 @@ function delete-static-zone() {
 	# call function
 	provide-dynamic-function-argument "$@"
 
+	# call function
+	clean-and-sync-all-zone-journals
+
+	# call function
+	reload-dynamic-zone "$DDNS_ZONE"
+
 	# delzone via rndc
 	echo "# ACTION delete zone $DDNS_ZONE"
 	if ("$RNDC_EXEC" delzone "$DDNS_ZONE"); then
