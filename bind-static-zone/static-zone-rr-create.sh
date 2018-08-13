@@ -67,15 +67,11 @@ echo "# CHECK array for argument$i is defined (used set-e)"
 declare -a |grep "argument$i" >/dev/null 2>/dev/null
 echo "OK "
 
-
-
-
 # n for current argumant
-n_argumant="argument$i[@]"
+n_argument="argument$i[@]"
 
 # n_arr for value array for the current parameter
-n_array=("${!n_param}")
-
+n_array=("${!n_argument}")
 
 # array length valid
 echo "argument array has all data "
@@ -83,11 +79,8 @@ echo "argument array has all data "
 echo "OK"
 
 
-
-# TODO how is that work as one liner
-
-echo " DEBUG n_param '${n_param}'"
-echo " DEBUG complete array is '${param0[*]}'"
+echo " DEBUG n_param '${n_argument}'"
+echo " DEBUG complete array is '${argument0[*]}'"
 echo " DEBUG complete array is '${n_array[*]}'"
 
 #${${1}[@]}
