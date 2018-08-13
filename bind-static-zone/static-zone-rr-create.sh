@@ -45,14 +45,20 @@ for ((i=0; i < $#; i++))
 # string substitution
 # and
 # http://www.ludvikjerabek.com/2015/08/24/getting-bashed-by-dynamic-arrays/
-declare n_param="param$i"
-# declare -p $n_param
+# and final from here
+# https://stackoverflow.com/questions/17890919/bash-iterate-through-multiple-arrays
+
+# n for curent parameter
+n_param="param$i[@]"
+# n_arr for value array for the current parameter
+n_array=("${!n_param}")
+
 
 # TODO how is that work as one liner
 
 echo " DEBUG n_param '${n_param}'"
 echo " DEBUG complete array is '${param0[*]}'"
-echo " DEBUG complete array is '${!n_param[@]}'"
+echo " DEBUG complete array is '${n_array[*]}'"
 
 #${${1}[@]}
 
@@ -61,8 +67,8 @@ declare ${n_param[0]}=${args[$i]}
 
 echo "# INFO set ${n_param[0]} "
 
-echo zweite ${n_param[1]}
-echo dritte ${n_param[2]}
+echo zweite ${n_array[1]}
+echo dritte ${n_array[2]}
 
 break
 
