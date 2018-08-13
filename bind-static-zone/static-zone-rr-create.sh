@@ -63,7 +63,7 @@ echo " DEBUG complete array is '${n_array[*]}'"
 #${${1}[@]}
 
 # declare variable
-declare ${n_param[0]}=${args[$i]}
+declare ${n_array[0]}=${args[$i]}
 
 echo "# INFO set ${n_param[0]} "
 
