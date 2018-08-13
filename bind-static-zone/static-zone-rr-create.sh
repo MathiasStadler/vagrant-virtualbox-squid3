@@ -25,20 +25,21 @@ TRUE=0
 FALSE=1
 # Attention parameter count start at 0
 # varName varMessage varNesseccary varDefaultValue
-param0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
-param1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
-param2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
-param3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
-param4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
+argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
+argumant1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+argumant2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
+argumant3=("RR_IP_OF_HOST" "IP of host" "$TRUE" "$FALSE")
+argumant4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
 # ARG_NUMBER,VARIABLE_NAME,NEEDED_FOR
 
+# get all arguments
 args=("$@")
+
+# loop over number of parameter
+echo "# INFO function has $# argument(s)"
 for ((i=0; i < $#; i++))
 {
-
-
-
 
 # from here declare dynamic array name
 # https://unix.stackexchange.com/questions/60584/how-to-use-a-variable-as-part-of-an-array-name
@@ -48,8 +49,28 @@ for ((i=0; i < $#; i++))
 # and final from here
 # https://stackoverflow.com/questions/17890919/bash-iterate-through-multiple-arrays
 
-# n for curent parameter
-n_param="param$i[@]"
+# check is argument array define
+
+# chek array is declare
+
+declare -a
+
+exit
+
+if [ -z ${argument$i[@]+x} ]; then
+		echo "# ERROR ARG1 TARGET_DIR NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1" | tee -a "${LOG_FILE}"
+		exit 1
+	else
+		TARGET_DIR="$1"
+
+		echo "# INFO TARGET_DIR set to '$TARGET_DIR'" | tee -a "${LOG_FILE}"
+
+	fi
+
+
+# n for current argumant
+n_argumant="argument$i[@]"
 # n_arr for value array for the current parameter
 n_array=("${!n_param}")
 
@@ -65,7 +86,7 @@ echo " DEBUG complete array is '${n_array[*]}'"
 # declare variable
 declare ${n_array[0]}=${args[$i]}
 
-echo "# INFO set ${n_param[0]} "
+echo "# INFO set ${n_array[0]} "
 
 echo zweite ${n_array[1]}
 echo dritte ${n_array[2]}
