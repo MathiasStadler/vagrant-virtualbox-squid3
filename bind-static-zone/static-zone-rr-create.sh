@@ -56,6 +56,9 @@ function add-record() {
 	# shellcheck disable=SC2034
 	argument4=("TTL" "Time to live of RR " "$TRUE" "$FALSE")
 
+	# dynamic parameter start couldn't bound
+	set +u
+
 	# call function
 	provide-dynamic-function-argument "$@"
 
@@ -78,6 +81,10 @@ send"
 
 	echo "# ACTION reload zone $DDNS_ZONE"
 	reload-dynamic-zone $DDNS_ZONE
+
+	# dynamic parameter end
+	set -u
+
 }
 
 add-record "127.0.0.1" "example.org" "test-host" "192.168.178.213" "600"
