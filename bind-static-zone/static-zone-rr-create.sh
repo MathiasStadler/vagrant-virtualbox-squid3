@@ -83,19 +83,18 @@ echo " DEBUG n_param '${n_argument}'"
 echo " DEBUG complete array is '${argument0[*]}'"
 echo " DEBUG complete array is '${n_array[*]}'"
 
-#${${1}[@]}
 
-# declare variable
+
+echo "# INFO set dynamic argument $i to variable ${n_array[0]} "
+
+# declare dynamic variable
 declare ${n_array[0]}=${args[$i]}
 
-echo "# INFO set ${n_array[0]} "
-echo "# DEBUG DDNS_NAME_SERVER => $DDNS_NAME_SERVER"
-echo "# DEBUG DDNS_NAME_SERVER => ${!n_array[0]}"
-echo zweite ${n_array[1]}
-echo dritte ${n_array[2]}
 
-break
-
+echo "# DEBUG ${n_array[0]} => ${!n_array[0]}"
+echo "# DEBUG description of argumant ${n_array[0]} => ${!n_array[1]}"
+echo "# DEBUG is ${n_array[0]} nesseccary ${!n_array[2]}"
+echo "# DEBUG default value ${n_array[0]} ${!n_array[3]}"
 }
 
 
