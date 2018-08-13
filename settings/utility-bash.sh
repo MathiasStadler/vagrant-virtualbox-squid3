@@ -65,15 +65,15 @@ function provide-dynamic-function-argument() {
 		echo "# DEBUG n_param '${n_argument}'"
 		echo "# DEBUG complete array is '${n_array[*]}'"
 
-		echo "# INFO set dynamic argument $i to variable ${n_array[0]} "
+		echo "# INFO set dynamic argument '$i' to variable '${n_array[0]}'"
 
 		# declare dynamic variable
 		declare "${n_array[0]}"="${args[$i]}"
 
-		echo "# DEBUG ${n_array[0]} => ${!n_array[0]}"
-		echo "# DEBUG description of argument ${n_array[0]} => ${n_array[1]}"
-		echo "# DEBUG is ${n_array[0]} nesseccary ${n_array[2]}"
-		echo "# DEBUG default value ${n_array[0]} ${n_array[3]}"
+		echo "# DEBUG '${n_array[0]}' => '${!n_array[0]}'"
+		echo "# DEBUG description of argument '${n_array[0]}' => '${n_array[1]}'"
+		echo "# DEBUG is '${n_array[0]}' nesseccary '${n_array[2]}'"
+		echo "# DEBUG default value for '${n_array[0]}' is '${n_array[3]}'"
 	done
 
 	test_var="hallo"
