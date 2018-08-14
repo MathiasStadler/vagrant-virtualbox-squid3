@@ -166,12 +166,12 @@ function usages() {
 
 # main task
 if [ "$#" -lt "2" ]; then
-	echo " less parameter"
+	echo "# ERROR less parameter"
 	usages
 	exit 1
 fi
 if [ "$#" -gt "2" ]; then
-	echo " to many parameter"
+	echo "# ERROR to many parameter"
 	usages
 	exit 1
 fi
