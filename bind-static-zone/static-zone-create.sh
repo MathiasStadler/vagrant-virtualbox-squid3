@@ -93,7 +93,7 @@ function create-static-zone() {
 
 	# step 3rd  write zone config
 	$SUDO tee "$ETC_BIND_DDNS_ZONE_CONFIG_FILE" <<EOF
-zone "$DDNS_TEST_ZONE" IN {
+zone "$DDNS_ZONE" IN {
      type master;
      file "$ETC_BIND_DDNS_ZONE_FILE";
 EOF
@@ -156,7 +156,7 @@ EOF
 	$RNDC_EXEC reload
 
 	# call function
-	reload-dynamic-zone "$DDNS_TEST_ZONE"
+	reload-dynamic-zone "$DDNS_ZONE"
 }
 
 function usages() {
