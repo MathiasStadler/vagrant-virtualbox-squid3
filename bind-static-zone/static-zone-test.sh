@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Exit immediately if a command returns a non-zero status
+# set -e
+# from here https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+
+# with print command
+# set -Eeuxo pipefail
+
+# without print command
+set -Eeuo pipefail
+
+err_report() {
+	echo "unexpected error on line $(caller) script exit" >&2
+}
+
+trap err_report ERR
+
 echo "# ACTION run test"
 
 # regex from here
