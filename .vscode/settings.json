@@ -137,6 +137,7 @@
         "pipefail",
         "printf",
         "randomdev",
+        "readlink",
         "readonly",
         "relativ",
         "resolvconf",

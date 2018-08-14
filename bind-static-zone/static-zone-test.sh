@@ -81,10 +81,11 @@ function use-case-add-remove-static-zone-and-record() {
 	./static-zone-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
 
 	TEST_HOSTNAME="test-host-${RANDOM_STRING_6}"
-	NSUPDATE_KEY_FILE="${DDNS_ZONE}_NSUPDATE.key"
+	NSUPDATE_KEY_FILE="/etc/bind/${DDNS_ZONE}_NSUPDATE.key"
+	INSTALL_DIR=$(dirname "$(readlink -f "$0")")
 
 	echo "# ACTION create record"
-	COMMAND=("./static-zone-rr-create.sh" "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE")
+	COMMAND=("$INSTALL_DIR/static-zone-rr-create.sh" "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE")
 
 	echo "COMMAND => ${COMMAND[*]}"
 	("${COMMAND[*]}")
