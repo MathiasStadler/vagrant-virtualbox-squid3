@@ -95,14 +95,13 @@ function crete-static-zone() {
 	$SUDO tee "$ETC_BIND_DDNS_ZONE_CONFIG_FILE" <<EOF
 zone "$DDNS_TEST_ZONE" IN {
      type master;
-     file "$ETC_BIND_EXAMPLE_ZONE_FILE";
+     file "$ETC_BIND_DDNS_ZONE_FILE";
 EOF
 
-	# step 4 parse update-policy section and write to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
+	# step 4 parse update-policy section and write to $ETC_BIND_DDNS_ZONE_CONFIG_FILE
 	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_KEY_FILE" | $SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
-	# step 5 close $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
-	# TODO old cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	# step 5 close $ETC_BIND_DDNS_ZONE_CONFIG_FILE
 	$SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE" <<EOF
 };
 EOF
@@ -113,7 +112,7 @@ EOF
 	echo "# ACTION create $ETC_BIND_DDNS_NSUPDATE_FILE"
 	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_KEY_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
 
-	# create $ETC_BIND_EXAMPLE_ZONE_FILE file
+	# create file
 	echo "# ACTION create $ETC_BIND_DDNS_ZONE_FILE"
 	$SUDO tee "$ETC_BIND_DDNS_ZONE_FILE" <<EOF
 ; $DDNS_ZONE
@@ -126,12 +125,12 @@ EOF
                          604800); Negative Cache TTL
 ;
 @				NS	ns.$DDNS_ZONE.
-ns                     A       $DDNS_SERVER
+ns                     A       $DDNS_NAME_SERVER
 ;END OF ZONE FILE
 EOF
 
-	# include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE to /etc/bind/named.conf
-	echo "# ACTION include $ETC_BIND_DDNS_ZONE_FILE in $ETC_BIND_NAMED_CONF"
+	# include $ETC_BIND_DDNS_ZONE_CONFIG_FILE to /etc/bind/named.conf
+	echo "# ACTION include $ETC_BIND_DDNS_ZONE_CONFIG_FILE in $ETC_BIND_NAMED_CONF"
 
 	# prepare include
 	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_DDNS_ZONE_FILE\"" ";")

@@ -98,7 +98,7 @@ function delete-static-zone() {
 	fi
 
 	# delete all file of the zone protect thr named.conf
-	if (find /etc/bind/ -type f -exec grep -l "$DDNS_ZONE" {} \; | grep -v $ETC_BIND_NAMED_CONF); then
+	if (find /etc/bind/ -type f -exec grep -l "$DDNS_ZONE" {} \; | grep -v "$ETC_BIND_NAMED_CONF"); then
 		echo "# INFO deleted file of zone  $DDNS_ZONE successful"
 	else
 		echo "# ERROR delete zone files of zone  $DDNS_ZONE"
