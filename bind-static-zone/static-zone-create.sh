@@ -111,7 +111,7 @@ EOF
 	# parse key section and
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
 	echo "# ACTION create $ETC_BIND_DDNS_NSUPDATE_FILE"
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$DDNS_ZONE_KEY_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_KEY_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
 
 	# create $ETC_BIND_EXAMPLE_ZONE_FILE file
 	echo "# ACTION create $ETC_BIND_DDNS_ZONE_FILE"
