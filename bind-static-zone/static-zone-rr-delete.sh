@@ -53,6 +53,8 @@ function delete-record() {
 	argument1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
 	# shellcheck disable=SC2034
 	argument2=("RR_HOST_ADDRESS" "Name of host" "$TRUE" "$FALSE")
+	# shellcheck disable=SC2034
+	argument3=("DDNS_ZONE_KEY_FILE" "Key file tzo access the zone" "$TRUE" "$FALSE")
 
 	# dynamic parameter start couldn't bound
 	set +u
@@ -79,8 +81,7 @@ zone $DDNS_ZONE
 debug
 update delete $RR_HOST_ADDRESS.$DDNS_ZONE A
 show
-send"
-		#| nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
+send" | nsupdate -k "$DDNS_ZONE_KEY_FILE"
 	); then
 		echo "# OK"
 	else
