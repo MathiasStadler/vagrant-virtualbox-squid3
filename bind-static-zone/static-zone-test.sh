@@ -84,7 +84,7 @@ function use-case-add-remove-static-zone-and-record() {
 	NSUPDATE_KEY_FILE="${DDNS_ZONE}_NSUPDATE.key"
 
 	echo "# ACTION create record"
-	./static-zone-rr-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE"
+	echo "./static-zone-rr-create.sh" "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE"
 
 	echo "# ACTION delete record"
 	./static-zone-rr-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "${DDNS_ZONE}_NSUPDATE.key"
