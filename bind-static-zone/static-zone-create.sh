@@ -116,17 +116,17 @@ EOF
 	# create $ETC_BIND_EXAMPLE_ZONE_FILE file
 	echo "# ACTION create $ETC_BIND_DDNS_ZONE_FILE"
 	$SUDO tee "$ETC_BIND_DDNS_ZONE_FILE" <<EOF
-; $DDNS_TEST_ZONE
+; $DDNS_ZONE
 \$TTL    604800
-@       IN      SOA     ns1.$DDNS_TEST_ZONE. root.$DDNS_TEST_ZONE. (
+@       IN      SOA     ns1.$DDNS_ZONE. root.$DDNS_ZONE. (
                      2006020201 ; Serial
                          604800 ; Refresh
                           86400 ; Retry
                         2419200 ; Expire
                          604800); Negative Cache TTL
 ;
-@				NS	ns.$DDNS_TEST_ZONE.
-ns                     A       $DDNS_NAME_SERVER
+@				NS	ns.$DDNS_ZONE.
+ns                     A       $DDNS_SERVER
 ;END OF ZONE FILE
 EOF
 
