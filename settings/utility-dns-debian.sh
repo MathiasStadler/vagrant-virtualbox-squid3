@@ -314,6 +314,14 @@ function get-ip-of-url() {
 
 	IP_OF_SERVER_OUTPUT_LENGTH=${#IP_OF_SERVER_OUTPUT}
 
+	if [ -e "$hash_table/$DIG_RETURN_CODE" ]; then
+		echo "# INFO result $(<"$hash_table/$DIG_RETURN_CODE")"
+	else
+
+		echo "# ERROR return code unknown"
+		echo "# PLEASE give info to developer"
+	fi
+
 	echo "# DEBUG n => $IP_OF_SERVER_OUTPUT_LENGTH answer from dig"
 	if [ "$IP_OF_SERVER_OUTPUT_LENGTH" -gt "0" ]; then
 		# array to string
@@ -321,16 +329,7 @@ function get-ip-of-url() {
 		echo "# INFO ip address for $URL_RESOLVE is e.g. (first match) ${IP_SERVER}"
 	else
 		echo "# ERROR no ip found"
-	fi
-
-	# echo "# DEBUG DIG_RETURN_CODE => $DIG_RETURN_CODE "
-
-	if [ -e "$hash_table/$DIG_RETURN_CODE" ]; then
-		echo "$(<"$hash_table/$DIG_RETURN_CODE")"
-	else
-
-		echo "# ERROR return code unknown"
-		echo "# PLEASE give info to developer"
+		DIG_RETURN_CODE="1"
 	fi
 
 	# delete key/value directory
@@ -405,4 +404,91 @@ function reload-dynamic-zone() {
 	"$RNDC_EXEC" reload "$DYNAMIC_ZONE_NAME."
 	echo "# ACTION thaw $DYNAMIC_ZONE_NAME"
 	"$RNDC_EXEC" thaw "$DYNAMIC_ZONE_NAME."
+}
+
+function run-dig-with-parameter-string() {
+
+	# ARG1 = PARAMETER_STRING
+
+	echo "# INFO call get-ip-of-url" | tee -a "${LOG_FILE}"
+
+	if [ -z ${1+x} ]; then
+		echo "# ERROR ARG1  PARAMETER_STRING NOT set" | tee -a "${LOG_FILE}"
+		echo "# EXIT 1"
+		exit 1
+	else
+		PARAMETER_STRING="$1"
+		echo "# INFO URL set to '$PARAMETER_STRING'" | tee -a "${LOG_FILE}"
+	fi
+
+	# from man page
+	# Dig return codes are:
+
+	#     0: Everything went well, including things like NXDOMAIN
+	#     1: Usage error
+	#     8: Couldn't open batch file
+	#     9: No reply from server
+	#     10: Internal error
+
+	# from here
+	# https://stackoverflow.com/questions/1494178/how-to-define-hash-tables-in-bash
+	# Just use directory
+
+	# hash table creation
+	hash_table=$(mktemp -d)
+
+	# Add an elements
+
+	echo "# INFO OK Everything went well, including things like NXDOMAIN" >"$hash_table/0"
+	echo "# ERROR Usage error" >"$hash_table/1"
+	echo "# ERROR Couldn't open batch file" >"$hash_table/8"
+	echo "# ERROR No reply from server " >"$hash_table/9"
+	echo "# ERROR Internal error" >"$hash_table/10"
+
+	# read an element
+	# TODO old check value=$(<$hash_table/1)
+
+	# disable catch error we will catch them self
+	set +e
+	# call sub shell
+	DIG_OUTPUT=$(dig "$PARAMETER_STRING")
+	# catch return value
+	DIG_RETURN_CODE=$?
+	# enable catch errors
+	set -e
+
+	echo "# DEBUG output DIG_RETURN_CODE $DIG_RETURN_CODE"
+	echo "# DEBUG output DIG_OUTPUT ${DIG_OUTPUT[*]}"
+
+	DIG_OUTPUT_LENGTH=${#DIG_OUTPUT}
+
+	if [ -e "$hash_table/$DIG_RETURN_CODE" ]; then
+		echo "# INFO result $(<"$hash_table/$DIG_RETURN_CODE")"
+	else
+
+		echo "# ERROR return code unknown"
+		echo "# PLEASE give info to developer"
+	fi
+
+	echo "# DEBUG n => $DIG_OUTPUT_LENGTH answer from dig"
+	if [ "$DIG_OUTPUT_LENGTH" -gt "0" ]; then
+		# array to string
+		echo "# INFO dig output $DIG_OUTPUT"
+	else
+		echo "# ERROR no ip found"
+		DIG_RETURN_CODE="1"
+	fi
+
+	# delete key/value directory
+	rm -rf "$hash_table"
+
+	if [ "$DIG_RETURN_CODE" -eq "0" ]; then
+		echo "# INFO DIG_RETURN_CODE => $DIG_RETURN_CODE"
+	else
+		echo "# ERROR DIG_RETURN_CODE => $DIG_RETURN_CODE"
+	fi
+
+	FUNCTION_RESULT=$DIG_RETURN_CODE
+	echo "# INFO function result = $FUNCTION_RESULT"
+
 }
