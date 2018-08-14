@@ -102,7 +102,7 @@ if [ "$#" -gt "3" ]; then
 	exit 1
 fi
 if [ "$#" -eq "3" ]; then
-	add-record "$@"
+	delete-record "$@"
 	exit 0
 fi
 
