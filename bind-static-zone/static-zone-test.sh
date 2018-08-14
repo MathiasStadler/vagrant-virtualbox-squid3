@@ -57,12 +57,12 @@ function use-case-add-remove-static-zone() {
 function use-case-add-remove-static-zone-and-record() {
 
 	# set variable for each use# generate a 12 char random string
-	local DDNS_NAME_SERVER="127.0.0.1"
+	DDNS_NAME_SERVER="127.0.0.1"
 	# RANDOM_STRING_12=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 12 | head -n 1)
 	RANDOM_STRING_12="$(openssl rand -hex 12)"
 	# RANDOM_STRING_6=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 6 | head -n 1)
 	RANDOM_STRING_6="$(openssl rand -hex 6)"
-	local DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
+	DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
 	# from here
 	# https://unix.stackexchange.com/questions/14666/how-to-generate-random-ip-addresses
 	ip_address=$(dd if=/dev/urandom bs=4 count=1 2>/dev/null |
@@ -82,6 +82,7 @@ function use-case-add-remove-static-zone-and-record() {
 
 	echo "# ACTION create record"
 	#./static-zone-rr-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "$ip_address" "600" "${DDNS_ZONE}_NSUPDATE.key"
+	./static-zone-rr-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "192.168.178.33" "600" "${DDNS_ZONE}_NSUPDATE.key"
 
 	echo "# ACTION delete record"
 	./static-zone-rr-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "${DDNS_ZONE}_NSUPDATE.key"
