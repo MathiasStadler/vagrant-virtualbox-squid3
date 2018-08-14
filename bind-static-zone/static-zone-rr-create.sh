@@ -69,7 +69,7 @@ function add-record() {
 server $DDNS_NAME_SERVER
 zone $DDNS_ZONE
 debug
-update add $RR_HOST_ADDRESS $TTL A $RR_IP_OF_HOST
+update add $RR_HOST_ADDRESS.$DDNS_ZONE $TTL A $RR_IP_OF_HOST
 show
 send"
 		#| nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"

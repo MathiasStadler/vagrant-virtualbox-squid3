@@ -77,7 +77,7 @@ function delete-record() {
 server $DDNS_NAME_SERVER
 zone $DDNS_ZONE
 debug
-update delete $RR_HOST_ADDRESS A
+update delete $RR_HOST_ADDRESS.$DDNS_ZONE A
 show
 send"
 		#| nsupdate -k "$ETC_BIND_DDNS_NSUPDATE_FILE"
