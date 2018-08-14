@@ -74,16 +74,16 @@ function crete-static-zone() {
 	echo "# ACTION create key $DDNS_ZONE_KEY_NAME"
 
 	ETC_BIND_DDNS_KEY_FILE="${DDNS_ZONE}_DDNS.key"
-	echo "# ACTION  key file  $ETC_BIND_DDNS_KEY_FILE"
+	echo "# ACTION key file $ETC_BIND_DDNS_KEY_FILE"
 
 	ETC_BIND_DDNS_ZONE_FILE=${DDNS_ZONE}_DDNS.zone
-	echo "# ACTION  zone file  $ETC_BIND_DDNS_ZONE_FILE"
+	echo "# ACTION zone file $ETC_BIND_DDNS_ZONE_FILE"
 
 	ETC_BIND_DDNS_ZONE_CONFIG_FILE=${DDNS_ZONE}_DDNS.conf
 	echo "# ACTION  zone config file $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# Step 1st create DDNS Key
-	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$DDNS_ZONE_KEY_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_KEY_FILE"
 
 	echo "# ACTION create $DDNS_ZONE_KEY_FILE"
 
