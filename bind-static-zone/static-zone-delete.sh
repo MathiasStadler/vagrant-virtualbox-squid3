@@ -58,7 +58,7 @@ function delete-static-zone() {
 	# call function
 	provide-dynamic-function-argument "$@"
 
-	if (dig ns $DDNS_ZONE @$DDNS_NAME_SERVER | grep "ANSWER SECTION"); then
+	if (dig ns "$DDNS_ZONE" @"$DDNS_NAME_SERVER" | grep "ANSWER SECTION"); then
 		echo "# INFO zone $DDNS_ZONE on name server $DDNS_NAME_SERVER available"
 		echo "# ACTION to try deleted it"
 	else

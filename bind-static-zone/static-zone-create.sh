@@ -58,7 +58,7 @@ function create-static-zone() {
 	provide-dynamic-function-argument "$@"
 
 	# check zone is not available
-	if (dig ns $DDNS_ZONE @$DDNS_NAME_SERVER | grep "ANSWER SECTION"); then
+	if (dig ns "$DDNS_ZONE" @"$DDNS_NAME_SERVER" | grep "ANSWER SECTION"); then
 		#if [ "${#result}" -gt "0" ]; then
 		echo "# INFO zone $DDNS_ZONE available"
 		echo "# EXIT 0 "

@@ -116,7 +116,8 @@ function get-serial-number-of-zone() {
 
 			echo "# INFO $ZONE_SERIAL_NUMBER >  $MAGIC_DNS_ZONE_NUMBER"
 			echo "# ACTION calculating zone serial number divide by Magic number"
-			ZONE_SERIAL_NUMBER="$(expr $ZONE_SERIAL_NUMBER % $MAGIC_DNS_ZONE_NUMBER)"
+			# shellcheck disable=SC2003
+			ZONE_SERIAL_NUMBER="$(expr "$ZONE_SERIAL_NUMBER" % "$MAGIC_DNS_ZONE_NUMBER")"
 		else
 			echo "# INFO $ZONE_SERIAL_NUMBER < $MAGIC_DNS_ZONE_NUMBER"
 			echo "# INFO OK the serial number is not over $MAGIC_DNS_ZONE_NUMBER"

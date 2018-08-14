@@ -26,8 +26,8 @@ function use-case-add-remove-static-zone() {
 
 	# set variable for each use# generate a 12 char random string
 	local DDNS_NAME_SERVER="127.0.0.1"
-	local RANDOM_STRING=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
-	local DDNS_ZONE="TEST-${RANDOM_STRING}.com"
+	RANDOM_STRING_12=$(tr </dev/urandom -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
+	local DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
 
 	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"); then
 		echo "# INFO domain name $DDNS_ZONE valid"
@@ -51,16 +51,16 @@ function use-case-add-remove-static-zone-and-record() {
 
 	# set variable for each use# generate a 12 char random string
 	local DDNS_NAME_SERVER="127.0.0.1"
-	local RANDOM_STRING_12=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
-	local RANDOM_STRING_6=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1)
+	RANDOM_STRING_12=$(tr </dev/urandom -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
+	RANDOM_STRING_6=$(tr </dev/urandom -dc 'a-zA-Z0-9' | fold -w 12 | head -n 1)
 	local DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
 	# from here
 	# https://unix.stackexchange.com/questions/14666/how-to-generate-random-ip-addresses
-	local ip_address=$(dd if=/dev/urandom bs=4 count=1 2>/dev/null |
+	ip_address=$(dd if=/dev/urandom bs=4 count=1 2>/dev/null |
 		od -An -tu1 |
 		sed -e 's/^ *//' -e 's/  */./g')
 
-	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$"); then
+	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"); then
 		echo "# INFO domain name $DDNS_ZONE valid"
 	else
 		echo "# ERROR domain name $DDNS_ZONE no valid "
