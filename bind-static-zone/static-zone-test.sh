@@ -87,6 +87,7 @@ function use-case-add-remove-static-zone-and-record() {
 	COMMAND=("./static-zone-rr-create.sh" "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE")
 
 	echo "COMMAND => ${COMMAND[*]}"
+	("${COMMAND[*]}")
 
 	exit 0
 	echo "# ACTION delete record"
