@@ -84,10 +84,10 @@ function use-case-add-remove-static-zone-and-record() {
 	./static-zone-rr-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "$ip_address" "600"
 
 	echo "# ACTION delete record"
-	./static-zone-rr-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}"
+	./static-zone-rr-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "X_test-host-${RANDOM_STRING_6}"
 
 	echo " # ACTION delete zone"
-	./static-zone-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
+	./static-zone-delete.sh "$DDNS_NAME_SERVER" "X_ZONE_$DDNS_ZONE"
 
 }
 
