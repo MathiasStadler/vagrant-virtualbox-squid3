@@ -11,13 +11,13 @@ ensure-sudo
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source ./static-zone-parameter.sh
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-dns-debian.sh"
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-dns-debian-test.sh"
 
 function test-nsupdate-round-trip-add-record() {

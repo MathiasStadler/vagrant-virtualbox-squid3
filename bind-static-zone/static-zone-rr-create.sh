@@ -88,7 +88,7 @@ send"
 }
 
 function usages() {
-	echo "# Usages: ${0##*/} ddns-name-server ddns-domain"
+	echo "# Usages: ${0##*/} ddns-name-server ddns-domain host ip ttl"
 	echo "# "
 }
 

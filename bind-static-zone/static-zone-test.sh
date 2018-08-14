@@ -16,6 +16,11 @@ err_report() {
 
 trap err_report ERR
 
+SETTINGS="../settings"
+
+# shellcheck disable=SC1090,SC1091
+source "$SETTINGS/utility-dns-debian.sh"
+
 echo "# ACTION run test"
 
 # regex from here
