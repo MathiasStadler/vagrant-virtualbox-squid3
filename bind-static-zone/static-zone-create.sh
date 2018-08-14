@@ -91,7 +91,7 @@ function create-static-zone() {
 	echo "# ACTION  zone config file $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# Step 1st create DDNS Key
-	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_KEY_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_ZONE_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_KEY_FILE"
 
 	echo "# ACTION create $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
