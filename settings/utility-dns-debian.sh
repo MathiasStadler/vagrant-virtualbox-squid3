@@ -451,7 +451,7 @@ function run-dig-with-parameter-string() {
 	# disable catch error we will catch them self
 	set +e
 	# call sub shell
-	DIG_OUTPUT=$(dig "$PARAMETER_STRING")
+	DIG_OUTPUT=$(dig "${PARAMETER_STRING[*]}")
 	# catch return value
 	DIG_RETURN_CODE=$?
 	# enable catch errors
