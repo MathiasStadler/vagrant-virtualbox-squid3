@@ -3,10 +3,10 @@
 # Exit immediately if a command returns a non-zero status
 
 # with print command
-set -Eeuxo pipefail
+# set -Eeuxo pipefail
 
 # without print command
-# set -Eeuo pipefail
+set -Eeuo pipefail
 
 err_report() {
 	echo "unexpected error on line $(caller) script exit" >&2
