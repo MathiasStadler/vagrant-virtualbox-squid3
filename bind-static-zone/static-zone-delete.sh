@@ -62,6 +62,7 @@ function delete-static-zone() {
 		echo "# INFO zone $DDNS_ZONE on name server $DDNS_NAME_SERVER available"
 		echo "# ACTION to try deleted it"
 	else
+		echo "# INFO try to delete zone"
 		echo "# INFO zone $DDNS_ZONE no available on name server $DDNS_NAME_SERVER"
 		echo "# EXIT 0 "
 		exit 1
