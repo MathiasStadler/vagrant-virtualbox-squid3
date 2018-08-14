@@ -159,7 +159,7 @@ EOF
 	reload-dynamic-zone "$DDNS_TEST_ZONE"
 }
 
-if [ $# ] <"2"; then
+if [ "$#" -ne "2" ]; then
 	echo "Usages: $BASENAME name-server ddns-domain"
 	exit 1
 fi
