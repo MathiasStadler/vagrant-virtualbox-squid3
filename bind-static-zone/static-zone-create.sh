@@ -133,7 +133,7 @@ EOF
 	echo "# ACTION include $ETC_BIND_DDNS_ZONE_CONFIG_FILE in $ETC_BIND_NAMED_CONF"
 
 	# prepare include
-	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_DDNS_ZONE_FILE\"" ";")
+	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_DDNS_ZONE_CONFIG_FILE\"" ";")
 
 	# check first entry available already
 	# ATTENTION we grep here for the name of include file
