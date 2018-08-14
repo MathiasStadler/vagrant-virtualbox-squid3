@@ -100,7 +100,7 @@ zone "$DDNS_TEST_ZONE" IN {
 EOF
 
 	# parse update-policy section and write to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
-	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$DDNS_ZONE_KEY_FILE" | $SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE"
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_KEY_FILE" | $SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# close $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
 	# TODO old cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
