@@ -418,7 +418,7 @@ function run-dig-with-parameter-string() {
 		exit 1
 	else
 		PARAMETER_STRING="$1"
-		echo "# INFO URL set to '$PARAMETER_STRING'" | tee -a "${LOG_FILE}"
+		echo "# INFO PARAMETER_STRING set to '$PARAMETER_STRING'" | tee -a "${LOG_FILE}"
 	fi
 
 	# from man page
