@@ -103,17 +103,19 @@ function usages() {
 }
 
 # main task
-if [ "$#" -lt "3" ]; then
+PARAMETER_COUNT=4
+
+if [ "$#" -lt "$PARAMETER_COUNT" ]; then
 	echo "# ERROR less parameter"
 	usages
 	exit 1
 fi
-if [ "$#" -gt "3" ]; then
+if [ "$#" -gt "$PARAMETER_COUNT" ]; then
 	echo "# ERROR to many parameter"
 	usages
 	exit 1
 fi
-if [ "$#" -eq "3" ]; then
+if [ "$#" -eq "$PARAMETER_COUNT" ]; then
 	delete-record "$@"
 	exit 0
 fi

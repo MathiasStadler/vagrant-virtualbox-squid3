@@ -110,17 +110,19 @@ function usages() {
 }
 
 # main task
-if [ "$#" -lt "5" ]; then
+PARAMETER_COUNT=6
+
+if [ "$#" -lt "$PARAMETER_COUNT" ]; then
 	echo "# ERROR less parameter"
 	usages
 	exit 1
 fi
-if [ "$#" -gt "5" ]; then
+if [ "$#" -gt "$PARAMETER_COUNT" ]; then
 	echo "# ERROR to many parameter"
 	usages
 	exit 1
 fi
-if [ "$#" -eq "5" ]; then
+if [ "$#" -eq "$PARAMETER_COUNT" ]; then
 	add-record "$@"
 	exit 0
 fi
