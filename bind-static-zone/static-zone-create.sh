@@ -16,25 +16,25 @@ trap err_report ERR
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/bind-parameter.sh"
+function create-static-zone() {
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-bash.sh"
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/bind-parameter.sh"
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-dns-debian.sh"
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-bash.sh"
 
-# call function
-ensure-sudo
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-dns-debian.sh"
 
-# shellcheck disable=SC1090,SC1091
-source ./static-zone-parameter.sh
+	# call function
+	ensure-sudo
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-dns-debian.sh"
+	# shellcheck disable=SC1090,SC1091
+	source ./static-zone-parameter.sh
 
-function crete-static-zone() {
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-dns-debian.sh"
 
 	echo "# INFO call create-static-zone" | tee -a "${LOG_FILE}"
 	# ARG1 = DDNS_NAME_SERVER"
@@ -159,11 +159,26 @@ EOF
 	reload-dynamic-zone "$DDNS_TEST_ZONE"
 }
 
-if [ "$#" -ne "2" ]; then
-	echo "Usages: $BASENAME name-server ddns-domain"
+function usages() {
+	echo "# Usages: ${0##*/} ddns-name-server ddns-domain"
+	echo "# "
+}
+
+# main task
+if [ "$#" -lt "2" ]; then
+	echo " less parameter"
+	usages
 	exit 1
+fi
+if [ "$#" -gt "2" ]; then
+	echo " to many parameter"
+	usages
+	exit 1
+fi
+if [ "$#" -eq "2" ]; then
+	create-static-zone "$@"
+	exit 0
 fi
 
 # call function
-#crete-static-zone "127.0.0.1" "example.com"
-crete-static-zone "$@"
+# crete-static-zone "127.0.0.1" "example.com"
