@@ -159,5 +159,11 @@ EOF
 	reload-dynamic-zone "$DDNS_TEST_ZONE"
 }
 
+if [ $# ] <"2"; then
+	echo "Usages: $BASENAME name-server ddns-domain"
+	exit 1
+fi
+
 # call function
-crete-static-zone "127.0.0.1" "example.com"
+#crete-static-zone "127.0.0.1" "example.com"
+crete-static-zone "$@"
