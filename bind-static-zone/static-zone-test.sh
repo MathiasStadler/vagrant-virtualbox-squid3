@@ -33,7 +33,7 @@ function use-case-add-remove-static-zone() {
 	local DDNS_NAME_SERVER="127.0.0.1"
 	# raise pipfail
 	#RANDOM_STRING_12=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 12 | head -n 1)
-	RANDOM_STRING_12="openssl rand -hex 12"
+	RANDOM_STRING_12="$(openssl rand -hex 12)"
 	local DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
 
 	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"); then
