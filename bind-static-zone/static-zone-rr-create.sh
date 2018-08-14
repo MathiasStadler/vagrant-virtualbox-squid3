@@ -20,16 +20,16 @@ trap err_report ERR
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-bash.sh"
-
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-dns-debian.sh"
-
-# call function
-ensure-sudo
-
 function add-record() {
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-bash.sh"
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-dns-debian.sh"
+
+	# call function
+	ensure-sudo
 
 	echo "# INFO call add-record" | tee -a "${LOG_FILE}"
 
@@ -87,4 +87,26 @@ send"
 
 }
 
-add-record "127.0.0.1" "example.org" "test-host" "192.168.178.213" "600"
+function usages() {
+	echo "# Usages: ${0##*/} ddns-name-server ddns-domain"
+	echo "# "
+}
+
+# main task
+if [ "$#" -lt "5" ]; then
+	echo "# ERROR less parameter"
+	usages
+	exit 1
+fi
+if [ "$#" -gt "5" ]; then
+	echo "# ERROR to many parameter"
+	usages
+	exit 1
+fi
+if [ "$#" -eq "5" ]; then
+	add-record "$@"
+	exit 0
+fi
+
+# e.g.
+# add-record "127.0.0.1" "example.org" "test-host" "192.168.178.213" "600"
