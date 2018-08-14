@@ -8,6 +8,7 @@ printf "# INFO script %s post load script %s\\n" "$0" "${BASH_SOURCE[@]}"
 LOG_FILE="$0_$$_$(date +%F_%H-%M-%S).log"
 
 BIND_BINARY_DEFAULT_PATH="/usr/sbin"
+BIND_CONFIG_PATH="/etc/bind"
 
 ETC_BIND_NAMED_CONF="/etc/bind/named.conf"
 
