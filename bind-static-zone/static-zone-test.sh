@@ -13,7 +13,7 @@ DDNS_ZONE="TEST-${RANDOM_STRING}.com"
 # https://stackoverflow.com/questions/15268987/bash-based-regex-domain-name-validation
 # last entry
 
-if ($DDNS_ZONE | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$"); then
+if (echo "DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$"); then
 	echo "# INFO domain name $DDNS_ZONE valid"
 else
 	echo "# ERROR domain name $DDNS_ZONE no valid "
