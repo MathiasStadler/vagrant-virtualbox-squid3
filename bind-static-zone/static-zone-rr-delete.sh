@@ -83,9 +83,10 @@ update delete $RR_HOST_ADDRESS.$DDNS_ZONE A
 show
 send" | nsupdate -k "$DDNS_ZONE_KEY_FILE"
 	); then
-		echo "# OK"
+		echo "# OK nsupdate -k $DDNS_ZONE_KEY_FILE"
 	else
-		echo "# ERROR"
+		echo "# ERROR nsupdate -k $DDNS_ZONE_KEY_FILE"
+
 	fi
 
 	echo "# ACTION reload zone $DDNS_ZONE"
