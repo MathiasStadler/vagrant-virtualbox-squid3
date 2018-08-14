@@ -16,25 +16,25 @@ trap err_report ERR
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/bind-parameter.sh"
-
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-bash.sh"
-
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-dns-debian.sh"
-
-# call function
-ensure-sudo
-
-# shellcheck disable=SC1090,SC1091
-source ./static-zone-parameter.sh
-
-# shellcheck disable=SC1090,SC1091
-source "$SETTINGS/utility-dns-debian.sh"
-
 function delete-static-zone() {
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/bind-parameter.sh"
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-bash.sh"
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-dns-debian.sh"
+
+	# call function
+	ensure-sudo
+
+	# shellcheck disable=SC1090,SC1091
+	source ./static-zone-parameter.sh
+
+	# shellcheck disable=SC1090,SC1091
+	source "$SETTINGS/utility-dns-debian.sh"
 
 	echo "# INFO call delete-static-zone" | tee -a "${LOG_FILE}"
 
@@ -76,7 +76,7 @@ function delete-static-zone() {
 	fi
 
 	# remove include from /etc/bind/named.conf
-	if ($SUDO sed -i "/include.*$DDNS_TEST_ZONE/d" "$ETC_BIND_NAMED_CONF"); then
+	if ($SUDO sed -i "/include.*$DDNS_ZONE/d" "$ETC_BIND_NAMED_CONF"); then
 		echo "# INFO deleted line $NAMED_CONF_NEW_ZONE_INCLUDED successful"
 	else
 		echo "# ERROR try to delete line $NAMED_CONF_NEW_ZONE_INCLUDED in $ETC_BIND_NAMED_CON file raise a error"
@@ -98,7 +98,7 @@ function delete-static-zone() {
 	fi
 
 	# delete all file of the zone protect thr named.conf
-	if (find /etc/bind/ -type f -exec grep -l "$DDNS_ZONE" {} \; | grep -v "$ETC_BIND_NAMED_CONF"); then
+	if (find /etc/bind/ -type f -exec grep -l "$DDNS_ZONE" {} \; | grep -v "$ETC_BIND_NAMED_CONF" | xargs "$SUDO" rm); then
 		echo "# INFO deleted file of zone  $DDNS_ZONE successful"
 	else
 		echo "# ERROR delete zone files of zone  $DDNS_ZONE"
@@ -121,5 +121,23 @@ function delete-static-zone() {
 
 }
 
-# call function
-delete-static-zone "127.0.0.1" "example.org"
+function usages() {
+	echo "# Usages: ${0##*/} ddns-name-server ddns-domain"
+	echo "# "
+}
+
+# main task
+if [ "$#" -lt "2" ]; then
+	echo "# ERROR less parameter"
+	usages
+	exit 1
+fi
+if [ "$#" -gt "2" ]; then
+	echo "# ERROR to many parameter"
+	usages
+	exit 1
+fi
+if [ "$#" -eq "2" ]; then
+	delete-static-zone "$@"
+	exit 0
+fi
