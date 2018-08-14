@@ -82,6 +82,17 @@ send"
 	echo "# ACTION reload zone $DDNS_ZONE"
 	reload-dynamic-zone "$DDNS_ZONE"
 
+	# entry should there
+	# check record is available
+	if (dig "$RR_HOST_ADDRESS.$DDNS_ZONE" @"$DDNS_NAME_SERVER" | grep "ANSWER SECTION"); then
+		echo "# OK zone $RR_HOST_ADDRESS in zone $DDNS_ZONE available"
+		exit 0
+	else
+		echo "# ERROR zone $RR_HOST_ADDRESS in zone $DDNS_ZONE not available"
+		echo "# EXIT 1 "
+		exit 1
+	fi
+
 	# dynamic parameter end
 	set -u
 

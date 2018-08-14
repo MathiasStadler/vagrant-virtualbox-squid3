@@ -60,6 +60,16 @@ function delete-record() {
 	# call function
 	provide-dynamic-function-argument "$@"
 
+	# check record is available
+	if (dig "$RR_HOST_ADDRESS.$DDNS_ZONE" @"$DDNS_NAME_SERVER" | grep "ANSWER SECTION"); then
+		echo "# OK zone $RR_HOST_ADDRESS in zone $DDNS_ZONE available"
+		echo "# ACTION try to delete"
+	else
+		echo "# HOPPLA zone $RR_HOST_ADDRESS in zone $DDNS_ZONE not available"
+		echo "# EXIT 0 "
+		exit 1
+	fi
+
 	echo "# INFO DDNS_NAME_SERVER $DDNS_NAME_SERVER"
 
 	if (
