@@ -79,13 +79,11 @@ send"
 		echo "# ERROR"
 	fi
 
-	echo "# TEST $test_var"
 	echo "# ACTION reload zone $DDNS_ZONE"
-	reload-dynamic-zone $DDNS_ZONE
+	reload-dynamic-zone "$DDNS_ZONE"
 
 	# dynamic parameter end
 	set -u
-	echo "# TEST $test_var"
 
 }
 

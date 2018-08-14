@@ -36,7 +36,7 @@ source "$SETTINGS/utility-dns-debian.sh"
 
 function delete-static-zone() {
 
-	echo "# INFO call add-record" | tee -a "${LOG_FILE}"
+	echo "# INFO call delete-static-zone" | tee -a "${LOG_FILE}"
 
 	# ARG1 = DDNS_NAME_SERVER"
 	# ARG2 = DDNS_ZONE

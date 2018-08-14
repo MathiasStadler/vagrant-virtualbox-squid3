@@ -36,14 +36,26 @@ source "$SETTINGS/utility-dns-debian.sh"
 
 function crete-static-zone() {
 
-	# check first zone file exists
-	if [ -e $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE ]; then
-		echo "# STOP $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE already avaible please delete first"
-		echo "# EXIT 1"
-		exit 1
-	fi
+	echo "# INFO call create-static-zone" | tee -a "${LOG_FILE}"
+	# ARG1 = DDNS_NAME_SERVER"
+	# ARG2 = DDNS_ZONE
 
-	echo "# INFO call create-static-test-zone"
+	TRUE=0
+	FALSE=1
+
+	# Attention parameter count start at 0
+	# varName varMessage varNesseccary varDefaultValue
+	# bound dynamic
+	# shellcheck disable=SC2034
+	argument0=("DDNS_NAME_SERVER" "DNS NAME SERVER" "$TRUE" "$FALSE")
+	# shellcheck disable=SC2034
+	argument1=("DDNS_ZONE" "DNS ZONE for resource record " "$TRUE" "$FALSE")
+
+	# dynamic parameter start couldn't bound
+	set +u
+
+	# call function
+	provide-dynamic-function-argument "$@"
 
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
@@ -57,50 +69,55 @@ function crete-static-zone() {
 	# In prior releases, HMAC algorithms could be generated for use as TSIG keys, but that feature has been removed as of
 	# BIND 9.13.0. Use tsig-keygen to generate TSIG keys.
 	# dnssec-keygen -a RSASHA1 -b 1024 test.me
-	#
 
-	echo "# ACTION create key $DDNS_KEY_NAME"
+	DDNS_ZONE_KEY_NAME="$DDNS_ZONE"_KEY
+	echo "# ACTION create key $DDNS_ZONE_KEY_NAME"
+
+	ETC_BIND_DDNS_KEY_FILE="${DDNS_ZONE}_DDNS.key"
+	echo "# ACTION  key file  $ETC_BIND_DDNS_KEY_FILE"
+
+	ETC_BIND_DDNS_ZONE_FILE=${DDNS_ZONE}_DDNS.zone
+	echo "# ACTION  zone file  $ETC_BIND_DDNS_ZONE_FILE"
+
+	ETC_BIND_DDNS_ZONE_CONFIG_FILE=${DDNS_ZONE}_DDNS.conf
+	echo "# ACTION  zone config file $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
+
+	#here
 	# Step 1st create DDNS Key
-	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_TEST_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$DDNS_ZONE_KEY_FILE"
 
-	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	echo "# ACTION create $DDNS_ZONE_KEY_FILE"
 
 	# Ste 2nd parse key section
 	# and  write key to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE at first entry
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$DDNS_ZONE_KEY_FILE" | $SUDO tee "$ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# step 3rd  write zone config
 	# TODO old check delete $SUDO cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-	$SUDO tee "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE" <<EOF
+	$SUDO tee "$ETC_BIND_DDNS_ZONE_CONFIG_FILE" <<EOF
 zone "$DDNS_TEST_ZONE" IN {
      type master;
      file "$ETC_BIND_EXAMPLE_ZONE_FILE";
 EOF
 
 	# parse update-policy section and write to $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
-	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
+	sed '/update-policy.*{/{:1; /};/!{N; b1}; /.*/p}; d' "$DDNS_ZONE_KEY_FILE" | $SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# close $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE
 	# TODO old cat <<EOF >>"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE"
-	$SUDO tee -a "$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE" <<EOF
+	$SUDO tee -a "$ETC_BIND_DDNS_ZONE_CONFIG_FILE" <<EOF
 };
 EOF
 
 	# parse key section
 	# write to $ETC_BIND_DDNS_NSUPDATE_FILE for nsupdate command
-	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$ETC_BIND_DDNS_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
+	sed '/key.*".*".*{/{:1; /};/!{N; b1}; /.*/p}; d' "$DDNS_ZONE_KEY_FILE" | $SUDO tee "$ETC_BIND_DDNS_NSUPDATE_FILE"
 
-	if [ -e $ETC_BIND_EXAMPLE_ZONE_FILE ]; then
-		echo "# STOP $ETC_BIND_EXAMPLE_ZONE_FILE always avaible please delete first"
-		echo "# EXIT 1"
-		exit 1
-	fi
-
-	echo "# ACTION create $ETC_BIND_EXAMPLE_ZONE_FILE"
+	echo "# ACTION create $ETC_BIND_DDNS_ZONE_FILE"
 
 	# create $ETC_BIND_EXAMPLE_ZONE_FILE file
 	# old $SUDO cat <<EOF >"$ETC_BIND_EXAMPLE_ZONE_FILE"
-	$SUDO tee "$ETC_BIND_EXAMPLE_ZONE_FILE" <<EOF
+	$SUDO tee "$ETC_BIND_DDNS_ZONE_FILE" <<EOF
 ; $DDNS_TEST_ZONE
 \$TTL    604800
 @       IN      SOA     ns1.$DDNS_TEST_ZONE. root.$DDNS_TEST_ZONE. (
@@ -116,11 +133,12 @@ ns                     A       127.0.0.1
 EOF
 
 	# include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE to /etc/bind/named.conf
-	echo "# ACTION include $ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE in $ETC_BIND_NAMED_CONF"
+	echo "# ACTION include $ETC_BIND_DDNS_ZONE_FILE in $ETC_BIND_NAMED_CONF"
 
-	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_EXAMPLE_ZONE_CONFIG_FILE\"" ";")
+	NAMED_CONF_NEW_ZONE_INCLUDED=("include" "\"$ETC_BIND_DDNS_ZONE_FILE\"" ";")
 
 	# check first entry available already
+	# ATTENTION we grep here for the name of include file
 	if (grep "${NAMED_CONF_NEW_ZONE_INCLUDED[1]}" "$ETC_BIND_NAMED_CONF"); then
 		echo "# INFO include ${NAMED_CONF_NEW_ZONE_INCLUDED[*]} already inside $ETC_BIND_NAMED_CONF"
 		echo "# INFO nothing to do in this case"
@@ -133,17 +151,15 @@ EOF
 	# call function
 	check-named-conf
 
-	# reload zone
 	# call function
 	clean-and-sync-all-zone-journals
 
-	echo "# ACTION reload all zones"
+	echo "# ACTION reload bind with all zones"
 	$RNDC_EXEC reload
 
 	# call function
 	reload-dynamic-zone "$DDNS_TEST_ZONE"
-
 }
 
 # call function
-crete-static-zone
+crete-static-zone "127.0.0.1" "example.com"
