@@ -3,10 +3,10 @@
 # Exit immediately if a command returns a non-zero status
 
 # with print command
-set -Eeuxo pipefail
+# set -Eeuxo pipefail
 
 # without print command
-# set -Eeuo pipefail
+set -Eeuo pipefail
 
 err_report() {
 	echo "unexpected error on line $(caller) script exit" >&2
@@ -82,7 +82,6 @@ function crete-static-zone() {
 	ETC_BIND_DDNS_ZONE_CONFIG_FILE=${DDNS_ZONE}_DDNS.conf
 	echo "# ACTION  zone config file $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
-	#here
 	# Step 1st create DDNS Key
 	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$DDNS_ZONE_KEY_FILE"
 
