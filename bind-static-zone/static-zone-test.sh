@@ -1,140 +1,107 @@
 #!/bin/bash
 
 # Exit immediately if a command returns a non-zero status
-set -e
+# set -e
+# from here https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
 
-# shellcheck disable=SC1091
-source ../settings/utility-bash.sh
+# with print command
+# set -Eeuxo pipefail
 
-# call function
-ensure-sudo
+# without print command
+set -Eeuo pipefail
+
+err_report() {
+	echo "unexpected error on line $(caller) script exit" >&2
+}
+
+trap err_report ERR
 
 SETTINGS="../settings"
 
-# shellcheck disable=SC1091
-source ./static-zone-parameter.sh
-
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 source "$SETTINGS/utility-dns-debian.sh"
 
-# shellcheck disable=SC1091
-source "$SETTINGS/utility-dns-debian-test.sh"
+echo "# ACTION run test"
 
-function test-nsupdate-round-trip-add-record() {
+# regex from here
+# https://stackoverflow.com/questions/15268987/bash-based-regex-domain-name-validation
+# last entry
 
-	TEST_FOLDER="/nsupdate_tests"
+function use-case-add-remove-static-zone() {
 
-	echo "#ACTION create sub folder $TEST_FOLDER"
-	mkdir -p "$HOME$TEST_FOLDER"
+	# set variable for each use# generate a 12 char random string
+	local DDNS_NAME_SERVER="127.0.0.1"
+	# raise pipfail
+	#RANDOM_STRING_12=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 12 | head -n 1)
+	RANDOM_STRING_12="$(openssl rand -hex 12)"
+	local DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
 
-	# create NSUPDATE_ADD_HOST_SCRIPT
-	NSUPDATE_ADD_HOST_SCRIPT="$HOME$TEST_FOLDER/nsupdate_add_host.sh"
-
-	echo "# ACTION write $NSUPDATE_ADD_HOST_SCRIPT to $HOME$TEST_FOLDER"
-
-	$SUDO tee -a "$NSUPDATE_ADD_HOST_SCRIPT" <<EOF
-#!/bin/bash
-#Defining Variables
-DNS_SERVER="$DDNS_TEST_NAME_SERVER"
-DNS_ZONE="$DDNS_TEST_ZONE."
-HOST="$DDNS_TEST_HOST"
-IP="$DDNS_TEST_IP"
-TTL="60"
-RECORD=" \$HOST \$TTL A \$IP"
-echo "
-server \$DNS_SERVER
-zone \$DNS_ZONE
-debug
-update add \$RECORD
-show
-send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
-EOF
-
-	echo "# ACTION set execute for $NSUPDATE_ADD_HOST_SCRIPT"
-	# execute script NSUPDATE_ADD_HOST_SCRIPT
-	$SUDO chmod +x "$NSUPDATE_ADD_HOST_SCRIPT"
-
-	echo "# ACTION reload zone $DDNS_TEST_ZONE"
-	# activate changes
-
-	echo "# ACTION execute nsupdate of zone $DDNS_TEST_ZONE"
-	if ("$SUDO" "$NSUPDATE_ADD_HOST_SCRIPT"); then
-		echo "# OK nsupdate of zone "
+	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"); then
+		echo "# INFO domain name $DDNS_ZONE valid"
 	else
-		echo "# ERROR nsupdate of zone"
+		echo "# ERROR domain name $DDNS_ZONE no valid "
 		echo "# EXIT 1"
 		exit 1
 	fi
 
+	echo "# ACTION create zone"
+
+	bash -x ./static-zone-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
+
+	echo "# ACTION delete zone"
+
+	bash -x ./static-zone-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
+
 }
 
-# call function
-test-nsupdate-round-trip-add-record
+function use-case-add-remove-static-zone-and-record() {
 
-# test entry
-EXPECTED_RESULT_OK=0
-COMMAND="get-ip-of-url $DDNS_TEST_HOST $DDNS_TEST_NAME_SERVER"
-EXPECTED_RESULT=$EXPECTED_RESULT_OK
-# call function
-test_function "$COMMAND" "$EXPECTED_RESULT"
-echo "# INFO IP_SERVER => $IP_SERVER"
+	# set variable for each use# generate a 12 char random string
+	DDNS_NAME_SERVER="127.0.0.1"
+	# RANDOM_STRING_12=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 12 | head -n 1)
+	RANDOM_STRING_12="$(openssl rand -hex 12)"
+	# RANDOM_STRING_6=$(tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 6 | head -n 1)
+	RANDOM_STRING_6="$(openssl rand -hex 6)"
+	DDNS_ZONE="TEST-${RANDOM_STRING_12}.com"
+	# from here
+	# https://unix.stackexchange.com/questions/14666/how-to-generate-random-ip-addresses
+	ip_address=$(dd if=/dev/urandom bs=4 count=1 2>/dev/null |
+		od -An -tu1 |
+		sed -e 's/^ *//' -e 's/  */./g')
 
-function test-nsupdate-round-trip-delete-record() {
-
-	# PTR
-	# https://superuser.com/questions/977132/when-using-nsupdate-to-update-both-a-and-ptr-records-why-do-i-get-update-faile
-
-	echo "# INFO call test-nsupdate-round-trip"
-
-	TEST_FOLDER="/nsupdate_tests"
-
-	echo "#ACTION create sub folder $TEST_FOLDER"
-	mkdir -p "$HOME/$TEST_FOLDER"
-
-	# delete test record
-	NSUPDATE_DELETE_RECORD_SCRIPT="$HOME$TEST_FOLDER/nsupdate-delete-record.sh"
-
-	cat <<EOF >"$NSUPDATE_DELETE_RECORD_SCRIPT"
-#!/bin/bash
-#Defining Variables
-DNS_SERVER="localhost"
-DNS_ZONE="$DDNS_TEST_ZONE."
-HOST="test.$DDNS_TEST_ZONE."
-IP="192.168.178.100"
-echo "
-server \$DNS_SERVER
-zone \$DNS_ZONE
-debug
-update delete \$HOST A
-show
-send" | nsupdate -k $ETC_BIND_DDNS_NSUPDATE_FILE
-EOF
-
-	# set execute
-	echo "#ACTION set execute $NSUPDATE_DELETE_RECORD_SCRIPT"
-	chmod +x "$NSUPDATE_DELETE_RECORD_SCRIPT"
-
-	# execute $NSUPDATE_DELETE_RECORD_SCRIPT
-
-	if ($NSUPDATE_DELETE_RECORD_SCRIPT); then
-		echo "# OK nsupdate delete host "
+	if (echo "$DDNS_ZONE" | grep -P "^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\\.[a-zA-Z]{2,})+$"); then
+		echo "# INFO domain name $DDNS_ZONE valid"
 	else
-		echo "# ERROR nsupdate delete host raise a error"
-		echo "# INFO the return code was $?"
-		echo "# INFO return code => 1:	nsupdate calling error"
-		echo "# INFO return code => 2:	DDNS protocol error"
-		#echo "# EXIT 1"
-		#exit 1
+		echo "# ERROR domain name $DDNS_ZONE no valid "
+		echo "# EXIT 1"
+		exit 1
 	fi
 
+	echo "# ACTION create zone"
+	./static-zone-create.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
+
+	TEST_HOSTNAME="test-host-${RANDOM_STRING_6}"
+	NSUPDATE_KEY_FILE="/etc/bind/${DDNS_ZONE}_NSUPDATE.key"
+	INSTALL_DIR=$(dirname "$(readlink -f "$0")")
+
+	echo "# ACTION create record"
+	COMMAND=("$INSTALL_DIR/static-zone-rr-create.sh" "$DDNS_NAME_SERVER" "$DDNS_ZONE" "$TEST_HOSTNAME" "$ip_address" "600" "$NSUPDATE_KEY_FILE")
+
+	echo "COMMAND => ${COMMAND[*]}"
+	OUTPUT=$("${COMMAND[*]}")
+	echo "$OUTPUT"
+
+	exit 0
+	echo "# ACTION delete record"
+	./static-zone-rr-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE" "test-host-${RANDOM_STRING_6}" "${DDNS_ZONE}_NSUPDATE.key"
+
+	echo " # ACTION delete zone"
+	./static-zone-delete.sh "$DDNS_NAME_SERVER" "$DDNS_ZONE"
+
 }
 
 # call function
-test-nsupdate-round-trip-delete-record
+use-case-add-remove-static-zone
 
-# test entry
-EXPECTED_RESULT_NO_IP_ADDRESS=9
-COMMAND="get-ip-of-url $DDNS_TEST_HOST $DDNS_TEST_NAME_SERVER"
-EXPECTED_RESULT=$EXPECTED_RESULT_OK
 # call function
-test_function "$COMMAND" "$EXPECTED_RESULT_NO_IP_ADDRESS"
+use-case-add-remove-static-zone-and-record

@@ -57,6 +57,13 @@ function create-static-zone() {
 	# call function
 	provide-dynamic-function-argument "$@"
 
+	# check zone is not available
+	if (dig ns "$DDNS_ZONE" @"$DDNS_NAME_SERVER" | grep "ANSWER SECTION"); then
+		echo "# INFO zone $DDNS_ZONE available"
+		echo "# EXIT 0 "
+		exit 0
+	fi
+
 	# mainly from here
 	# https://unix.stackexchange.com/questions/132171/how-can-i-add-records-to-the-zone-file-without-restarting-the-named-service
 
@@ -76,6 +83,9 @@ function create-static-zone() {
 	ETC_BIND_DDNS_KEY_FILE="$BIND_CONFIG_PATH/${DDNS_ZONE}_DDNS.key"
 	echo "# ACTION key file $ETC_BIND_DDNS_KEY_FILE"
 
+	ETC_BIND_DDNS_NSUPDATE_FILE="$BIND_CONFIG_PATH/${DDNS_ZONE}_NSUPDATE.key"
+	echo "# ACTION key file $ETC_BIND_DDNS_NSUPDATE_FILE"
+
 	ETC_BIND_DDNS_ZONE_FILE="$BIND_CONFIG_PATH/${DDNS_ZONE}_DDNS.zone"
 	echo "# ACTION zone file $ETC_BIND_DDNS_ZONE_FILE"
 
@@ -83,7 +93,7 @@ function create-static-zone() {
 	echo "# ACTION  zone config file $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
 	# Step 1st create DDNS Key
-	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_KEY_FILE"
+	"$BIND_BINARY_DEFAULT_PATH"/ddns-confgen -z "$DDNS_ZONE" -k "$DDNS_ZONE_KEY_NAME" | $SUDO tee "$ETC_BIND_DDNS_KEY_FILE"
 
 	echo "# ACTION create $ETC_BIND_DDNS_ZONE_CONFIG_FILE"
 
